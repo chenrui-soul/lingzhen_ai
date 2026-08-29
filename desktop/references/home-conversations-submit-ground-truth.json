@@ -1,0 +1,14 @@
+{
+  "prompt": "第一批首页提交链路模拟验证",
+  "expectedChannel": "doubao",
+  "expectedCreationSource": "home",
+  "expectedCreationType": "video",
+  "expectedDuration": "10s",
+  "expectedModel": "Seedance 2.0 Mini",
+  "expectedAccountId": "desktop-1",
+  "expectedProjectId": "project-home-phase1",
+  "expectedCallCount": 1,
+  "mustClearPromptAfterSuccess": true,
+  "mustPersistConversationRecord": true,
+  "mustNotUseRealBackend": true
+}

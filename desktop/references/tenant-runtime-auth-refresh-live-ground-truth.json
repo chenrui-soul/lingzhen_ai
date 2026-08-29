@@ -1,0 +1,11 @@
+{
+  "test": "tenant-runtime-auth-refresh-live",
+  "expected": {
+    "submittedVerified": true,
+    "conversationVidRequired": true,
+    "allowedStatesAfterRefresh": ["generating", "completed"],
+    "forbiddenFailureCodes": ["DOUBAO_INTERRUPTED_EXECUTION"],
+    "submissionUnknownSteps": 0,
+    "manualReviewSteps": 0
+  }
+}

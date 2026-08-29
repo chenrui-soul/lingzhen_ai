@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "storagePrefix": "lingframe.textResearchBatchD.v1",
+  "creationSource": "text-workspace-research",
+  "actions": ["discover", "summary", "keypoints", "compare", "sources"],
+  "maximumSources": 8,
+  "maximumExcerptChars": 4000,
+  "maximumContextChars": 9000,
+  "requiresExplicitExcerpt": true,
+  "allowsAutomaticFullDocumentInjection": false,
+  "resultActions": ["candidate", "version", "asset", "dismiss"]
+}

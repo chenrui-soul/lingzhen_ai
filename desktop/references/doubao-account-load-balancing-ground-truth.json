@@ -1,0 +1,24 @@
+{
+  "tenantId": "tenant-load-balancing-test",
+  "accounts": [
+    {"id": "account-a", "name": "账号 A"},
+    {"id": "account-b", "name": "账号 B"},
+    {"id": "account-c", "name": "账号 C"}
+  ],
+  "automaticTaskCount": 7,
+  "expectedAssignments": [
+    "account-a",
+    "account-b",
+    "account-c",
+    "account-a",
+    "account-b",
+    "account-c",
+    "account-a"
+  ],
+  "humanLockedStates": [
+    "awaiting_login",
+    "awaiting_verification",
+    "submission_unknown"
+  ],
+  "allLockedStatusText": "所有候选豆包账号都在等待人工处理，任务保持排队"
+}

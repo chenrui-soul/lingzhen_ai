@@ -1,0 +1,10 @@
+{
+  "feature": "infinite-canvas-coming-soon-guard",
+  "entryVisible": true,
+  "navigationBlocked": true,
+  "dialogTitle": "无限画布暂未开放",
+  "dialogMessage": "小弟正在努力开发中",
+  "badge": "开发中",
+  "closeMethods": ["close-button", "backdrop", "primary-button", "escape"],
+  "preserveCanvasImplementation": true
+}

@@ -1,0 +1,15 @@
+{
+  "batch": "desktop-batch3-agent-token-and-task-control",
+  "invariants": [
+    "desktop agent token is exchanged from license credentials",
+    "tenantId is never accepted from desktop request input",
+    "license grant signature and lease are verified by gateway",
+    "verification pauses a task without resending the prompt",
+    "manual verification completion resumes observation"
+  ],
+  "expected": {
+    "exchangeEndpoint": "/desktop/v1/agent-token",
+    "tenantFieldFromClient": false,
+    "tokenSource": "license-grant"
+  }
+}

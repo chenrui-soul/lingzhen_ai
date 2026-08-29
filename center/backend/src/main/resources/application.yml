@@ -1,0 +1,51 @@
+server:
+  port: 9001
+  error:
+    include-message: never
+    include-binding-errors: never
+    include-stacktrace: never
+    include-exception: false
+
+spring:
+  application:
+    name: lingzhen-center-backend
+  datasource:
+    url: jdbc:postgresql://127.0.0.1:5433/lingframe_identity
+    username: lingframe_app
+    password: ${APP_DB_PASSWORD}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: none
+  flyway:
+    enabled: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: never
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
+app:
+  auth:
+    issuer: lingzhen-center
+    hmac-secret: ${APP_AUTH_HMAC_SECRET}
+    access-token-ttl: 10m
+    refresh-token-ttl: 30d
+    tenant-selection-ticket-ttl: 5m
+    login-lock-threshold: 5
+    login-lock-duration: 15m
+    secure-cookies: true
+  # 平台模型凭据只由后端进程读取，不会出现在 Desktop Bootstrap 或任何响应中。
+  # 地址、密钥和路径均按模型维护；此处只保留代理开关与网络默认值。
+  platform-proxy:
+    enabled: true
+    connect-timeout-seconds: 10
+    default-timeout-seconds: 120

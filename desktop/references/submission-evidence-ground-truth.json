@@ -1,0 +1,15 @@
+{
+  "cases": [
+    {"name":"old sidebar generating text is not evidence","request":null,"beforeConversationId":"","after":{"conversationId":"","inputText":"PROMPT","userMessage":false,"scopedGenerating":false,"pageGenerating":true},"confirmed":false,"evidenceType":""},
+    {"name":"current conversation user message alone is not evidence","request":null,"beforeConversationId":"","after":{"conversationId":"52536301223315202","inputText":"","userMessage":true,"scopedGenerating":false},"confirmed":false,"evidenceType":""},
+    {"name":"generic prompt matched chat request is not evidence","request":{"promptMatched":true,"videoGenerationRequest":false},"beforeConversationId":"","after":{"conversationId":"52536301223315202","inputText":"","userMessage":true,"scopedGenerating":false},"confirmed":false,"evidenceType":""},
+    {"name":"new conversation id alone is not evidence","request":null,"beforeConversationId":"","after":{"conversationId":"52536301223315202","inputText":"","userMessage":false,"scopedGenerating":false},"confirmed":false,"evidenceType":""},
+    {"name":"current conversation generation status is evidence","request":null,"beforeConversationId":"","after":{"conversationId":"52536301223315202","inputText":"","userMessage":true,"scopedGenerating":true},"confirmed":true,"evidenceType":"current-conversation-generation-status"},
+    {"name":"video generation request with conversation is evidence","request":{"promptMatched":true,"videoGenerationRequest":true},"beforeConversationId":"","after":{"conversationId":"52536301223315202","inputText":"","userMessage":true,"scopedGenerating":false},"confirmed":true,"evidenceType":"video-generation-request"},
+    {"name":"video generation request without persistent conversation is rejected","request":{"promptMatched":true,"videoGenerationRequest":true},"beforeConversationId":"","after":{"conversationId":"","inputText":"","userMessage":true,"scopedGenerating":false},"confirmed":false,"evidenceType":""},
+    {"name":"scoped generating without persistent conversation is rejected","request":null,"beforeConversationId":"","after":{"conversationId":"","inputText":"PROMPT","userMessage":true,"scopedGenerating":true},"confirmed":false,"evidenceType":""}
+  ],
+  "prompt": "PROMPT",
+  "networkHost": "www.doubao.com",
+  "minimumEvidenceWaitMs": 30000
+}

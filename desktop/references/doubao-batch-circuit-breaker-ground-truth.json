@@ -1,0 +1,13 @@
+{
+  "test": "doubao-batch-circuit-disabled",
+  "tenantId": "tenant-doubao-batch-circuit-disabled",
+  "triggerCode": "DOUBAO_FACE_REFERENCE_REJECTED",
+  "triggerCategory": "portrait_policy",
+  "expected": {
+    "sameMaterialQueuedState": "queued",
+    "newSameMaterialCanExecute": true,
+    "directRunCanExecute": true,
+    "automaticSiblingPause": false,
+    "lookbackRestrictionEnabled": false
+  }
+}

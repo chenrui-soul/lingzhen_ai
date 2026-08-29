@@ -1,0 +1,27 @@
+{
+  "userCases": [
+    {
+      "name": "username and positive balance",
+      "user": { "username": "1950717904", "email": "1950717904@qq.com" },
+      "credits": { "available": true, "balance": 320 },
+      "expected": { "displayName": "1950717904", "avatar": "1", "creditLabel": "积分 320" }
+    },
+    {
+      "name": "email fallback and formatted balance",
+      "user": { "username": "", "email": "xy1950717904@qq.com" },
+      "credits": { "available": true, "balance": 12800 },
+      "expected": { "displayName": "xy1950717904@qq.com", "avatar": "X", "creditLabel": "积分 12,800" }
+    },
+    {
+      "name": "missing wallet remains visible as zero",
+      "user": { "username": "member", "email": "" },
+      "credits": { "available": false, "balance": 0 },
+      "expected": { "displayName": "member", "avatar": "M", "creditLabel": "积分 0" }
+    }
+  ],
+  "taskDockCases": [
+    { "name": "idle dock hidden", "total": 0, "expectedHidden": true },
+    { "name": "running task reminder visible", "total": 1, "expectedHidden": false },
+    { "name": "attention task reminder visible", "total": 2, "attention": 1, "expectedHidden": false }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "test": "tenant-runtime-lifecycle",
+  "description": "同一用户与租户的会话刷新不得重建任务运行时，真正的身份切换和冷启动仍必须执行崩溃恢复",
+  "expected": {
+    "sameScopeRefresh": {"create": 0, "dispose": 0, "recover": 0},
+    "sameScopeBootstrap": {"create": 0, "dispose": 0, "recover": 0},
+    "scopeSwitch": {"create": 1, "dispose": 1, "recover": 1},
+    "coldStart": {"create": 1, "dispose": 0, "recover": 1},
+    "logout": {"create": 0, "dispose": 1, "recover": 0}
+  }
+}

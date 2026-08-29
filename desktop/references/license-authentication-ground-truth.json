@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "validKey": "DOLA-ABCD-EFGH-JKLM-NPQR-STUV",
+  "expected": {
+    "invalidFormatCode": "INVALID_KEY",
+    "invalidSignatureCode": "INVALID_SERVER_SIGNATURE",
+    "activeState": "active",
+    "expiredState": "expired",
+    "revokedState": "revoked",
+    "revokedErrorCode": "LICENSE_REVOKED",
+    "clientErrorStopsFallback": true,
+    "serverErrorAllowsFallback": true,
+    "bindingPersists": true
+  }
+}

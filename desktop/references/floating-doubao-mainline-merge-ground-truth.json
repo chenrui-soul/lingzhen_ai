@@ -1,0 +1,36 @@
+{
+  "baseline": "canvas-v4.2-plus-latest-real-doubao-acceptance",
+  "protectedCanvas": {
+    "canvasFlowCoreSha256": "AB6252C859739CF029CE352593669FE4196E054CEB124122F6131116C683D318",
+    "canvasMediaV2Sha256": "D1FF99A138BE363526834C32BECE5AC0A2870A92583159D1CC6D335520AABFAA",
+    "requiredFeatures": [
+      "attached node composer",
+      "focus editor",
+      "result history",
+      "expand result as asset node",
+      "document migration",
+      "doubao video node parameters and automatic account failover"
+    ]
+  },
+  "realDoubaoAcceptance": [
+    "one BrowserWindow and persistent partition per account",
+    "same account tasks are serial",
+    "different account tasks are parallel",
+    "model gateway tasks are parallel and do not acquire a doubao account lock",
+    "running window close hides instead of destroying the browser runtime",
+    "manual verification reuses the original account window and conversation",
+    "submission unknown never auto-resubmits",
+    "quota exhausted can stop the current account and fail over to the next candidate",
+    "quota blocks reset after Shanghai midnight",
+    "video capture is bound to job and conversation",
+    "video file, original URL, result asset and task remain one-to-one",
+    "global task dock remains available while switching workbench modules"
+  ],
+  "forbidden": [
+    "whole-directory overwrite",
+    "WebContentsView browser host",
+    "main workbench bounds controlling doubao DOM viewport",
+    "automatic retry without not-sent evidence",
+    "duplicate result asset or video URL ownership"
+  ]
+}

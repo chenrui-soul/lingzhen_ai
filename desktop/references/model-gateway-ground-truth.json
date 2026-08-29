@@ -1,0 +1,8 @@
+{
+  "protocols": ["openai-compatible", "openai-responses", "anthropic-compatible", "custom-json"],
+  "secret": "sk-test-model-gateway-secret-123456",
+  "headerSecret": "header-secret-987654",
+  "discoveredModels": ["gpt-5.2", "flux-image-1", "seedance-video-1", "voice-tts-1"],
+  "expectedTypes": {"gpt-5.2":"text", "flux-image-1":"image", "seedance-video-1":"video", "voice-tts-1":"audio"},
+  "invalidUrls": ["file:///tmp/model", "javascript:alert(1)", "ftp://example.com"]
+}

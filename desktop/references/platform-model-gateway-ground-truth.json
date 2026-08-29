@@ -1,0 +1,8 @@
+{
+  "platformProviderId": "provider-platform",
+  "platformModelId": "model-platform-text",
+  "localProviderId": "provider-local",
+  "localModelId": "model-local-text",
+  "platformTaskId": "11111111-1111-1111-1111-111111111111",
+  "resultText": "平台异步文本结果"
+}

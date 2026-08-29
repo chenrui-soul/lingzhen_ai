@@ -1,0 +1,48 @@
+{
+  "source": "2026-08-20 实机观察：豆包退出登录后的匿名首页右上角显示“登录”，但独立分区中仍可能残留 sessionid Cookie。页面明确登录入口必须覆盖残留 Cookie。",
+  "anonymousPage": {
+    "url": "https://www.doubao.com/chat/",
+    "bodyText": "豆包 新工作任务 新对话 更多 最近 关于豆包 下载电脑版 登录 有什么我能帮你的吗？ 对话 工作",
+    "loginEntryText": "登录",
+    "expectedState": "logged_out"
+  },
+  "classificationCases": [
+    {
+      "id": "logged-out-with-stale-cookie",
+      "probe": {
+        "onPlatform": true,
+        "readyState": "complete",
+        "bodyTextLength": 178,
+        "loginEntry": true,
+        "avatarFound": false,
+        "accountControlFound": false
+      },
+      "cookies": [{"name": "sessionid", "value": "stale-cookie"}],
+      "expectedState": "logged_out"
+    },
+    {
+      "id": "probe-error-with-stale-cookie",
+      "probe": {
+        "onPlatform": true,
+        "readyState": "complete",
+        "bodyTextLength": 0,
+        "probeError": "ReferenceError: probe failed"
+      },
+      "cookies": [{"name": "sessionid", "value": "stale-cookie"}],
+      "expectedState": "loading"
+    },
+    {
+      "id": "authenticated-avatar-signal",
+      "probe": {
+        "onPlatform": true,
+        "readyState": "complete",
+        "bodyTextLength": 500,
+        "loginEntry": false,
+        "avatarFound": true,
+        "accountControlFound": false
+      },
+      "cookies": [],
+      "expectedState": "logged_in"
+    }
+  ]
+}

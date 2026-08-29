@@ -1,0 +1,7 @@
+{
+  "storageScope": "tenant-main-process-registry",
+  "crossTenantVisibility": "denied",
+  "defaultFilter": "all",
+  "specialFilters": ["available", "verification"],
+  "supports": ["create", "rename", "delete", "assign", "task-selection"]
+}

@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#071326"/><stop offset="1" stop-color="#111832"/></linearGradient>
+    <linearGradient id="panel" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#132542" stop-opacity=".96"/><stop offset="1" stop-color="#0b182d" stop-opacity=".96"/></linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#48d9ff"/><stop offset="1" stop-color="#8e6cff"/></linearGradient>
+    <filter id="shadow"><feDropShadow dx="0" dy="12" stdDeviation="18" flood-color="#000" flood-opacity=".28"/></filter>
+    <style>
+      .ui{font-family:"Microsoft YaHei","Segoe UI",sans-serif;fill:#dbe9fa}.muted{fill:#7891b3}.tiny{font-size:13px}.small{font-size:15px}.body{font-size:18px}.title{font-size:23px;font-weight:700}.head{font-size:14px;font-weight:700;letter-spacing:1px}.chip{font-size:12px}.line{stroke:#25405f;stroke-width:1}.cyan{fill:#55ddff}.violet{fill:#a58bff}.amber{fill:#ffbf76}.green{fill:#62e4bd}
+    </style>
+  </defs>
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <rect x="0" y="0" width="1600" height="62" fill="#09172b"/>
+  <circle cx="28" cy="31" r="10" fill="#52d8ff"/><text x="50" y="36" class="ui title">灵帧AI</text><text x="168" y="36" class="ui muted small">文本创作工作台</text>
+  <rect x="1150" y="16" width="188" height="30" rx="8" fill="#112743" stroke="#294463"/><text x="1170" y="36" class="ui small">搜索项目、资料…</text><circle cx="1412" cy="31" r="17" fill="#223a5c"/><text x="1405" y="37" class="ui small">白</text><text x="1440" y="36" class="ui small">白同学</text>
+
+  <rect x="18" y="78" width="244" height="750" rx="16" fill="url(#panel)" stroke="#203b5d" filter="url(#shadow)"/>
+  <text x="42" y="112" class="ui head cyan">CREATIVE SPACE</text><text x="42" y="148" class="ui title">我的项目</text><text x="42" y="178" class="ui small">◆ 云海古城短剧计划</text><text x="42" y="207" class="ui muted small">◇ 广告文案实验室</text>
+  <line x1="42" y1="232" x2="238" y2="232" class="line"/><text x="42" y="265" class="ui head violet">文档结构</text>
+  <rect x="34" y="282" width="212" height="38" rx="8" fill="#1b3b5b"/><text x="52" y="307" class="ui small">▾ 第一章 迷雾入城</text><text x="66" y="342" class="ui muted small">第二章 灯塔来信</text><text x="66" y="374" class="ui muted small">第三章 风暴前夜</text>
+  <text x="42" y="422" class="ui head violet">创作资料</text><text x="52" y="456" class="ui small">◈ 人物设定</text><text x="52" y="488" class="ui small">◈ 世界观</text><text x="52" y="520" class="ui small">◈ 时间线</text><text x="52" y="552" class="ui small">◈ 素材引用</text>
+  <line x1="42" y1="584" x2="238" y2="584" class="line"/><text x="42" y="620" class="ui head violet">版本记录</text><text x="52" y="654" class="ui muted small">V1 初始草稿</text><text x="52" y="686" class="ui cyan small">V2 AI辅助后 · 当前</text><text x="52" y="718" class="ui muted small">V3 用户修订稿</text><rect x="42" y="758" width="176" height="36" rx="8" fill="url(#accent)"/><text x="78" y="782" class="ui small">＋ 新建创作</text>
+
+  <rect x="280" y="78" width="820" height="750" rx="16" fill="#0d1b31" stroke="#203b5d" filter="url(#shadow)"/>
+  <text x="314" y="118" class="ui title">云海古城 · 第一章</text><rect x="710" y="95" width="110" height="31" rx="7" fill="#172e4a" stroke="#315579"/><text x="735" y="116" class="ui small">小说　⌄</text><rect x="838" y="95" width="98" height="31" rx="7" fill="#172e4a"/><text x="858" y="116" class="ui small">保存版本</text><rect x="948" y="95" width="65" height="31" rx="7" fill="#172e4a"/><text x="965" y="116" class="ui small">预览</text><rect x="1024" y="95" width="55" height="31" rx="7" fill="#172e4a"/><text x="1038" y="116" class="ui small">导出</text>
+  <line x1="314" y1="150" x2="1065" y2="150" class="line"/><text x="314" y="182" class="ui muted small">第一节　雾中的城门</text>
+  <text x="314" y="226" class="ui body">夜色从山脊缓慢落下，云海古城的灯火一盏一盏亮起。</text><text x="314" y="262" class="ui body">沈砚站在旧城门前，手里攥着一封没有署名的信。</text>
+  <rect x="307" y="282" width="730" height="39" rx="5" fill="#234b63" opacity=".62"/><text x="314" y="309" class="ui body">信封背面印着一枚陌生的银色徽记，像是某种被遗忘的誓言。</text>
+  <rect x="438" y="323" width="270" height="36" rx="8" fill="#1a3151" stroke="#4bdcff"/><text x="454" y="346" class="ui chip cyan">续写</text><text x="500" y="346" class="ui chip">润色</text><text x="548" y="346" class="ui chip">扩写</text><text x="596" y="346" class="ui chip">转剧本</text><text x="670" y="346" class="ui chip violet">提取人物</text>
+  <text x="314" y="405" class="ui body">他抬头望向城墙。雾气在砖缝间游走，远处传来三声钟响，</text><text x="314" y="441" class="ui body">每一声都比上一声更近。城门内没有守卫，只有一条被雨水</text><text x="314" y="477" class="ui body">洗得发白的石板路，通向看不见尽头的旧城区。</text>
+  <text x="314" y="544" class="ui muted small">写作提示：保持沈砚的谨慎性格，埋下“银色徽记”与第三章灯塔的关联。</text>
+  <rect x="314" y="596" width="710" height="136" rx="10" fill="#0a1628" stroke="#1c3654"/><text x="334" y="626" class="ui head cyan">人工创作区</text><text x="334" y="658" class="ui muted small">这里始终由你决定正文。AI建议会先进入候选区，不会自动覆盖原稿。</text><text x="334" y="696" class="ui muted small">当前字数 1,286　·　自动保存正常　·　最后保存 20:36</text>
+
+  <rect x="1120" y="78" width="462" height="750" rx="16" fill="url(#panel)" stroke="#203b5d" filter="url(#shadow)"/>
+  <text x="1148" y="117" class="ui title">AI协作助手</text><text x="1148" y="145" class="ui muted small">研究、分析、整理和提出建议</text>
+  <rect x="1140" y="166" width="422" height="38" rx="8" fill="#1d3957"/><text x="1158" y="191" class="ui small">资料研究</text><text x="1245" y="191" class="ui muted small">AI分析</text><text x="1313" y="191" class="ui muted small">灵感候选</text><text x="1410" y="191" class="ui muted small">人物设定</text>
+  <text x="1148" y="239" class="ui head cyan">资料研究</text><rect x="1148" y="256" width="402" height="85" rx="9" fill="#10243d"/><text x="1164" y="282" class="ui small">项目资料 · 云海古城世界观.md</text><text x="1164" y="308" class="ui muted tiny">已提取：城门历史、银色徽记、灯塔位置</text><text x="1164" y="330" class="ui cyan tiny">查看原文　·　引用到正文</text>
+  <text x="1148" y="375" class="ui head violet">AI分析</text><rect x="1148" y="392" width="402" height="93" rx="9" fill="#10243d"/><text x="1164" y="418" class="ui small">人物一致性　<tspan class="green">良好</tspan></text><text x="1164" y="444" class="ui small">时间线　　　　<tspan class="amber">发现 1 个待确认点</tspan></text><text x="1164" y="469" class="ui muted tiny">第三章灯塔线索与当前徽记关联较弱</text>
+  <text x="1148" y="519" class="ui head violet">灵感候选</text><rect x="1148" y="536" width="402" height="118" rx="9" fill="#10243d"/><text x="1164" y="562" class="ui small">候选 A</text><text x="1164" y="588" class="ui muted tiny">钟声停下时，城门内亮起一盏不属于</text><text x="1164" y="608" class="ui muted tiny">任何人的灯。</text><rect x="1164" y="622" width="85" height="24" rx="6" fill="#1c4760"/><text x="1180" y="639" class="ui chip cyan">插入正文</text><rect x="1258" y="622" width="96" height="24" rx="6" fill="#263454"/><text x="1272" y="639" class="ui chip">保存为版本</text>
+  <rect x="1148" y="678" width="402" height="78" rx="9" fill="#0c1b30" stroke="#294360"/><text x="1164" y="704" class="ui small">AI资料整理任务</text><text x="1164" y="730" class="ui muted tiny">正在分析 6 份项目资料　<tspan class="cyan">68%</tspan></text><rect x="1164" y="741" width="210" height="5" rx="3" fill="#203851"/><rect x="1164" y="741" width="143" height="5" rx="3" fill="url(#accent)"/>
+
+  <rect x="280" y="844" width="1302" height="38" rx="10" fill="#0c1d33" stroke="#274361"/><circle cx="304" cy="863" r="6" fill="#50ddff"/><text x="322" y="868" class="ui small">任务坞</text><text x="420" y="868" class="ui muted small">运行 1</text><text x="500" y="868" class="ui muted small">排队 2</text><text x="606" y="868" class="ui amber small">需处理 1</text><rect x="760" y="853" width="300" height="21" rx="5" fill="#162b46"/><text x="775" y="868" class="ui tiny">文本生成中 · 云海古城第一章</text><text x="1450" y="868" class="ui cyan small">打开现场　›</text>
+</svg>

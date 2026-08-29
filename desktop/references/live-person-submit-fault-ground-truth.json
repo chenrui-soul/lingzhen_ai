@@ -1,0 +1,15 @@
+{
+  "testName": "live-person-submit-only-parallel-and-fault-injection",
+  "sourceGroundTruth": "live-person-video-stress-ground-truth.json",
+  "taskCount": 10,
+  "completionBoundary": "ten-tasks-created-and-faults-injected",
+  "requiredFaults": ["close-account-window", "hard-client-restart"],
+  "requiredChecks": [
+    "exactly-ten-unique-task-ids",
+    "all-tasks-use-real-person-reference-image",
+    "all-tasks-use-seedance-mini-ten-seconds",
+    "at-least-two-accounts-assigned-before-fault",
+    "task-ids-survive-hard-restart",
+    "do-not-wait-for-provider-results"
+  ]
+}

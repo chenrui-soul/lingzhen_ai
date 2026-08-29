@@ -1,0 +1,17 @@
+{
+  "tenantId": "tenant-quota-test",
+  "models": ["Seedance 2.0 Fast", "Seedance 2.0 Mini"],
+  "ratios": ["自动", "3:4", "4:3", "9:16", "16:9", "1:1", "21:9"],
+  "durationMin": 4,
+  "durationMax": 15,
+  "quotaMessage": "视频额度没有了",
+  "monitorQuotaMessage": "今日视频生成免费次数用完了，暂时无法使用专业版功能",
+  "nonQuotaMessage": "网络连接超时",
+  "shanghaiSampleAt": "2026-08-14T16:30:00.000Z",
+  "expectedDateKey": "2026-08-15",
+  "expectedNextResetAt": "2026-08-15T16:00:00.000Z",
+  "accounts": [
+    {"id": "account-a", "name": "白同学"},
+    {"id": "account-b", "name": "搞钱的小陈"}
+  ]
+}

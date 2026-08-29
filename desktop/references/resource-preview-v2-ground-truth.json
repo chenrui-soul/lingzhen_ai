@@ -1,0 +1,11 @@
+{
+  "feature": "resource-preview-v2",
+  "unifiedTypes": ["image", "video", "audio", "text"],
+  "layout": ["header", "content", "actions"],
+  "resizable": false,
+  "closeMethods": ["button", "backdrop", "escape"],
+  "closeUsesDelegation": true,
+  "focusRestored": true,
+  "textShowsContent": true,
+  "mediaStopsOnClose": true
+}

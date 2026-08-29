@@ -1,0 +1,23 @@
+{
+  "test": "doubao-live-dock-reference-intelligence",
+  "referenceAssets": [
+    {"name": "黑伞道具图", "role": "prop", "label": "黑伞", "descriptionContains": "道具"},
+    {"name": "年轻男人角色图", "role": "character", "label": "年轻男人", "descriptionContains": "人物外观"},
+    {"name": "雨夜便利店场景图", "role": "scene", "label": "雨夜便利店", "descriptionContains": "环境参考"}
+  ],
+  "failureCases": [
+    {"text": "出于肖像保护考虑，Seedance 2.0 暂不支持上传真人脸素材作为参考。你可以试试换张参考图或者文生视频。", "code": "DOUBAO_FACE_REFERENCE_REJECTED", "retryMode": "edit_assets"},
+    {"text": "无法判断参考图的用途，请说明图1是人物还是场景。", "code": "DOUBAO_REFERENCE_ROLE_AMBIGUOUS", "retryMode": "edit_assets"},
+    {"text": "参考图数量过多，当前模型最多支持 4 张参考图。", "code": "DOUBAO_REFERENCE_LIMIT_EXCEEDED", "retryMode": "edit_assets"},
+    {"text": "参考图分辨率过低且画面模糊，请更换清晰图片。", "code": "DOUBAO_IMAGE_QUALITY_REJECTED", "retryMode": "edit_assets"},
+    {"text": "该参考素材可能涉及公众人物和版权，请更换素材。", "code": "DOUBAO_COPYRIGHT_ASSET_REJECTED", "retryMode": "edit_assets"},
+    {"text": "今日视频生成免费次数用完了。", "code": "DOUBAO_VIDEO_QUOTA_EXHAUSTED", "retryMode": "switch_account"},
+    {"text": "视频生成失败，请稍后再试。", "code": "DOUBAO_SERVICE_BUSY", "retryMode": "retry_later"}
+  ],
+  "layout": {
+    "mustUseRightRailBounds": true,
+    "collapsedWidth": 56,
+    "indeterminateStates": ["generating", "submission_unknown"],
+    "mustNotShowFakeDoubaoPercent": true
+  }
+}

@@ -1,0 +1,79 @@
+{
+  "caseId": "suspense-10s-canvas-e2e",
+  "title": "10秒悬疑反转真实验收",
+  "projectId": "cd6effafb41b4ddbae9911c336373938",
+  "script": "剧情类型：悬疑 / 反转\n时长：10 秒\n场景：深夜，小巷便利店门口，外面下着大雨。\n\n0–2 秒\n年轻男人撑着黑伞快步跑到便利店门口，浑身湿透，慌张地回头看了一眼空荡荡的街道。\n\n2–5 秒\n他推门准备进去，店里的女店员突然脸色煞白，死死盯着他的身后。\n男人停住动作，低声问：\n“你在看什么？”\n\n5–8 秒\n女店员声音发抖：\n“有人扒在你的伞面后侧，跟着你一路过来的。”\n男人身体瞬间僵住。\n\n8–10 秒\n镜头缓慢下移、向后推拉。\n黑伞外侧边缘，一个浑身泥泞的陌生人紧紧贴在伞后方，半个身子藏在阴影里。\n男人猛地低头转身。\n画面戛然而止。",
+  "nodes": [
+    {
+      "key": "script",
+      "kind": "text",
+      "title": "悬疑剧本输入",
+      "instructionSource": "script"
+    },
+    {
+      "key": "storyboard",
+      "kind": "storyboard-table",
+      "title": "10秒分镜提示词",
+      "instruction": "将上游10秒悬疑剧本改写为可直接用于视频生成的分镜提示词。严格按0–2秒、2–5秒、5–8秒、8–10秒组织，写清景别、机位、运镜、人物动作表情、雨夜灯光和节奏；人物外观保持一致；结尾必须是泥泞陌生人紧贴在黑伞外侧后方，不能改成伞下多出双脚。只输出完整分镜提示词正文。",
+      "channel": "model-gateway",
+      "provider": "GPT",
+      "model": "gpt-5.5"
+    },
+    {
+      "key": "character",
+      "kind": "image-generation",
+      "title": "人物资产图",
+      "instruction": "根据上游剧本生成电影级写实人物设定参考图，16:9横版，纯净深灰摄影棚背景。年轻男人、女店员、泥泞陌生人三个人物从左到右清晰分隔，全身正面站立并各附面部近景，无文字水印，服装、五官、体型和湿润质感清晰，便于后续视频保持人物一致。",
+      "channel": "model-gateway",
+      "provider": "GPT",
+      "model": "gpt-image-2"
+    },
+    {
+      "key": "scene",
+      "kind": "image-generation",
+      "title": "场景资产图",
+      "instruction": "根据上游剧本和人物设定生成电影级写实场景概念图，16:9横版。深夜暴雨中的狭窄小巷便利店门口，店内暖黄色荧光灯与店外冷蓝雨夜强烈对比，玻璃门、OPEN灯牌、收银台、货架、积水反光、雨雾和潮湿砖墙细节真实，无文字水印。",
+      "channel": "model-gateway",
+      "provider": "GPT",
+      "model": "gpt-image-2"
+    },
+    {
+      "key": "prop",
+      "kind": "image-generation",
+      "title": "黑伞道具图",
+      "instruction": "根据上游剧本和场景设定生成电影级写实道具图，16:9横版，深灰中性摄影棚背景。完整展示普通黑色长柄雨伞的正视图、侧视图和伞后侧边缘特写；伞面湿润、雨滴沿伞缘流下、伞骨和弯柄清晰，后缘有少量湿泥和模糊手印，不出现人体，无文字水印。",
+      "channel": "model-gateway",
+      "provider": "GPT",
+      "model": "gpt-image-2"
+    },
+    {
+      "key": "video",
+      "kind": "video-generation",
+      "title": "豆包10秒成片",
+      "instruction": "综合上游分镜文本、人物图、场景图和黑伞道具图生成10秒悬疑反转视频。保持人物、服装、场景和黑伞一致；结尾清晰揭示陌生人紧贴在黑伞外侧后方，男人转身时画面戛然而止。",
+      "channel": "doubao",
+      "accountSelectionMode": "auto",
+      "doubaoModel": "Seedance 2.0 Mini",
+      "ratio": "21:9",
+      "duration": "10s"
+    }
+  ],
+  "edges": [
+    ["script", "storyboard"],
+    ["script", "character"],
+    ["character", "scene"],
+    ["scene", "prop"],
+    ["storyboard", "video"],
+    ["character", "video"],
+    ["scene", "video"],
+    ["prop", "video"]
+  ],
+  "acceptance": {
+    "storyboardResultType": "text",
+    "imageCount": 3,
+    "videoResultType": "video",
+    "videoUrlRequired": true,
+    "projectIsolationRequired": true,
+    "taskNodeMappingRequired": true
+  }
+}

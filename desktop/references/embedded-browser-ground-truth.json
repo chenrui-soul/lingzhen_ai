@@ -1,0 +1,18 @@
+{
+  "tenantId": "tenant-demo",
+  "accounts": [
+    {"id": "account-a", "platform": "豆包", "expectedPartition": "persist:lingframe_tenant-demo_doubao_account-a"},
+    {"id": "account-b", "platform": "豆包", "expectedPartition": "persist:lingframe_tenant-demo_doubao_account-b"}
+  ],
+  "safeWindow": {"width": 1280, "height": 860, "minWidth": 1080, "minHeight": 720},
+  "invariants": [
+    "different accounts use different persistent partitions and BrowserWindows",
+    "same account reuses the same BrowserWindow and webContents",
+    "browser viewport never depends on the main workbench module or task dock size",
+    "running task close hides the window instead of destroying the browser runtime",
+    "different account windows can remain alive and execute concurrently",
+    "automation and manual verification use the same webContents",
+    "doubao open revalidates desktop identity before creating a session",
+    "server tenant and job protocol are not changed"
+  ]
+}

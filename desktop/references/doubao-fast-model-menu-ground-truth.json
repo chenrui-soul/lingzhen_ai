@@ -1,0 +1,72 @@
+{
+  "targetModel": "Seedance 2.0 Fast",
+  "alternateModel": "Seedance 2.0 Mini",
+  "modelMenuItemSelectors": [
+    "[role=\"menuitem\"]",
+    "[role=\"option\"]",
+    "[data-radix-collection-item]"
+  ],
+  "maxAttempts": 3,
+  "scenarios": [
+    {
+      "name": "菜单已经展开",
+      "initialMenuOpen": true,
+      "targetModel": "Seedance 2.0 Fast",
+      "failedClicksBeforeSelect": 0,
+      "confirmedControlText": "Seedance 2.0 Fast",
+      "expectedModelControlClicks": 0,
+      "expectedModelItemClicks": 1,
+      "expectedEscapePresses": 0
+    },
+    {
+      "name": "菜单尚未展开",
+      "initialMenuOpen": false,
+      "targetModel": "Seedance 2.0 Fast",
+      "failedClicksBeforeSelect": 0,
+      "confirmedControlText": "Seedance 2.0 Fast",
+      "expectedModelControlClicks": 1,
+      "expectedModelItemClicks": 1,
+      "expectedEscapePresses": 0
+    },
+    {
+      "name": "首次点击未生效后重试",
+      "initialMenuOpen": false,
+      "targetModel": "Seedance 2.0 Fast",
+      "failedClicksBeforeSelect": 1,
+      "confirmedControlText": "Seedance 2.0 Fast",
+      "expectedModelControlClicks": 2,
+      "expectedModelItemClicks": 2,
+      "expectedEscapePresses": 1
+    },
+    {
+      "name": "控制器文字换行",
+      "initialMenuOpen": false,
+      "targetModel": "Seedance 2.0 Fast",
+      "failedClicksBeforeSelect": 0,
+      "confirmedControlText": "Seedance 2.0\n  Fast",
+      "expectedModelControlClicks": 1,
+      "expectedModelItemClicks": 1,
+      "expectedEscapePresses": 0
+    },
+    {
+      "name": "Mini 原有切换",
+      "initialMenuOpen": false,
+      "targetModel": "Seedance 2.0 Mini",
+      "failedClicksBeforeSelect": 0,
+      "confirmedControlText": "Seedance 2.0 Mini",
+      "initialSelectedModel": "Seedance 2.0 Fast",
+      "expectedModelControlClicks": 1,
+      "expectedModelItemClicks": 1,
+      "expectedEscapePresses": 0
+    }
+  ],
+  "failureScenario": {
+    "name": "连续三次点击均未生效",
+    "initialMenuOpen": false,
+    "targetModel": "Seedance 2.0 Fast",
+    "failedClicksBeforeSelect": 99,
+    "expectedModelControlClicks": 3,
+    "expectedModelItemClicks": 3,
+    "expectedEscapePresses": 2
+  }
+}

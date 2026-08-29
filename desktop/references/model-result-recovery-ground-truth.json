@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "cases": {
+    "transient_download_failure": {
+      "expectedState": "completed",
+      "expectedGenerateCalls": 1,
+      "expectedMinimumDownloadCalls": 2,
+      "mustPersistResultUrlBeforeDownload": true
+    },
+    "persistent_download_failure": {
+      "expectedState": "downloading",
+      "expectedRecoveryState": "retrying",
+      "expectedGenerateCalls": 1,
+      "mustNotResubmit": true
+    },
+    "resume_saved_result": {
+      "expectedState": "completed",
+      "expectedGenerateCalls": 1,
+      "mustReuseSavedResultUrl": true
+    },
+    "transport_failure_after_post": {
+      "expectedSubmissionUnknown": true,
+      "expectedSafeToRetry": false
+    },
+    "visual_parameter_mapping": {
+      "expectedAspectRatio": "9:16",
+      "forbiddenRatioField": true
+    }
+  }
+}

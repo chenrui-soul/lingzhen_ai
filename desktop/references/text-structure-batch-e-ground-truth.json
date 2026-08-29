@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "storagePrefix": "lingframe.textStructureBatchE.v1",
+  "requiredTemplates": ["novel", "story", "script", "storyboard", "prompt", "advertising"],
+  "legacyTypes": ["小说", "故事", "广告文案", "短视频文案", "剧本", "分镜", "提示词", "人物设定", "世界观"],
+  "collections": ["outline", "characters", "world", "timeline", "variables", "versions"],
+  "maximums": {
+    "outline": 200,
+    "characters": 80,
+    "world": 120,
+    "timeline": 200,
+    "variables": 80,
+    "versions": 30
+  },
+  "requiredModes": ["template", "outline", "entities", "timeline", "versions"],
+  "exports": ["markdown", "json"]
+}

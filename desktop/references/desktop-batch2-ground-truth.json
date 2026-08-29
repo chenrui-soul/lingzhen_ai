@@ -1,0 +1,18 @@
+{
+  "batch": "desktop-batch2-license-agent",
+  "invariants": [
+    "tenantId must come from a verified server grant",
+    "tenant directories are keyed by verified tenantId",
+    "Chrome profiles are created below the active tenant chrome-profiles directory",
+    "invalid agent tokens are rejected before polling",
+    "agent registration tenant mismatch is rejected",
+    "agent command results are returned to the matching command endpoint",
+    "cookies remain local to the customer's Chrome profile"
+  ],
+  "expected": {
+    "licenseInvalidGrant": "invalid_grant",
+    "agentInvalidToken": "INVALID_AGENT_TOKEN",
+    "agentTenantMismatch": "AGENT_TENANT_MISMATCH",
+    "profileIsolation": true
+  }
+}

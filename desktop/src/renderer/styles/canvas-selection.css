@@ -1,0 +1,4 @@
+.lfc-edge.selected .line{stroke:#ffd166;stroke-width:3;filter:drop-shadow(0 0 5px rgba(255,209,102,.55))}
+.lfc-selection-box{position:absolute;z-index:12;pointer-events:none;border:1px solid rgba(74,214,255,.95);background:rgba(74,214,255,.14);box-shadow:0 0 0 1px rgba(74,214,255,.18),0 0 18px rgba(74,214,255,.16)}
+.lfc-node-group.selected{border-style:solid;border-color:color-mix(in srgb,var(--group-color) 82%,white 8%);background:color-mix(in srgb,var(--group-color) 9%,rgba(7,14,26,.32));box-shadow:0 0 0 2px color-mix(in srgb,var(--group-color) 10%,transparent),inset 0 0 55px color-mix(in srgb,var(--group-color) 7%,transparent)}
+.lfc-node-group.selected>header{border-color:color-mix(in srgb,var(--group-color) 70%,white 5%);color:#e0ebf8}

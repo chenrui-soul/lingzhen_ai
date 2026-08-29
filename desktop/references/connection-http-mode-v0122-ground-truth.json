@@ -1,0 +1,9 @@
+{
+  "version": "0.12.2",
+  "requirements": {
+    "strictRejectsPublicHttp": true,
+    "internalModeAcceptsPublicHttp": true,
+    "mixedHttpHttpsFailoverPreserved": true,
+    "formalHttpsRemainsSupported": true
+  }
+}

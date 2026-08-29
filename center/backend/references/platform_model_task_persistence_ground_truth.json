@@ -1,0 +1,15 @@
+{
+  "recoverableStates": ["submitting", "pending", "submission_unknown"],
+  "terminalStates": ["completed", "failed", "cancelled"],
+  "maximumRecoveryBatch": 100,
+  "idempotencyScope": ["tenant_id", "user_id", "client_request_id"],
+  "billingTransitions": {
+    "beforeProviderSubmit": "reserve",
+    "completedWithResult": "settle",
+    "explicitFailure": "release",
+    "confirmedCancellation": "release",
+    "submissionUnknown": "keep_reserved",
+    "statusUnknown": "keep_reserved",
+    "cancellationUnknown": "keep_reserved"
+  }
+}

@@ -1,0 +1,22 @@
+"use strict";
+const assert = require("assert");
+const fs = require("fs");
+const os = require("os");
+const path = require("path");
+const {LicenseClient} = require("../src/main/license-client.cjs");
+const groundTruth = require("../references/desktop-batch2-ground-truth.json");
+const root = fs.mkdtempSync(path.join(os.tmpdir(), "lingframe-license-"));
+const device = {version: 1, hash: "a".repeat(64), suffix: "aaaaaaaaaa"};
+const client = new LicenseClient({dataRoot: root, device, requestFn: async () => ({})});
+(async () => {
+  assert.equal(client.status().state, "needs_activation");
+  assert.equal(client.decodeGrant({payload: "e30", signature: ""}), null);
+  await assert.rejects(() => client.activate("bad-key"), error => error.code === "INVALID_KEY");
+  process.env.LINGFRAME_LICENSE_BYPASS = "1";
+  assert.equal(client.status().tenantId, "test-tenant");
+  delete process.env.LINGFRAME_LICENSE_BYPASS;
+  client.state = {grant: {payload: "e30", signature: ""}, licenseId: "x", activationToken: "y"};
+  assert.equal(client.status().state, groundTruth.expected.licenseInvalidGrant);
+  client.clear();
+  console.log(JSON.stringify({test: "license-client", passed: 5, failed: 0, root}));
+})().catch(error => { console.error(error); process.exit(1); });

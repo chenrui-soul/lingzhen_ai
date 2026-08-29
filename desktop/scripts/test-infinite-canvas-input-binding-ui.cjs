@@ -1,0 +1,34 @@
+"use strict";
+const fs = require("fs");
+const path = require("path");
+const root = path.resolve(__dirname, "..");
+const read = relative => fs.readFileSync(path.join(root, relative), "utf8");
+const renderer = read("src/renderer/infinite-canvas.js");
+const adapter = read("src/renderer/canvas-input-adapter.js");
+const styles = read("src/renderer/styles/infinite-canvas.css");
+const results = [];
+const check = (name, condition, detail = "") => results.push({name, passed:Boolean(condition), detail:condition ? "" : detail});
+
+check("数据面板渲染输入绑定区", renderer.includes("lfc-input-binding-panel") && renderer.includes("renderInputBindingRows"));
+check("输入绑定支持上下移动", renderer.includes("data-lfc-input-move") && renderer.includes("moveInputBinding"));
+check("输入绑定支持停用", renderer.includes("data-lfc-input-enabled") && renderer.includes("enabled:input.checked"));
+check("输入绑定支持传递方式", renderer.includes("data-lfc-input-mode") && renderer.includes("transferMode:input.value"));
+check("输入绑定支持角色说明", renderer.includes("data-lfc-input-role") && renderer.includes("inputRoleOptions"));
+check("本地素材角色单独保存", renderer.includes("data-lfc-local-input-role") && renderer.includes("updateLocalInputRole"));
+check("输入配置纳入撤销和自动保存", renderer.includes("function updateInputEdge") && renderer.includes("snapshot(); detachDraftForEdges([edge]); edge.data") && renderer.includes("markDirty(); renderCanvasModule();"));
+check("输入绑定样式存在", styles.includes(".lfc-input-binding-panel") && styles.includes(".lfc-input-binding-row"));
+check("节点维护一次性可编辑输入草稿", renderer.includes("ensureNodeInputDraft") && renderer.includes("inputDraft.prompt") && adapter.includes("inputDraft?.active === true"));
+check("输入框明确只同步直接上游一次", renderer.includes("上游文本只同步一次") && renderer.includes("只读取直接连接"));
+check("可按条重新添加上游文本", renderer.includes("data-lfc-add-upstream-text") && renderer.includes("addUpstreamText"));
+check("可单独移除或恢复上游素材", renderer.includes("data-lfc-toggle-upstream-asset") && renderer.includes("setSnapshotItemEnabled"));
+check("停用快照项仍暴露给选择器", adapter.includes("availableTextBlocks") && adapter.includes("availableAssets"));
+check("删除连线同步解除输入草稿绑定", renderer.includes("detachDraftForEdges(removed)") && renderer.includes("removePromptFragment"));
+check("上游选择器有独立样式", styles.includes(".lfc-upstream-picker") && styles.includes("有新结果，未自动替换")===false);
+check("素材管理入口不直接修改素材模块", renderer.includes("openProjectResources") && renderer.includes('data-page="resources"') && !renderer.includes("projectMaterials.create"));
+check("文本素材一次写入可编辑输入草稿", renderer.includes("node.data.inputDraft.prompt=appendPromptOnce(node.data.inputDraft.prompt,importedText)") && renderer.includes("node.data.instruction=appendPromptOnce(node.data.instruction,importedText)"));
+
+const output = {at:new Date().toISOString(), test:"infinite-canvas-input-binding-ui", passed:results.filter(item=>item.passed).length, failed:results.filter(item=>!item.passed).length, results};
+const logDir = path.join(root, "scripts", "log"); fs.mkdirSync(logDir, {recursive:true});
+fs.writeFileSync(path.join(logDir, "infinite-canvas-input-binding-ui.json"), JSON.stringify(output, null, 2), "utf8");
+console.log(JSON.stringify(output, null, 2));
+if (output.failed) process.exitCode = 1;

@@ -1,0 +1,20 @@
+"use strict";
+const fs=require("fs"),path=require("path"),vm=require("vm");
+const root=path.resolve(__dirname,"..");const truth=JSON.parse(fs.readFileSync(path.join(root,"references","auto-monitor-ground-truth.json"),"utf8"));
+const source=fs.readFileSync(path.join(root,"src","main","generation-orchestrator.cjs"),"utf8");const checks=[];const check=(name,value)=>checks.push({name,ok:Boolean(value)});
+check("仅生成中自动监控",source.includes('task.state!=="generating"'));
+check("监控动作不重新提交",source.includes('runDoubao(task,"monitor")'));
+check("监控退避上限",source.includes("Math.min(60000"));
+check("完成清理定时器",/this\.clearMonitor\(task\.id\);(?:this\.syncBrowserTask\(completed\);)?this\.emitLiveStatus\(completed\)/.test(source));
+check("取消清理定时器",source.includes("this.cancelledTasks.add(taskId);this.clearMonitor(taskId)"));
+check("提交未知不自动重提",source.includes('submissionUnknown ? "submission_unknown"'));
+check("提交未知保持账号锁",source.includes('if(!submissionUnknown)this.releaseAccount(taskId)'));
+check("重启恢复未知任务账号锁",source.includes('task.state === "submission_unknown") { this.holdAccount(task)'));
+try{new vm.Script(source,{filename:"generation-orchestrator.cjs"});check("语法",true)}catch{check("语法",false)}
+const {GenerationOrchestrator}=require(path.join(root,"src","main","generation-orchestrator.cjs"));
+const task={id:"task-live",title:"live",state:"generating",progress:45,executionChannel:"doubao",accountId:"account-1",conversationId:"123456",evidence:{prompt:"p",conversationId:"123456",submittedAt:new Date().toISOString()}};const actions=[];
+const tasks={bootstrap:()=>({tasks:[task]}),reportTask:(_id,patch)=>Object.assign(task,patch),cancelTask:()=>Object.assign(task,{state:"cancelled"})};
+const orchestrator=new GenerationOrchestrator({tenantIdProvider:()=>"tenant-test",tasks,modelGateway:{},agentBridge:{},dataRootProvider:()=>root});
+orchestrator.acquireAccount=async()=>{};orchestrator.runDoubao=async(_task,action)=>{actions.push(action);task.state="completed";return task};orchestrator.scheduleMonitor(task.id,10);
+const unknown={id:"unknown-1",title:"unknown",state:"submission_unknown",executionChannel:"doubao",accountId:"account-lock"},queued={id:"queued-2",title:"queued",state:"queued",executionChannel:"doubao",accountId:"account-lock"};let acquired=false,wasBlocked=false;const lockTasks={bootstrap:()=>({tasks:[unknown,queued]}),reportTask:(id,patch)=>Object.assign(id===unknown.id?unknown:queued,patch)};const lockOrchestrator=new GenerationOrchestrator({tenantIdProvider:()=>"tenant-test",tasks:lockTasks,modelGateway:{},agentBridge:{},dataRootProvider:()=>root});lockOrchestrator.recoverInterruptedTasks();lockOrchestrator.acquireAccount(queued).then(()=>{acquired=true});setTimeout(()=>{wasBlocked=!acquired;lockOrchestrator.releaseAccount(unknown.id)},25);
+setTimeout(()=>{check("运行时只调用monitor",actions.length===1&&actions[0]===truth.action);check("运行后停止调度",orchestrator.monitorTimers.size===0);check("未知任务阻塞同账号后续任务",wasBlocked&&acquired);const failed=checks.filter(item=>!item.ok);const result={groundTruth:truth,total:checks.length,passed:checks.length-failed.length,failed:failed.length,checks};fs.mkdirSync(path.join(root,"scripts","log"),{recursive:true});fs.writeFileSync(path.join(root,"scripts","log","auto-monitor.json"),JSON.stringify(result,null,2));console.log(JSON.stringify(result,null,2));if(failed.length)process.exitCode=1},120);

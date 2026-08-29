@@ -1,0 +1,37 @@
+{
+  "test": "home-task-center-e2e",
+  "tenantId": "tenant-home-task-center-e2e",
+  "doubao": {
+    "title": "首页豆包E2E-雨夜列车",
+    "prompt": "一列银色列车穿过雨夜城市，电影感镜头，路面倒影清晰。",
+    "model": "Seedance 2.0 Mini",
+    "ratio": "16:9",
+    "duration": "10s",
+    "accountId": "doubao-e2e-1",
+    "accountName": "E2E豆包账号",
+    "conversationId": "conversation-home-e2e",
+    "videoUrl": "https://result.test/home-doubao-e2e.mp4"
+  },
+  "gateway": {
+    "title": "首页网关E2E-飞行鲸鱼",
+    "prompt": "一只鲸鱼从云层上方缓慢飞过，晨光照亮云海。",
+    "providerId": "provider-home-e2e",
+    "modelId": "video-home-e2e",
+    "ratio": "9:16",
+    "duration": "6s",
+    "resultUrl": "https://result.test/home-gateway-e2e.mp4"
+  },
+  "referenceAsset": {
+    "role": "scene",
+    "label": "雨夜城市参考",
+    "description": "保持蓝黑色雨夜街道、霓虹倒影和远景列车构图。",
+    "order": 1
+  },
+  "expected": {
+    "createdTasks": 2,
+    "completedTasks": 2,
+    "doubaoGenerateCalls": 1,
+    "gatewayGenerateCalls": 1,
+    "resultAssets": 2
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "name": "doubao-account-local-import",
+  "rules": {
+    "scope": "only-lingframe-user-data-tenants",
+    "requiresUserConfirmation": true,
+    "neverReturnsCookiesToRenderer": true,
+    "preservesSourceTenant": true,
+    "rollbackOnFailure": true
+  },
+  "expectedStatuses": ["imported", "exists"],
+  "errorCodes": {
+    "expiredCandidate": "DOUBAO_LOCAL_ACCOUNT_CANDIDATE_EXPIRED",
+    "expiredLogin": "DOUBAO_LOCAL_ACCOUNT_LOGIN_EXPIRED"
+  }
+}

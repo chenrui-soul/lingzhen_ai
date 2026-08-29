@@ -1,0 +1,9 @@
+{
+  "test": "account-store-bootstrap-race",
+  "expected": {
+    "firstResponseLocked": true,
+    "bootstrapCalls": 2,
+    "accountId": "desktop-test-account",
+    "accountName": "测试账号"
+  }
+}

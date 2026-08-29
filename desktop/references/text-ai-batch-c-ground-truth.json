@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "storagePrefix": "lingframe.textAiBatchC.v1",
+  "creationSource": "text-workspace-ai",
+  "actions": ["continue", "polish", "rewrite", "expand", "shorten", "script", "storyboard", "prompt"],
+  "scopes": ["selection", "paragraph", "document"],
+  "modes": ["smart", "custom", "preset"],
+  "candidateActions": ["insert", "replace", "version", "dismiss"],
+  "mustNotAutoOverwriteConversation": true,
+  "maximumEnvelopes": 100,
+  "maximumCandidates": 100,
+  "maximumPresets": 100
+}

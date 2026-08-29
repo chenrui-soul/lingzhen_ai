@@ -1,0 +1,76 @@
+{
+  "source": "Doubao visible task responses and local execution states",
+  "cases": [
+    {
+      "name": "content infringement rejection from screenshot",
+      "text": "生成内容中疑似包含侵权 / 违规内容，无法返回该内容，换个主题再试试，生成额度未扣除。",
+      "expected": {"code": "DOUBAO_CONTENT_REJECTED", "retryMode": "edit_prompt", "requiresPromptEdit": true, "quotaConsumed": false}
+    },
+    {
+      "name": "unsafe prompt rejection",
+      "text": "该提示词存在敏感风险，不符合平台规范，请修改后重试。",
+      "expected": {"code": "DOUBAO_CONTENT_REJECTED", "retryMode": "edit_prompt", "requiresPromptEdit": true}
+    },
+    {
+      "name": "reference asset rejected",
+      "text": "上传图片包含违规内容，素材无法处理，请更换图片。",
+      "expected": {"code": "DOUBAO_ASSET_REJECTED", "retryMode": "edit_assets", "requiresPromptEdit": false}
+    },
+    {
+      "name": "unsupported duration",
+      "text": "当前模型不支持该视频时长，请调整参数。",
+      "expected": {"code": "DOUBAO_PARAMETER_REJECTED", "retryMode": "adjust_parameters", "requiresPromptEdit": false}
+    },
+    {
+      "name": "login expired",
+      "text": "登录状态已失效，请重新登录后再试。",
+      "expected": {"code": "DOUBAO_LOGIN_REQUIRED", "retryMode": "reauthenticate", "requiresPromptEdit": false}
+    },
+    {
+      "name": "provider busy",
+      "text": "系统繁忙，请稍后再试。",
+      "expected": {"code": "DOUBAO_SERVICE_BUSY", "retryMode": "retry_later", "requiresPromptEdit": false}
+    },
+    {
+      "name": "generic provider failure returned after generation submission",
+      "text": "出了点问题，请稍后重试。",
+      "expected": {"code": "DOUBAO_SERVICE_BUSY", "retryMode": "retry_later", "requiresPromptEdit": false, "quotaConsumed": null}
+    },
+    {
+      "name": "explicit generation failure",
+      "text": "本次视频生成失败，请检查描述后重试。",
+      "expected": {"code": "DOUBAO_GENERATION_FAILED", "retryMode": "retry_or_edit", "requiresPromptEdit": false}
+    },
+    {
+      "name": "non-standard terminal failure",
+      "text": "这次没有生成出来，你可以修改描述后重新生成。",
+      "expected": {"code": "DOUBAO_TERMINAL_UNRECOGNIZED", "retryMode": "retry_or_edit", "requiresPromptEdit": false}
+    },
+    {
+      "name": "generation stopped without standard error code",
+      "text": "视频生成已停止，请调整素材后重新生成。",
+      "expected": {"code": "DOUBAO_TERMINAL_UNRECOGNIZED", "retryMode": "retry_or_edit", "requiresPromptEdit": false}
+    },
+    {
+      "name": "quota exhausted",
+      "text": "今日视频生成免费次数用完，请明天再试。",
+      "expected": {"code": "DOUBAO_VIDEO_QUOTA_EXHAUSTED", "retryMode": "switch_account", "quotaExhausted": true}
+    },
+    {
+      "name": "normal generating response",
+      "text": "视频生成已提交，预计等待 5 分钟。",
+      "expected": {"failed": false, "code": ""}
+    }
+  ],
+  "handling": {
+    "content_policy": "release account, preserve original task, require prompt edit, create and run a child task",
+    "asset_policy": "release account, preserve original task, require asset removal or replacement",
+    "parameters": "release account, preserve original task, require model/ratio/duration change",
+    "authentication": "release account, require login, then create and run a child task",
+    "transient_provider": "release account and allow a deliberate later retry",
+    "provider_generation": "release account and allow retry because provider returned a terminal failure",
+    "quota": "release current account and fail over; wait until Asia/Shanghai midnight when all candidates are exhausted",
+    "submission_unknown": "do not release for automatic reuse and never resubmit automatically",
+    "result_download": "keep the submitted task and retry only result recovery/download, never regenerate"
+  }
+}

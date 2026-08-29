@@ -1,0 +1,37 @@
+{
+  "wave": "Wave 2",
+  "source": "Approved Wave 2 read-only management contract, 2026-08-25",
+  "backendBaseUrl": "http://127.0.0.1:9001",
+  "frontendBaseUrl": "http://127.0.0.1:5173",
+  "endpoints": [
+    {
+      "path": "/api/v1/management/dashboard",
+      "method": "GET",
+      "permission": "tenant.read",
+      "requiredResponseFields": ["generatedAt", "tenant", "metrics", "roles"]
+    },
+    {
+      "path": "/api/v1/management/users",
+      "method": "GET",
+      "permission": "membership.read",
+      "forbiddenQueryParameters": ["tenantId"],
+      "requiredResponseFields": ["items", "page", "pageSize", "total", "totalPages"]
+    },
+    {
+      "path": "/api/v1/management/tenant",
+      "method": "GET",
+      "permission": "tenant.read",
+      "requiredResponseFields": ["id", "code", "name", "status", "createdAt", "metrics"]
+    }
+  ],
+  "routes": [
+    { "path": "dashboard", "permission": "tenant.read" },
+    { "path": "users", "permission": "membership.read" },
+    { "path": "tenant", "permission": "tenant.read" }
+  ],
+  "viewports": [
+    { "width": 1280, "height": 800 },
+    { "width": 768, "height": 900 },
+    { "width": 390, "height": 844 }
+  ]
+}

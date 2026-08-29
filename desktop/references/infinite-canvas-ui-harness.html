@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>灵帧AI无限画布测试壳</title>
+  <link rel="stylesheet" href="../src/renderer/styles/app.css">
+  <link rel="stylesheet" href="../src/renderer/styles/infinite-canvas.css">
+  <link rel="stylesheet" href="../src/renderer/styles/canvas-media-v2.css">
+</head>
+<body>
+  <div class="shell">
+    <header class="titlebar"><div class="brand"><img src="../assets/lingframe-mark.png"><div><b>灵帧AI</b><small>灵感，即刻成帧。</small></div></div></header>
+    <aside class="sidebar"><button class="nav active" data-page="canvas"><b>⌘</b>无限画布</button></aside>
+    <main class="workspace"><div class="page-head"><div><h1>无限画布</h1><p>测试环境</p></div><button class="ghost">更多</button></div><div class="canvas"></div></main>
+    <aside class="right"></aside>
+    <footer class="statusbar"><span>● 测试环境</span></footer>
+  </div>
+  <script src="../src/renderer/canvas-flow-core.js"></script>
+  <script src="../src/renderer/infinite-canvas.js"></script>
+</body>
+</html>

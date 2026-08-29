@@ -1,0 +1,17 @@
+{
+  "version": "0.12.5",
+  "productName": "灵帧AI",
+  "artifactName": "灵帧AI-Setup-${arch}.${ext}",
+  "forbiddenUserFacingMarkers": [
+    "桌面版内测",
+    "桌面版开发预览",
+    "灵帧AI内测版",
+    "data-status-version",
+    "当前版本：",
+    "可用版本："
+  ],
+  "requiredStatusMarkers": [
+    "data-status-doubao",
+    "data-status-tasks"
+  ]
+}

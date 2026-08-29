@@ -1,0 +1,22 @@
+{
+  "resultRecovery": {
+    "states": ["downloading", "verifying", "paused"],
+    "manualActions": ["retry_result", "cancel"],
+    "invariants": [
+      "retry_result uses the saved Doubao video URL",
+      "retry_result never submits the prompt or starts a new generation",
+      "download, validation, or asset import failure enters result_review_required",
+      "cancel stops local result recovery without claiming the remote video was cancelled"
+    ]
+  },
+  "fastModel": {
+    "requested": "Seedance 2.0 Fast",
+    "visibleMenuText": "Seedance 2.0 Fast 快速出片选择",
+    "requiredCdpEvents": ["mouseMoved", "mousePressed", "mouseReleased"]
+  },
+  "backgroundWindow": {
+    "automaticTaskVisible": false,
+    "humanVerificationVisible": true,
+    "backgroundThrottling": false
+  }
+}

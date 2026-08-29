@@ -1,0 +1,12 @@
+{
+  "tenantA": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+  "tenantB": "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
+  "types": ["小说", "故事", "广告文案", "短视频文案", "剧本", "分镜", "提示词", "人物设定", "世界观"],
+  "expected": {
+    "initialConversations": 0,
+    "createdConversations": 2,
+    "firstVersionCount": 1,
+    "updatedVersionCount": 2,
+    "tenantBConversations": 0
+  }
+}

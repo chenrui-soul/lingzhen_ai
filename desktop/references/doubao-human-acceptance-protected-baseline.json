@@ -1,0 +1,44 @@
+{
+  "baseline": "doubao-human-real-acceptance-20260814",
+  "protectedAt": "2026-08-15T00:30:00+08:00",
+  "sourceProject": "C:/Users/Administrator/Documents/Codex/2026-08-12/53188/work/lingzhen_ai_desktop_v1_fixed",
+  "historicalEvidence": {
+    "finalReport": "scripts/log/home-real-concurrency-final-20260814.json",
+    "overallStatus": "passed",
+    "realCompletedVideos": 3,
+    "checks": {
+      "allCompleted": true,
+      "sameAccountTwoVideos": true,
+      "differentAccountsGeneratingOverlap": true,
+      "tenantAndProjectBound": true,
+      "evidenceBound": true,
+      "assetsExist": true,
+      "uniqueConversationIds": true,
+      "uniqueVideoUrls": true,
+      "uniqueAssetIds": true,
+      "uniqueAssetFiles": true,
+      "uniqueExtractedFrames": true,
+      "videoDimensionsAndDurationValid": true,
+      "modelGatewayNotBlockedByDoubao": true
+    }
+  },
+  "mustKeep": [
+    "one floating BrowserWindow per Doubao account",
+    "one persistent isolated partition/profile per account",
+    "running Doubao window close hides instead of destroying",
+    "same-account jobs queue serially",
+    "different-account jobs can generate in parallel",
+    "model-gateway jobs bypass Doubao account queues",
+    "manual verification continues in the original account window and conversation",
+    "submission_unknown never auto-resubmits",
+    "quota exhaustion stops the current account and can fail over safely",
+    "quota blocks reset at Asia/Shanghai midnight",
+    "result capture remains task/account/conversation bound",
+    "video file, original URL, asset and task stay one-to-one",
+    "global live task dock survives module navigation",
+    "completed video URLs support individual and batch copy",
+    "Doubao Fast/Mini, ratio and 4-15 second parameters remain available",
+    "latest infinite canvas remains intact and can create Doubao video tasks"
+  ],
+  "releaseRule": "Any failed protected check blocks release. Real generation must never be claimed unless a new paid/quota-consuming acceptance run was actually completed."
+}

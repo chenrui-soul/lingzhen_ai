@@ -1,0 +1,44 @@
+const assert = require('assert');
+const fs = require('fs');
+const os = require('os');
+const path = require('path');
+const {DesktopIdentity} = require('../src/main/desktop-identity.cjs');
+
+(async () => {
+  const truth = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'references', 'desktop-identity-ground-truth.json'), 'utf8'));
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'lingframe-identity-'));
+  const legacy = path.join(root, 'legacy-agent.json');
+  fs.writeFileSync(legacy, JSON.stringify(truth.legacyConfig), 'utf8');
+  const inactiveLicenseClient = {status: () => ({usable:false,tenantId:null,reason:'未激活'})};
+  const inactiveIdentity = new DesktopIdentity({dataRoot:path.join(root,'inactive'),licenseClient:inactiveLicenseClient,legacyConfigPaths:[legacy]});
+  let request = null;
+  global.fetch = async (url, options) => {
+    request = {url, options};
+    return {ok:true,status:200,json:async()=>({ok:true,tenantId:truth.verifiedTenantId})};
+  };
+  const inactiveStatus = await inactiveIdentity.bootstrap();
+  assert.equal(inactiveStatus.usable, false);
+  assert.equal(request, null);
+  assert.equal(inactiveIdentity.agentConfig(), null);
+  const licenseClient = {status: () => ({usable:true,tenantId:truth.verifiedTenantId})};
+  const identity = new DesktopIdentity({dataRoot:path.join(root,'system'),licenseClient,legacyConfigPaths:[legacy]});
+  const status = await identity.bootstrap();
+  assert.equal(status.usable, true);
+  assert.equal(status.tenantId, truth.verifiedTenantId);
+  assert.equal(status.source, truth.expectedSource);
+  assert.equal(request.url, 'http://127.0.0.1:53188/agent/v1/register');
+  assert.equal(request.options.headers['x-agent-token'], truth.legacyConfig.agentToken);
+  assert.equal(identity.agentConfig().tokenSource, 'verified-agent');
+  const preferred = new DesktopIdentity({dataRoot:path.join(root,'licensed'),licenseClient:{status:()=>({usable:true,tenantId:'license-tenant'})},legacyConfigPaths:[]});
+  assert.equal(preferred.status().source, 'device-license');
+  assert.equal(preferred.status().tenantId, 'license-tenant');
+  const isolated = new DesktopIdentity({dataRoot:path.join(root,'isolated'),licenseClient:inactiveLicenseClient,legacyConfigPaths:[]});
+  let isolatedFetchCalled = false;
+  global.fetch = async () => { isolatedFetchCalled = true; throw new Error('legacy import must stay disabled'); };
+  const isolatedStatus = await isolated.bootstrap();
+  assert.equal(isolatedStatus.usable, false);
+  assert.equal(isolatedFetchCalled, false);
+  const result={test:'desktop-identity',passed:14,failed:0,tenantId:status.tenantId,root};
+  const logDir=path.join(__dirname,'log');fs.mkdirSync(logDir,{recursive:true});fs.writeFileSync(path.join(logDir,'desktop-identity.json'),JSON.stringify(result,null,2));
+  console.log(JSON.stringify(result,null,2));
+})().catch(error=>{console.error(error);process.exit(1)});

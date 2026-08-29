@@ -1,0 +1,31 @@
+{
+  "videoVid": "v0269cg10004da3cofq7dldbokquff60",
+  "conversationId": "38438304333091586",
+  "messageId": "53113317678646786",
+  "creationNodeId": "53131211609976322",
+  "urls": {
+    "main": "https://v11-videoweb-download.doubao.com/source/main.mp4?token=new",
+    "backup": "https://v3-default.douyin.com/source/backup.mp4?token=new",
+    "page": "https://v3-default.douyin.com/page/watermarked.mp4?token=page",
+    "untrusted": "https://video.example.invalid/source.mp4"
+  },
+  "requiredScenarios": [
+    "homepage normal response",
+    "node_info first page match",
+    "node_info cursor second page match",
+    "video VID mismatch",
+    "conversationId mismatch",
+    "main_url success",
+    "main_url failure then backup_url success",
+    "AI space failure then page URL fallback",
+    "watermark-free download failure then page URL fallback",
+    "expired signed URL is re-resolved by video VID",
+    "out-of-order tasks never exchange video VID",
+    "different account sessions remain isolated",
+    "untrusted URL is rejected",
+    "fields persist after restart",
+    "safe retry clears old VID and source fields",
+    "task center shows source and supports video VID recovery",
+    "watermark-free and watermarked page URLs remain separately visible and copyable"
+  ]
+}

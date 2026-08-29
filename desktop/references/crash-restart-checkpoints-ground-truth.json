@@ -1,0 +1,22 @@
+{
+  "test": "crash-restart-checkpoints",
+  "tenantId": "tenant-crash-restart-checkpoints",
+  "expected": {
+    "cleanQueuedRuns": 1,
+    "protectedQueuedState": "submission_unknown",
+    "generatingRecovery": "monitor",
+    "doubaoDownloadRecoveryState": "paused",
+    "modelSubmittingState": "submission_unknown",
+    "partialResultDownloadCalls": 1,
+    "providerResubmissions": 0
+  },
+  "scenarios": [
+    "clean queued Doubao task resumes scheduling",
+    "queued Doubao task with submission evidence enters protection",
+    "generating Doubao task with evidence resumes monitoring only",
+    "Doubao download checkpoint becomes manual result recovery",
+    "model request interrupted during submission becomes submission unknown",
+    "model provider job resumes query without generate",
+    "already imported model result item is not downloaded again"
+  ]
+}

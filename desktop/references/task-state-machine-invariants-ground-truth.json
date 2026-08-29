@@ -1,0 +1,53 @@
+{
+  "test": "task-state-machine-invariants",
+  "tenantId": "tenant-task-state-machine",
+  "requiredStates": [
+    "draft",
+    "queued",
+    "preparing",
+    "assigned",
+    "launching",
+    "checking_login",
+    "uploading",
+    "configuring",
+    "submitting",
+    "awaiting_confirmation",
+    "generating",
+    "downloading",
+    "verifying",
+    "awaiting_login",
+    "awaiting_verification",
+    "submission_unknown",
+    "awaiting_quota",
+    "paused",
+    "completed",
+    "failed",
+    "cancelled"
+  ],
+  "terminalStates": [
+    "completed",
+    "failed",
+    "cancelled"
+  ],
+  "normallyCancelableStates": [
+    "draft",
+    "queued",
+    "preparing",
+    "awaiting_login",
+    "awaiting_verification",
+    "awaiting_quota"
+  ],
+  "retryableSourceStates": [
+    "failed",
+    "cancelled",
+    "submission_unknown"
+  ],
+  "invariants": [
+    "completed tasks have one or more result assets",
+    "completed tasks have valid evidence and progress 100",
+    "terminal tasks cannot return to an active state",
+    "unsafe or unknown submissions cannot retry",
+    "safe retry creates a clean child task",
+    "one result VID and one result asset cannot belong to two tasks"
+  ]
+}

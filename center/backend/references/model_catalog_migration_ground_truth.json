@@ -1,0 +1,49 @@
+{
+  "node": "3.1",
+  "database": "PostgreSQL 16 isolated container",
+  "schema": {
+    "name": "model_catalog",
+    "owner": "lingframe_owner",
+    "applicationRole": "lingframe_app",
+    "tables": [
+      "providers",
+      "models",
+      "catalog_versions",
+      "catalog_version_items",
+      "tenant_models"
+    ]
+  },
+  "allowedValues": {
+    "providerProtocolFamily": [
+      "openai_compatible",
+      "anthropic_compatible",
+      "custom_proxy"
+    ],
+    "providerAndModelStatus": ["draft", "active", "inactive"],
+    "modelCapabilityType": ["text", "image", "video", "audio"],
+    "tenantModelPolicy": ["inherit", "enabled", "hidden"]
+  },
+  "invariants": [
+    "parameter_schema and default_parameters are JSON objects",
+    "new models default default_tenant_enabled to false",
+    "an active model requires an active provider",
+    "provider_code is globally unique and model_code is unique within a provider",
+    "at most one catalog version is current",
+    "a catalog version is sealed in one transaction with at least one snapshot item",
+    "sealed catalog version items cannot be inserted, updated, or deleted",
+    "published catalog version metadata cannot be changed except is_current",
+    "published models cannot be hard deleted",
+    "tenant model policy is scoped by tenant_id",
+    "updated_by_membership_id must belong to tenant_id",
+    "lingframe_app has no DDL or hard-delete privileges"
+  ],
+  "rollback": {
+    "file": "U5__drop_model_catalog_tables.sql",
+    "expectedRemovedSchema": "model_catalog",
+    "expectedPreservedSchema": "identity",
+    "expectedPreservedIdentitySeedCounts": {
+      "roles": 6,
+      "permissions": 41
+    }
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "storagePrefix": "lingframe.homeConversations.v1",
+  "requiredSelectors": [
+    ".home-chat-shell",
+    ".home-chat-sidebar",
+    "[data-home-chat-new]",
+    "[data-home-chat-search]",
+    ".home-chat-stream",
+    ".home-chat-composer",
+    "[data-home-prompt]",
+    "[data-home-submit]"
+  ],
+  "requiredBehaviors": [
+    "new_conversation",
+    "draft_persistence",
+    "reload_restore",
+    "rename_conversation",
+    "input_record",
+    "delete_conversation"
+  ],
+  "forbiddenBackendCalls": [
+    "generation.create",
+    "models.save",
+    "workbench.update",
+    "assets.create",
+    "text.create"
+  ],
+  "maximumWorkspaceOverflowPx": 1
+}

@@ -1,0 +1,25 @@
+{
+  "version": "0.12.1",
+  "bootstrapOrder": [
+    "https://config-primary.example",
+    "https://config-backup.example"
+  ],
+  "licenseUrls": [
+    "https://api-primary.example",
+    "https://api-backup.example"
+  ],
+  "businessUrls": [
+    "https://api-primary.example",
+    "https://api-backup.example"
+  ],
+  "requirements": {
+    "primaryFailureUsesBackup": true,
+    "offlineUsesSignedCache": true,
+    "tamperedConfigRejected": true,
+    "ordinaryStatusHidesUrls": true,
+    "adminOverrideRequiresSignedServer": true,
+    "licenseRequestsFailOver": true,
+    "agentRequestsFailOver": true,
+    "productionBuildRequiresHttpsBootstrap": true
+  }
+}

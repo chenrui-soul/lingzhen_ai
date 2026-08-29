@@ -1,0 +1,7 @@
+{
+  "requiredMainChannels": ["models:catalog", "models:execution-catalog"],
+  "requiredPreloadMethods": ["catalog:()=>ipcRenderer.invoke('models:catalog')", "executionCatalog:()=>ipcRenderer.invoke('models:execution-catalog')"],
+  "requiredHomeCopy": ["可用模型", "模型目录已同步", "模型目录暂未发布", "切换到“模型网关”后可选择"],
+  "requiredHomeSelectors": ["data-home-model-status", "data-home-model-select", "data-home-model-type"],
+  "requiredEmptyStates": ["暂无可用", "当前没有可执行模型", "请先在管理中心发布模型目录"]
+}

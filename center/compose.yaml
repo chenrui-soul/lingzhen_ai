@@ -1,0 +1,28 @@
+name: lingframe-license
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: lingframe-license-postgres
+    restart: unless-stopped
+    env_file:
+      - .env.postgres
+    ports:
+      - "127.0.0.1:5433:5432"
+    volumes:
+      - lingframe_license_postgres_data:/var/lib/postgresql/data
+      - ./database/init/001-create-app-role.sh:/docker-entrypoint-initdb.d/001-create-app-role.sh:ro
+      - ./database/init/002-bootstrap.sql:/docker-entrypoint-initdb.d/002-bootstrap.sql:ro
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - pg_isready -h 127.0.0.1 -p 5432 -U "$${POSTGRES_USER}" -d "$${POSTGRES_DB}"
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 10s
+    stop_grace_period: 30s
+
+volumes:
+  lingframe_license_postgres_data:
+    name: lingframe_license_postgres_data

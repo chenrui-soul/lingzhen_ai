@@ -1,0 +1,8 @@
+{
+  "action": "monitor",
+  "resubmit": false,
+  "states": ["generating"],
+  "maxDelayMs": 60000,
+  "cancelClearsTimer": true,
+  "submissionUnknownHoldsAccount": true
+}

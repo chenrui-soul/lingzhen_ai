@@ -1,0 +1,8 @@
+.text-structure-mode-tabs {
+  flex-wrap: wrap;
+  overflow: visible;
+}
+
+.text-structure-subtabs {
+  overflow-x: auto;
+}

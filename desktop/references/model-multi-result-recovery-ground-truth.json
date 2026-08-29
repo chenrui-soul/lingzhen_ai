@@ -1,0 +1,19 @@
+{
+  "feature": "model-gateway-multi-result-recovery",
+  "rules": {
+    "all_results_required": true,
+    "checkpoint_each_import": true,
+    "retry_result_must_not_generate": true,
+    "provider_submission_concurrency": 2,
+    "task_download_concurrency": 2,
+    "global_download_concurrency": 3,
+    "manual_review_state": "paused",
+    "manual_review_recovery_state": "result_review_required"
+  },
+  "cases": {
+    "three_results": {"expectedAssets": 3, "expectedState": "completed"},
+    "partial_resume": {"firstRecovered": 2, "finalRecovered": 3},
+    "parallel_tasks": {"taskA": 3, "taskB": 2},
+    "count_mismatch": {"expected": 3, "actual": 2, "expectedState": "paused"}
+  }
+}

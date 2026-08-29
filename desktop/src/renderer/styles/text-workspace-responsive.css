@@ -1,0 +1,55 @@
+/* Text creation uses all height left by the page header. */
+.shell:has(.text-workspace) .workspace {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Batch A responsive guard: keep the editor usable and collapse side rails first. */
+.shell:has(.text-workspace) .text-workspace{grid-template-columns:var(--text-left-width,270px) 8px minmax(0,1fr) 8px var(--text-right-width,460px)}
+@media (max-width:1200px){.shell:has(.text-workspace) .text-workspace{grid-template-columns:var(--text-left-width,240px) 8px minmax(0,1fr) 8px var(--text-right-width,360px)}}
+@media (max-width:900px){.shell:has(.text-workspace) .text-workspace.is-narrow{grid-template-columns:46px 6px minmax(0,1fr) 6px 46px;min-height:0;overflow:auto}.shell:has(.text-workspace) .text-workspace.is-narrow .text-history,.shell:has(.text-workspace) .text-workspace.is-narrow .text-editor,.shell:has(.text-workspace) .text-workspace.is-narrow .text-assist{min-height:600px}.shell:has(.text-workspace) .text-workspace.is-narrow .text-editor-head input{min-width:150px}}
+
+.shell:has(.text-workspace) .workspace > .page-head {
+  flex: 0 0 auto;
+}
+
+.shell:has(.text-workspace) .text-workspace {
+  flex: 1;
+  height: auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.shell:has(.text-workspace) .text-history,
+.shell:has(.text-workspace) .text-editor {
+  height: 100%;
+  min-height: 0;
+}
+
+.shell:has(.text-workspace) .text-area {
+  min-height: 0;
+  overflow: auto;
+}
+
+@media (max-width: 900px) {
+  .shell:has(.text-workspace) .workspace {
+    overflow: auto;
+  }
+
+  .shell:has(.text-workspace) .text-workspace {
+    flex: 0 0 auto;
+    height: auto;
+    overflow: visible;
+  }
+
+  .shell:has(.text-workspace) .text-history {
+    height: auto;
+    min-height: 260px;
+  }
+
+  .shell:has(.text-workspace) .text-editor {
+    height: auto;
+    min-height: 600px;
+  }
+}

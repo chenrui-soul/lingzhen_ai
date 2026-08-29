@@ -1,0 +1,56 @@
+{
+  "provider": {
+    "code": "lingzhen-test",
+    "displayName": "灵帧测试平台",
+    "protocolFamily": "openai_compatible"
+  },
+  "models": [
+    {
+      "code": "seedance_mini_v1",
+      "displayName": "Seedance Mini 测试模型",
+      "capabilityType": "video",
+      "defaultTenantEnabled": false,
+      "sortOrder": 10,
+      "parameterSchema": {
+        "type": "object",
+        "properties": {
+          "duration": {
+            "type": "integer",
+            "enum": [5, 10]
+          }
+        }
+      },
+      "defaultParameters": {
+        "duration": 10
+      }
+    },
+    {
+      "code": "seedanceXmini_v1",
+      "displayName": "Seedance 默认开启模型",
+      "capabilityType": "video",
+      "defaultTenantEnabled": true,
+      "sortOrder": 20,
+      "parameterSchema": {
+        "type": "object"
+      },
+      "defaultParameters": {}
+    }
+  ],
+  "tenantA": {
+    "policies": ["enabled", "hidden"],
+    "effectiveModelIndexes": [0]
+  },
+  "tenantB": {
+    "policies": ["inherit", "inherit"],
+    "effectiveModelIndexes": [1]
+  },
+  "forbiddenResponseFields": [
+    "apiKey",
+    "credentialRef",
+    "baseUrl",
+    "privateHeaders",
+    "authorization",
+    "secret",
+    "token"
+  ]
+}

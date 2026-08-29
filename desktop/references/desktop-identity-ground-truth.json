@@ -1,0 +1,17 @@
+{
+  "legacyConfig": {
+    "serverUrl": "http://127.0.0.1:53188",
+    "agentToken": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "deviceName": "客户电脑"
+  },
+  "verifiedTenantId": "43ec40ae-962a-4c22-9f43-dc6d9e2ce92d",
+  "expectedSource": "device-license+verified-agent",
+  "rules": [
+    "local token text is never trusted as a tenant id",
+    "server register response supplies the tenant id",
+    "an Agent token can only be imported while the device license is usable",
+    "an Agent token never bypasses an expired or missing device license",
+    "the Agent tenant must match the licensed tenant",
+    "an explicit empty legacy path list disables legacy identity import for isolated acceptance tests"
+  ]
+}

@@ -1,0 +1,32 @@
+"use strict";
+const fs = require("fs");
+const path = require("path");
+const root = path.resolve(__dirname, "..");
+const read = file => fs.readFileSync(path.join(root, file), "utf8");
+const index = read("src/renderer/index.html");
+const adapter = read("src/renderer/text-workspace-structure.js");
+const core = read("src/renderer/text-structure-core.js");
+const css = read("src/renderer/styles/text-workspace-structure.css");
+const tuningCss = read("src/renderer/styles/text-workspace-structure-tuning.css");
+const truth = JSON.parse(read("references/text-structure-batch-e-ground-truth.json"));
+const checks = [];
+const check = (name, ok, detail) => checks.push({name, ok:Boolean(ok), ...(detail === undefined ? {} : {detail})});
+
+const order = ["text-research-core.js", "text-structure-core.js", "text-workspace-ai.js", "text-workspace-research.js", "text-workspace-structure.js"].map(name => index.indexOf(name));
+check("批次 E 资源加载顺序", order.every((value, index) => value >= 0 && (index === 0 || value > order[index - 1])), order);
+check("结构化样式独立加载", index.includes("text-workspace-structure.css") && index.includes("text-workspace-structure-tuning.css") && css.includes(".text-structure-workbench") && css.includes(".text-structure-tree-node") && tuningCss.includes("flex-wrap: wrap"));
+check("结构创作标签和中央入口存在", adapter.includes('tab.dataset.textAssistTab = "structure"') && adapter.includes("open.dataset.textStructureOpen") && adapter.includes('body.dataset.textAssistBody = "structure"'));
+check("五种结构工作模式齐全", truth.requiredModes.every(mode => adapter.includes(`data-text-structure-mode=\\"${mode}\\"`) || adapter.includes(`ui.mode === "${mode}"`)), truth.requiredModes);
+check("专业模板字段、章节树、人物世界观和时间线均有界面", adapter.includes("templatePanel") && adapter.includes("outlinePanel") && adapter.includes("entitiesPanel") && adapter.includes("timelinePanel") && adapter.includes("versionsPanel"));
+check("旧会话使用瞬态兼容文档而非强制写入", adapter.includes("_textStructureTransient") && adapter.includes("if (index >= 0) return") && !/persistStored\(\);\s*return core\.createDocument/.test(adapter));
+check("结构存储按租户且路由绑定项目会话", adapter.includes("state.tenantId") && adapter.includes("projectId(workspace)") && adapter.includes("conversationId(workspace)") && core.includes("结构化文档与当前项目不一致"));
+check("Markdown 和 JSON 导出均由显式操作触发", adapter.includes("text/markdown;charset=utf-8") && adapter.includes("application/json;charset=utf-8") && adapter.includes("data-text-structure-export-md") && adapter.includes("data-text-structure-export-json"));
+check("结构草稿只在人工确认后插入正文", adapter.includes("data-text-structure-insert") && adapter.includes("确认插入到光标") && adapter.includes('dispatchEvent(new Event("input"'));
+check("批次 E 不创建生成任务或专用调度器", !/api\.(generation|tasks)\.(create|retry|cancel)/.test(adapter) && !/generation-orchestrator|task-center|model-gateway\.js/.test(adapter));
+check("批次 E 不引用豆包或画布写接口", !/api\.doubao\.|infinite-canvas|canvas-flow-core/.test(adapter));
+check("导出结构采用字段白名单而非原对象直出", core.includes("function exportDocument") && core.includes("fields: clone(normalized.fields)") && !core.includes("return clone(document)"));
+
+const failed = checks.filter(item => !item.ok);
+const report = {test:"text-structure-routing", total:checks.length, passed:checks.length - failed.length, failed:failed.length, checks};
+console.log(JSON.stringify(report, null, 2));
+if (failed.length) process.exitCode = 1;

@@ -1,0 +1,23 @@
+"use strict";
+const fs=require("fs"),path=require("path"),vm=require("vm");
+const root=path.resolve(__dirname,"..");
+const truth=JSON.parse(fs.readFileSync(path.join(root,"references","generation-live-layout-ground-truth.json"),"utf8"));
+const ui=fs.readFileSync(path.join(root,"src","renderer","generation-ui.js"),"utf8");
+const desktop=fs.readFileSync(path.join(root,"src","renderer","desktop-ui.js"),"utf8");
+const css=fs.readFileSync(path.join(root,"src","renderer","styles","generation-ui.css"),"utf8");
+const manager=fs.readFileSync(path.join(root,"src","main","embedded-browser-manager.cjs"),"utf8");
+const checks=[];const check=(name,ok,detail="")=>checks.push({name,ok:Boolean(ok),detail});
+check("task dock mounts outside replaceable workspace",ui.includes("document.body.appendChild(shell)"));
+check("task dock does not contain browser host",!ui.includes("generation-live-host")&&!css.includes("generation-live-host"));
+check("all required actions exist",truth.requiredActions.every(label=>ui.includes(label)),truth.requiredActions.join(", "));
+check("open scene activates account window",ui.includes("api.doubao?.activateAccount(item.accountId)"));
+check("dock remains available across modules",!ui.includes("[data-page=\"tasks\"]")&&!ui.includes("[data-page='tasks']"));
+check("compact fixed overlay",/\.generation-live-shell\{[^}]*position:fixed/.test(css));
+check("compact size is within ground truth",css.includes("width:260px")&&css.includes("max-height:min(620px"));
+check("collapse keeps task header",css.includes(".generation-live-shell.collapsed")&&css.includes("max-height:44px"));
+check("multi task dock has counters list and detail",ui.includes("generation-live-summary")&&ui.includes("generation-live-dock")&&ui.includes("generation-live-detail"));
+check("desktop layout no longer controls browser bounds",!desktop.includes("api.doubao.setBounds({x: rect.left"));
+check("browser runtime owns safe viewport",manager.includes("SAFE_WINDOW")&&manager.includes("backgroundThrottling: false"));
+try{new vm.Script(ui,{filename:"generation-ui.js"});check("generation UI syntax",true)}catch(error){check("generation UI syntax",false,error.message)}
+const failed=checks.filter(item=>!item.ok);const report={test:"floating-task-dock-layout",timestamp:new Date().toISOString(),groundTruth:truth,total:checks.length,passed:checks.length-failed.length,failed:failed.length,checks};
+const logDir=path.join(root,"scripts","log");fs.mkdirSync(logDir,{recursive:true});fs.writeFileSync(path.join(logDir,"generation-live-layout.json"),JSON.stringify(report,null,2));console.log(JSON.stringify(report,null,2));if(failed.length)process.exit(1);

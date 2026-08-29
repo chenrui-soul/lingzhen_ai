@@ -1,0 +1,7 @@
+{
+  "channels": ["doubao", "model-gateway"],
+  "modelText": "这是模型网关生成的文本结果。",
+  "doubaoConversationId": "conv-doubao-test",
+  "tenantId": "tenant-execution-a",
+  "states": ["queued", "preparing", "submitting", "verifying", "completed", "awaiting_verification", "failed"]
+}

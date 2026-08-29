@@ -1,0 +1,14 @@
+{
+  "pendingVideoError": "等待当前任务视频资源超时",
+  "pendingState": "generating",
+  "pendingError": null,
+  "monitorStepGroup": "doubao-monitor-heartbeat",
+  "expectedHeartbeatSteps": 1,
+  "formalDownloadError": "视频下载校验失败",
+  "preservedInvariants": [
+    "monitor timeout remains generating",
+    "monitor timeout never becomes a formal task error",
+    "download recovery errors remain formal errors",
+    "submission evidence and account scheduling are unchanged"
+  ]
+}

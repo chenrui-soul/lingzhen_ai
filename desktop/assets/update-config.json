@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "enabled": true,
+  "url": "http://448a8u5458.qicp.vip/desktop-updates/stable",
+  "channel": "stable",
+  "allowPublicHttp": true,
+  "initialCheckDelayMs": 12000,
+  "checkIntervalMs": 21600000,
+  "note": "正式发布通过 LINGFRAME_UPDATE_URL 或发布脚本写入 HTTPS 更新目录。"
+}

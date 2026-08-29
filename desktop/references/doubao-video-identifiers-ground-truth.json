@@ -1,0 +1,17 @@
+{
+  "source": "2026-08-20 豆包真实完成任务 CDP 网络诊断",
+  "conversationId": "38438280791332866",
+  "expectedConversationVid": "38438280791332866",
+  "postData": "{\"vid\":[\"v0269cg10004da31lm27dld84kiu5uag\"]}",
+  "responseBody": "{\"data\":{\"vid\":\"v0269cg10004da31lm27dld84kiu5uag\",\"video_id\":\"v0269cg10004da31lm27dld84kiu5uag\"}}",
+  "expectedVideoVid": "v0269cg10004da31lm27dld84kiu5uag",
+  "videoUrl": "https://v3-default.douyinvod.com/example/video.mp4?token=temporary-signed-url",
+  "resourceEndpoint": "https://www.doubao.com/creativity/resource/get_without_watermark",
+  "latestRealTask": {
+    "taskId": "5b76d37d7bde4c80bfc962dc4c882512",
+    "conversationId": "38438304333091586",
+    "messageId": "53113317678646786",
+    "videoVid": "v0269cg10004da3cofq7dldbokquff60",
+    "messageContent": "[{\"block_type\":2074,\"content\":{\"creation_block\":{\"creations\":[{\"video\":{\"vid\":\"v0269cg10004da3cofq7dldbokquff60\",\"video_model\":\"{\\\"video_id\\\":\\\"v0269cg10004da3cofq7dldbokquff60\\\"}\"}}]}}}]"
+  }
+}

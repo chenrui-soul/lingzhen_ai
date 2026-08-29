@@ -1,0 +1,21 @@
+{
+  "compactViewport": {
+    "maxWidth": 1280,
+    "maxHeight": 900
+  },
+  "compactComposerMaxWidth": 820,
+  "layoutRules": {
+    "minimumConversationHeight": 220,
+    "compactConversationHeight": 250,
+    "composerMaximumPercent": 58,
+    "compactComposerMaximumPercent": 50,
+    "parameterToggleRequired": true,
+    "internalComposerScrollRequired": true
+  },
+  "requiredMarkers": [
+    "data-home-parameters-toggle",
+    "is-parameters-collapsed",
+    "syncHomeComposerDensity",
+    "home-responsive.css"
+  ]
+}

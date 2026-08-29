@@ -1,0 +1,22 @@
+"use strict";
+const assert = require("assert");
+const fs = require("fs");
+const os = require("os");
+const path = require("path");
+const {AgentBridge} = require("../src/main/agent-bridge.cjs");
+const groundTruth = require("../references/desktop-batch2-ground-truth.json");
+const root = fs.mkdtempSync(path.join(os.tmpdir(), "lingframe-agent-"));
+const licenseClient = {status: () => ({usable: true, tenantId: "tenant-a"})};
+const bridge = new AgentBridge({dataRoot: root, licenseClient, profileRootProvider: () => path.join(root, "tenant-a", "chrome-profiles"), testMode: true});
+(async () => {
+  assert.throws(() => bridge.configure({agentToken: "short"}), error => error.code === groundTruth.expected.agentInvalidToken);
+  assert.throws(() => bridge.assertTenant("tenant-b"), error => error.code === groundTruth.expected.agentTenantMismatch);
+  assert.doesNotThrow(() => bridge.assertTenant("tenant-a"));
+  const verification = await bridge.browser.execute({action: "generate", account: {id: "account-a", platform: "豆包"}, payload: {prompt: "测试气球", simulateVerification: true}});
+  assert.equal(verification.verificationRequired, true);
+  assert.equal(verification.paused, true);
+  const resumed = await bridge.browser.execute({action: "resume", account: {id: "account-a", platform: "豆包"}, payload: {prompt: "测试气球"}});
+  assert.equal(resumed.resumed, true);
+  bridge.stop();
+  console.log(JSON.stringify({test: "agent-bridge", passed: 6, failed: 0, root}));
+})().catch(error => { console.error(error); process.exit(1); });

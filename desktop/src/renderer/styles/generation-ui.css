@@ -1,0 +1,234 @@
+.generation-fields{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}.generation-fields label{display:flex;flex-direction:column;gap:5px;color:#8198b8;font-size:10px}.generation-fields select{height:36px;border:1px solid rgba(117,154,222,.18);border-radius:8px;background:#091528;color:#eaf3ff;padding:0 10px}.task-channel-badge{display:inline-flex;padding:3px 7px;border-radius:8px;background:rgba(87,215,255,.1);color:#63ddff;font-size:8px}
+
+.generation-live-shell{box-sizing:border-box;position:fixed;z-index:60;right:auto;bottom:48px;width:260px;max-height:min(620px,calc(100vh - 116px));overflow:hidden;border:1px solid rgba(62,218,255,.3);border-radius:14px;background:rgba(7,16,31,.97);box-shadow:0 20px 65px rgba(0,0,0,.45);transition:left .18s ease,width .18s ease,max-height .18s ease;contain:layout paint;color:#eaf3ff}
+.generation-live-head{padding:10px;border-bottom:1px solid rgba(117,154,222,.14);background:linear-gradient(150deg,rgba(23,54,82,.98),rgba(25,29,67,.98));pointer-events:auto}
+.generation-live-title{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:7px}.generation-live-title>b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.generation-live-title #generation-live-collapse{height:26px;padding:0 8px;font-size:8px;white-space:nowrap}.live-dot{width:8px;height:8px;border-radius:50%;background:#4ee1ba;box-shadow:0 0 12px rgba(78,225,186,.8)}
+.generation-live-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:8px}.generation-live-summary span{display:flex;align-items:center;justify-content:center;gap:4px;min-width:0;padding:5px;border-radius:7px;background:rgba(5,14,28,.45);color:#8fa7c6;font-size:7px}.generation-live-summary b{color:#68def7;font-size:9px}.generation-live-summary .attention b{color:#ffb86b}
+.generation-live-dock{max-height:calc(var(--live-visible-rows,4) * 43px + 12px);display:flex;flex-direction:column;gap:5px;padding:6px;overflow:auto;border-bottom:1px solid rgba(117,154,222,.14);background:rgba(5,14,28,.96);pointer-events:auto;scrollbar-width:thin;scrollbar-color:rgba(86,207,238,.32) transparent}.live-task-chip{width:100%;min-height:38px;display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:7px;padding:5px 7px;border:1px solid rgba(117,154,222,.17);border-radius:8px;background:rgba(20,38,65,.75);color:#9eb4d2;text-align:left}.live-task-chip>b{padding:3px 4px;border-radius:5px;background:rgba(53,215,255,.08);color:#55dcff;font-size:7px}.live-task-chip>span{min-width:0}.live-task-chip strong,.live-task-chip small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.live-task-chip strong{color:#dceafa;font-size:8px}.live-task-chip small{margin-top:3px;color:#7891b1;font-size:7px}.live-task-chip em{max-width:62px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#61e0b9;font-size:7px;font-style:normal}.live-task-chip.active{border-color:rgba(63,219,255,.55);background:linear-gradient(100deg,rgba(30,115,146,.45),rgba(88,62,156,.42))}.live-task-chip.attention{border-color:rgba(255,177,95,.34)}.live-task-chip.attention em{color:#ffbd77}.generation-live-empty{padding:18px 8px;color:#7087a7;font-size:8px;text-align:center}
+.generation-live-detail{padding:10px;background:linear-gradient(180deg,rgba(15,30,53,.96),rgba(7,16,31,.98));pointer-events:auto}.generation-live-detail-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}.generation-live-detail-head>div{min-width:0}.generation-live-detail-head small,.generation-live-detail-head b{display:block}.generation-live-detail-head small{color:#55dcff;font-size:7px}.generation-live-detail-head b{margin-top:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:9px}.generation-live-detail-head .ghost{flex:0 0 auto;height:27px;padding:0 8px;font-size:8px}.generation-live-meta{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:5px;margin-top:8px}.generation-live-meta>span{min-width:0;padding:5px 7px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;border-radius:7px;background:rgba(5,14,28,.55);color:#9fb5d2;font-size:7px}.generation-live-status{min-height:34px;margin-top:7px;overflow:hidden;color:#b8cce5;font-size:8px;line-height:1.55;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical}.generation-live-progress{height:5px;margin-top:7px;overflow:hidden;border-radius:6px;background:rgba(5,13,26,.72)}.generation-live-progress i{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,#35d7ff,#8b5cf6);transition:width .25s ease}.generation-live-progress.indeterminate i{animation:lingframe-live-progress 1.35s ease-in-out infinite}.generation-live-progress.warning i{background:linear-gradient(90deg,#ffb456,#ff786f)}@keyframes lingframe-live-progress{0%{transform:translateX(-110%)}100%{transform:translateX(310%)}}
+.generation-live-notice{min-height:44px;max-height:88px;margin-top:8px;padding:8px 9px;overflow:auto;border-radius:8px;background:rgba(48,192,226,.08);color:#76daf1;font-size:8px;line-height:1.55}.generation-live-notice.warning{background:rgba(255,166,69,.12);color:#ffbe78}
+.generation-live-shell.collapsed{max-height:44px}.generation-live-shell.collapsed .generation-live-head{padding:8px}.generation-live-shell.collapsed .generation-live-title{height:27px}.generation-live-shell.collapsed .generation-live-summary,.generation-live-shell.collapsed .generation-live-dock,.generation-live-shell.collapsed .generation-live-detail{display:none}.generation-live-shell.rail-unavailable{width:148px!important;min-width:148px!important;max-width:148px!important;border-radius:999px;border-color:rgba(53,215,255,.25);background:rgba(8,19,35,.96);box-shadow:0 12px 34px rgba(0,0,0,.32)}.generation-live-shell.rail-unavailable .generation-live-head{padding:6px;background:transparent;border:0}.generation-live-shell.rail-unavailable .generation-live-title{display:block;height:32px}.generation-live-shell.rail-unavailable .live-dot,.generation-live-shell.rail-unavailable .generation-live-title>b{display:none}.generation-live-shell.rail-unavailable #generation-live-collapse{width:136px;height:32px;padding:0 14px;border-radius:999px;color:#b9eefa;background:rgba(53,215,255,.08);font-size:11px;font-weight:600}.generation-live-shell.rail-unavailable.has-attention{border-color:rgba(255,174,85,.42)}.generation-live-shell.rail-unavailable.has-attention #generation-live-collapse{color:#ffd097;background:rgba(255,174,85,.12)}
+
+@media(max-width:850px){.generation-fields{grid-template-columns:1fr}.generation-live-shell{max-height:min(520px,calc(100vh - 104px))}}
+.generation-live-actions{display:none;gap:6px;flex-wrap:wrap;margin-top:10px}.generation-live-actions button{min-height:28px;padding:0 8px;font-size:8px}.generation-live-actions .warning{color:#ffc277;border-color:rgba(255,174,85,.3);background:rgba(255,174,85,.08)}
+
+/* 实时任务坞：作为独立右侧任务面板使用，避免与静态助手卡片重叠。 */
+.generation-live-shell:not(.rail-unavailable) {
+  display: flex;
+  flex-direction: column;
+  border-color: rgba(117, 154, 222, .18);
+  border-radius: 12px;
+  background: rgba(8, 17, 32, .98);
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+.generation-live-shell:not(.rail-unavailable) .generation-live-head {
+  flex: 0 0 auto;
+  padding: 16px 14px 14px;
+  background: rgba(13, 26, 46, .98);
+}
+
+.generation-live-shell:not(.rail-unavailable) .generation-live-title {
+  gap: 10px;
+}
+
+.generation-live-shell:not(.rail-unavailable) .generation-live-title > b {
+  font-size: 15px;
+}
+
+.generation-live-shell:not(.rail-unavailable) .generation-live-title #generation-live-collapse {
+  height: 32px;
+  padding: 0 10px;
+  border-radius: 7px;
+  font-size: 11px;
+}
+
+.generation-live-shell:not(.rail-unavailable) .live-dot {
+  width: 9px;
+  height: 9px;
+  box-shadow: none;
+}
+
+.generation-live-shell:not(.rail-unavailable) .generation-live-summary {
+  gap: 8px;
+  margin-top: 13px;
+}
+
+.generation-live-shell:not(.rail-unavailable) .generation-live-summary span {
+  min-height: 40px;
+  gap: 6px;
+  padding: 8px;
+  border-radius: 8px;
+  color: #98abc5;
+  font-size: 11px;
+}
+
+.generation-live-shell:not(.rail-unavailable) .generation-live-summary b {
+  font-size: 14px;
+}
+
+.generation-live-shell:not(.rail-unavailable) .generation-live-dock {
+  flex: 0 1 auto;
+  max-height: min(260px, 35vh);
+  gap: 8px;
+  padding: 12px;
+  background: rgba(6, 14, 27, .96);
+}
+
+.generation-live-shell:not(.rail-unavailable) .live-task-chip {
+  min-height: 60px;
+  gap: 9px;
+  padding: 10px;
+  border-radius: 9px;
+  background: rgba(15, 30, 52, .84);
+}
+
+.generation-live-shell:not(.rail-unavailable) .live-task-chip > b {
+  padding: 4px 6px;
+  font-size: 10px;
+}
+
+.generation-live-shell:not(.rail-unavailable) .live-task-chip strong {
+  font-size: 12px;
+}
+
+.generation-live-shell:not(.rail-unavailable) .live-task-chip small {
+  margin-top: 5px;
+  font-size: 10px;
+}
+
+.generation-live-shell:not(.rail-unavailable) .live-task-chip em {
+  max-width: 74px;
+  font-size: 10px;
+}
+
+.generation-live-shell:not(.rail-unavailable) .live-task-chip.active {
+  border-color: rgba(69, 205, 235, .42);
+  background: rgba(23, 57, 78, .92);
+}
+
+.generation-live-shell:not(.rail-unavailable) .generation-live-detail {
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 15px 14px 18px;
+  overflow: auto;
+  background: rgba(10, 21, 39, .98);
+}
+
+.generation-live-shell:not(.rail-unavailable) .generation-live-detail-head {
+  gap: 12px;
+}
+
+.generation-live-shell:not(.rail-unavailable) .generation-live-detail-head small {
+  font-size: 10px;
+}
+
+.generation-live-shell:not(.rail-unavailable) .generation-live-detail-head b {
+  margin-top: 6px;
+  font-size: 14px;
+}
+
+.generation-live-shell:not(.rail-unavailable) .generation-live-detail-head .ghost {
+  height: 34px;
+  padding: 0 10px;
+  border-radius: 7px;
+  font-size: 11px;
+}
+
+.generation-live-shell:not(.rail-unavailable) .generation-live-meta {
+  gap: 8px;
+  margin-top: 13px;
+}
+
+.generation-live-shell:not(.rail-unavailable) .generation-live-meta > span {
+  padding: 8px 9px;
+  border-radius: 7px;
+  font-size: 10px;
+}
+
+.generation-live-shell:not(.rail-unavailable) .generation-live-status {
+  min-height: 45px;
+  margin-top: 12px;
+  color: #c5d3e5;
+  font-size: 11px;
+  line-height: 1.7;
+  -webkit-line-clamp: 4;
+}
+
+.generation-live-shell:not(.rail-unavailable) .generation-live-progress {
+  height: 6px;
+  margin-top: 10px;
+}
+
+.generation-live-shell:not(.rail-unavailable) .generation-live-notice {
+  min-height: 58px;
+  max-height: 126px;
+  margin-top: 12px;
+  padding: 11px 12px;
+  border-radius: 8px;
+  color: #8fd8e8;
+  font-size: 11px;
+  line-height: 1.7;
+}
+
+.generation-live-shell:not(.rail-unavailable) .generation-live-actions {
+  gap: 8px;
+  margin-top: 13px;
+}
+
+.generation-live-shell:not(.rail-unavailable) .generation-live-actions button {
+  min-height: 34px;
+  padding: 0 10px;
+  border-radius: 7px;
+  font-size: 11px;
+}
+
+.generation-live-shell.empty:not(.rail-unavailable) .generation-live-dock {
+  flex: 1 1 auto;
+  max-height: none;
+  display: grid;
+  place-items: center;
+}
+
+.generation-live-shell.empty:not(.rail-unavailable) .generation-live-detail {
+  display: none;
+}
+
+.generation-live-shell:not(.rail-unavailable) .generation-live-empty {
+  padding: 28px 16px;
+  color: #8ea2bd;
+  font-size: 13px;
+  line-height: 1.8;
+}
+
+.generation-live-empty span {
+  color: #6f849f;
+  font-size: 11px;
+}
+
+.generation-live-shell.rail-unavailable #generation-live-collapse { font-size: 11px; }
+
+html[data-font-size] .generation-live-shell:not(.rail-unavailable) .generation-live-title > b {
+  font-size: calc(15px * var(--ui-font-scale)) !important;
+}
+
+html[data-font-size] .generation-live-shell:not(.rail-unavailable) .generation-live-summary span,
+html[data-font-size] .generation-live-shell:not(.rail-unavailable) .generation-live-detail-head .ghost,
+html[data-font-size] .generation-live-shell:not(.rail-unavailable) .generation-live-status,
+html[data-font-size] .generation-live-shell:not(.rail-unavailable) .generation-live-notice,
+html[data-font-size] .generation-live-shell:not(.rail-unavailable) .generation-live-actions button {
+  font-size: calc(11px * var(--ui-font-scale)) !important;
+}
+
+html[data-font-size] .generation-live-shell:not(.rail-unavailable) .live-task-chip strong {
+  font-size: calc(12px * var(--ui-font-scale)) !important;
+}
+
+.generation-live-shell.collapsed:not(.rail-unavailable) {
+  height: 52px !important;
+  max-height: 52px !important;
+}
+
+/* 空闲时不占用创作首页空间；有运行或需处理任务时由 generation-ui 自动显示。 */
+.generation-live-shell.idle { display: none !important; }

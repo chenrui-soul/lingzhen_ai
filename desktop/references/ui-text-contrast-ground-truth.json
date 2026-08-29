@@ -1,0 +1,40 @@
+{
+  "themes": ["light", "comfort", "dark"],
+  "contrasts": ["standard", "soft", "clear"],
+  "minimumNormalTextContrast": 4.5,
+  "targets": [
+    { "name": "通用正文", "selector": ".contrast-audit-text" },
+    { "name": "通用次级文字", "selector": ".contrast-audit-soft" },
+    { "name": "通用说明文字", "selector": ".contrast-audit-muted" },
+    { "name": "通用强调文字", "selector": ".contrast-audit-accent" },
+    { "name": "选中厂商名称", "selector": ".model-provider-item.active b" },
+    { "name": "选中厂商说明", "selector": ".model-provider-item.active small" },
+    { "name": "普通厂商名称", "selector": ".model-provider-item:not(.active) b" },
+    { "name": "普通厂商说明", "selector": ".model-provider-item:not(.active) small" },
+    { "name": "模型表单标签", "selector": ".model-field" },
+    { "name": "密钥提示", "selector": ".model-secret-note" },
+    { "name": "模型状态提示", "selector": ".model-message" },
+    { "name": "模型显示名称", "selector": ".model-row b" },
+    { "name": "模型真实ID", "selector": ".model-row small" },
+    { "name": "文本会话标题", "selector": ".text-session b" },
+    { "name": "文本引用标签", "selector": ".text-reference-row span" },
+    { "name": "弹窗说明", "selector": ".pm-dialog-head span" },
+    { "name": "弹窗表单标签", "selector": ".pm-dialog > label" },
+    { "name": "生成弹窗标签", "selector": ".generation-fields label" },
+    { "name": "任务通道标签", "selector": ".task-channel-badge" },
+    { "name": "任务状态标签", "selector": ".status-pill" },
+    { "name": "任务结果标题", "selector": ".task-result-url b" },
+    { "name": "任务结果地址", "selector": ".task-result-url span" },
+    { "name": "项目说明", "selector": ".project-card-body > p" },
+    { "name": "项目元信息", "selector": ".project-meta" },
+    { "name": "素材元信息", "selector": ".asset-info p" },
+    { "name": "素材标签", "selector": ".asset-tags i" },
+    { "name": "素材引用按钮", "selector": ".asset-reference-strip button" },
+    { "name": "素材拖拽说明", "selector": ".material-drop span" },
+    { "name": "空状态说明", "selector": ".model-empty" }
+    ,{ "name": "status success", "selector": ".status-pill.success" }
+    ,{ "name": "status danger", "selector": ".status-pill.danger" }
+    ,{ "name": "status warning", "selector": ".status-pill.warning" }
+    ,{ "name": "status muted", "selector": ".status-pill.muted" }
+  ]
+}

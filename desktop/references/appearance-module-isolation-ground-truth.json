@@ -1,0 +1,9 @@
+{
+  "themes": ["light", "comfort", "dark"],
+  "fontSizes": ["standard", "large", "xlarge"],
+  "minimumCardGapPx": 4,
+  "maximumOverflowPx": 1,
+  "canvasStableFontTolerancePx": 0.1,
+  "canvasSidebarMinimumScaleRatio": 1.18,
+  "canvasMinimumStageHeightPx": 400
+}

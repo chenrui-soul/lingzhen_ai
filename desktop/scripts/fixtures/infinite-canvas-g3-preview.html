@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>灵帧无限画布 G3 隔离预览</title>
+  <link rel="stylesheet" href="../../src/renderer/styles/infinite-canvas.css">
+  <link rel="stylesheet" href="../../src/renderer/styles/canvas-selection.css">
+  <link rel="stylesheet" href="../../src/renderer/styles/canvas-media-v2.css">
+  <style>
+    *{box-sizing:border-box}html,body{width:100%;height:100%;margin:0;background:#050a13;color:#edf7ff;font-family:Inter,"Microsoft YaHei",sans-serif}button,input,select,textarea{font:inherit}.shell{width:100%;height:100%;display:grid;grid-template-columns:76px minmax(0,1fr) 360px}.sidebar{background:#08111f;border-right:1px solid rgba(127,166,219,.14);padding:12px 7px}.sidebar button{width:100%;height:34px;margin-bottom:7px;border:1px solid rgba(127,166,219,.14);border-radius:8px;background:#0c192b;color:#7891ad;font-size:8px}.sidebar button.active{color:#36d7ff;border-color:rgba(54,215,255,.28)}.workspace{min-width:0;min-height:0;padding:12px;display:flex;flex-direction:column}.page-head{height:52px;display:flex;align-items:center}.page-head h1{margin:0;font-size:20px}.page-head p{margin:4px 0 0;color:#6f86a5;font-size:9px}.right{min-width:0;min-height:0;border-left:1px solid rgba(127,166,219,.14)}
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar">
+      <button class="nav active" data-page="canvas">无限画布</button>
+      <button class="nav" data-page="resources">项目资源库</button>
+      <button class="nav" data-page="materials">素材中心</button>
+      <button class="nav" data-page="tasks">任务中心</button>
+      <button class="nav" data-page="doubao">豆包管理</button>
+    </aside>
+    <main class="workspace">
+      <div class="page-head"><div><h1>无限画布</h1><p>G3 隔离交互预览</p></div></div>
+      <div class="canvas"></div>
+    </main>
+    <aside class="right"></aside>
+  </div>
+  <script>
+    for(const key of Object.keys(localStorage))if(key.startsWith("lingframe.infiniteCanvas.v2."))localStorage.removeItem(key);
+    const previewData={currentProjectId:"preview-project",projects:[{id:"preview-project",name:"G3 预览项目"}],assets:[{id:"preview-image",projectId:"preview-project",type:"image",name:"人物参考图",contentUrl:"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='160'%3E%3Crect width='100%25' height='100%25' fill='%23152a46'/%3E%3Ccircle cx='120' cy='64' r='34' fill='%23ff78b7'/%3E%3Ctext x='120' y='130' text-anchor='middle' fill='white' font-size='16'%3EPreview%3C/text%3E%3C/svg%3E"}],tasks:[],textConversations:[]};
+    window.lingframeAccountStore={ready:Promise.resolve(),tenantId:()=>"preview-tenant",accounts:()=>[{id:"preview-account",name:"预览账号"}],groups:()=>[],accountsForGroup:()=>[{id:"preview-account",name:"预览账号"}]};
+    window.lingframe={
+      identity:{status:async()=>({tenantId:"preview-tenant"})},
+      workbench:{bootstrap:async()=>structuredClone(previewData)},
+      models:{bootstrap:async()=>[{id:"preview-provider",name:"预览模型网关",models:[{id:"preview-text",displayName:"文本模型",enabled:true,capabilities:{type:"text",confirmed:true}},{id:"preview-image",displayName:"图片模型",enabled:true,capabilities:{type:"image",confirmed:true,ratios:["16:9","9:16"]}},{id:"preview-video",displayName:"视频模型",enabled:true,capabilities:{type:"video",confirmed:true,ratios:["16:9","9:16"],durations:["5s","10s"]}},{id:"preview-audio",displayName:"音频模型",enabled:true,capabilities:{type:"audio",confirmed:true}}]}]},
+      assets:{pickImport:async()=>[],readText:async()=>({name:"预览文本",content:"预览内容"})},
+      text:{create:async()=>({id:"preview-conversation"})},
+      generation:{create:async input=>({id:"preview-task",title:input.title,state:"queued"}),onLiveStatus:()=>{}},
+      window:{minimize:()=>{},toggleMaximize:()=>{},close:()=>{}}
+    };
+    document.querySelectorAll("[data-page]").forEach(button=>button.addEventListener("click",()=>{document.body.dataset.lastPage=button.dataset.page;}));
+  </script>
+  <script src="../../src/renderer/canvas-flow-core.js"></script>
+  <script src="../../src/renderer/canvas-input-adapter.js"></script>
+  <script src="../../src/renderer/canvas-workflow-portability.js"></script>
+  <script src="../../src/renderer/infinite-canvas.js"></script>
+</body>
+</html>

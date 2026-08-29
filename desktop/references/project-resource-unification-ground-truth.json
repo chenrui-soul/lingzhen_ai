@@ -1,0 +1,32 @@
+{
+  "test": "project-resource-unification-single-entry-s1",
+  "singleEntry": true,
+  "featureFlagRemoved": true,
+  "unifiedPage": "resources",
+  "unifiedLabel": "项目资源库",
+  "legacyRouteAliases": {
+    "materials": "assets",
+    "projects": "projects"
+  },
+  "resourceModes": ["assets", "projects"],
+  "safetyPanelRemoved": true,
+  "requiredProjectActions": ["open", "edit", "archive", "unarchive", "restore", "delete"],
+  "requiredAssetActions": ["preview", "reference", "edit", "folder", "restore", "delete"],
+  "doubaoBinding": {
+    "assetType": "video",
+    "taskState": "completed",
+    "executionChannel": "doubao",
+    "requiredFields": ["resultAssetId", "projectId", "resultVid"]
+  },
+  "copyCapabilities": ["single-select", "single-copy", "visible-select-all", "selected-batch-copy", "newline-separated", "deduplicated"],
+  "protectedHashes": {
+    "src/main/generation-orchestrator.cjs": "941806E4E47F0131300A2953DE72BD3EA846535726FFB9000CBC3F51098DA376",
+    "src/main/embedded-browser-manager.cjs": "15AF7F237F31963F34C498465ABC9321265CB8CB0C80ED0C89220DF2C9665BDD",
+    "src/renderer/task-center.js": "6CACC01EB9E69CE551FBE811F6D22F51F6066BF18C330E20867F178A5E1F918B",
+    "src/renderer/generation-ui.js": "46778B5EE2B8853B27FDE2EC05540392AF6297E22C92A95DD6815087D63A8295",
+    "src/renderer/text-workspace.js": "56587DD87E7E881077749B4EA9FE70CFEE239F3A62925487D1733CFD2A064D8B",
+    "src/renderer/infinite-canvas.js": "5DDBB09E55C21A8D9C39BBEB7606BE60C4ABABAC43DF48664F67B7762657571A",
+    "src/preload/preload.cjs": "BB6265758566D4F4217A10AFD7E62AB056FE79C142A1AE678B94F8B8F64B5D2C",
+    "src/main/main.cjs": "F5CE2B2436E08ACFECD18110022516BF4500CF36DB76B48493A00BA638DB13E9"
+  }
+}

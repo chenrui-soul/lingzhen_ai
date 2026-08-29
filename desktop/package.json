@@ -1,0 +1,76 @@
+{
+  "name": "lingframe-ai-desktop",
+  "version": "0.12.5",
+  "productName": "灵帧AI",
+  "description": "灵帧AI多模型创作与豆包多账号桌面工作台",
+  "main": "src/main/main.cjs",
+  "scripts": {
+    "start": "electron .",
+    "test": "node tests/smoke.cjs",
+    "test:task-dock": "node scripts/test-task-dock-terminal-state.cjs",
+    "test:auto-update": "node scripts/test-auto-update.cjs",
+    "test:official-release": "node scripts/test-official-release-ui.cjs",
+    "test:home-responsive": "node scripts/test-home-responsive-layout.cjs",
+    "test:desktop-responsive": "node scripts/test-desktop-responsive-layout.cjs",
+    "test:desktop-responsive:runtime": "electron scripts/test-desktop-responsive-runtime.cjs",
+    "test:desktop-bootstrap": "node scripts/test-desktop-bootstrap-loading.cjs",
+    "test:desktop-credits": "node scripts/test-desktop-credits.cjs",
+    "test:desktop-user-ui": "node scripts/test-desktop-user-credits-ui.cjs",
+    "test:platform-model-gateway": "node scripts/test-platform-model-gateway.cjs",
+    "test:desktop-model-catalog": "node scripts/test-desktop-model-catalog.cjs",
+    "test:desktop-bootstrap:runtime": "electron scripts/test-desktop-bootstrap-loading-runtime.cjs",
+    "prepare:update-release": "node scripts/prepare-update-release.cjs",
+    "configure:bootstrap": "node scripts/configure-production-bootstrap.cjs",
+    "preflight:dist": "node scripts/preflight-production-build.cjs",
+    "preflight:dist:internal-http": "node scripts/preflight-production-build.cjs --allow-public-http",
+    "dist:win": "npm run preflight:dist && electron-builder --win nsis --x64",
+    "dist:win:internal-http": "npm run preflight:dist:internal-http && electron-builder --win nsis --x64"
+  },
+  "devDependencies": {
+    "electron": "^31.0.0",
+    "electron-builder": "^26.0.12"
+  },
+  "build": {
+    "appId": "cn.lingframe.ai.desktop",
+    "productName": "灵帧AI",
+    "asar": true,
+    "compression": "maximum",
+    "directories": {
+      "output": "dist-tenant"
+    },
+    "files": [
+      "src/**/*",
+      "assets/**/*",
+      "package.json"
+    ],
+    "publish": [
+      {
+        "provider": "generic",
+        "url": "http://448a8u5458.qicp.vip/desktop-updates/stable"
+      }
+    ],
+    "win": {
+      "icon": "assets/lingframe.ico",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "artifactName": "灵帧AI-Setup-${arch}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "灵帧AI"
+    }
+  },
+  "dependencies": {
+    "electron-updater": "^6.8.9"
+  }
+}

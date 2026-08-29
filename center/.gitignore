@@ -1,0 +1,19 @@
+# Local runtime configuration and secrets
+.env
+.env.*
+!.env.example
+!.env.postgres.example
+secrets/
+
+# Runtime data and database artifacts
+data/
+*.log
+*.pid
+*.bak
+*.bak.1
+*.bak.2
+
+# Local AI session logs; keep project-level decisions and handoff files
+.ai-memory/*/
+!.ai-memory/project_memory.md
+!.ai-memory/handoff.md

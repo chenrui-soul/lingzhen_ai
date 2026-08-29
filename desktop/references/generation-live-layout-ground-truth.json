@@ -1,0 +1,8 @@
+{
+  "defaultMode": "compact-task-dock",
+  "defaultWidthRange": [240, 320],
+  "defaultHeightRange": [260, 620],
+  "requiredActions": ["打开现场", "收起", "展开"],
+  "browserViewportOwnedBy": "per-account BrowserWindow",
+  "resultCapture": ["你的视频生成好了", "dom-video", "resultAssetId"]
+}

@@ -1,0 +1,22 @@
+{
+  "test": "duplicate-out-of-order-events",
+  "tenantId": "tenant-duplicate-out-of-order",
+  "resultUrls": [
+    "https://result.test/ordered-result-1.mp4",
+    "https://result.test/ordered-result-2.mp4"
+  ],
+  "expected": {
+    "uniqueResultItems": 2,
+    "downloadCalls": 2,
+    "completedTimelineSteps": 1,
+    "lateEventsIgnored": true,
+    "duplicateCompletionIdempotent": true
+  },
+  "invariants": [
+    "duplicate result URLs are normalized",
+    "concurrent recovery shares one in-flight run",
+    "late generating or failed events cannot reopen a completed task",
+    "duplicate completion cannot append another completed step",
+    "duplicate result ownership is rejected"
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "name": "full-workflow-regression",
+  "scope": ["creation-home", "task-center", "doubao-account-management", "user-auth", "desktop-sync"],
+  "categories": {
+    "home": [
+      "test-home-ui-redesign.cjs",
+      "test-home-conversations-phase1.cjs",
+      "test-home-account-profile.cjs",
+      "test-home-asset-picker-project-switch.cjs",
+      "test-home-parameter-restore-summary.cjs",
+      "test-home-production-pipeline.cjs",
+      "test-home-task-center-e2e.cjs",
+      "test-generation-live-layout.cjs"
+    ],
+    "tasks": [
+      "test-task-center.cjs",
+      "test-task-state-machine-invariants.cjs",
+      "test-human-attention-actions.cjs",
+      "test-duplicate-out-of-order-events.cjs",
+      "test-crash-restart-checkpoints.cjs",
+      "test-multi-task-dock.cjs",
+      "test-auto-monitor.cjs",
+      "test-doubao-monitor-state.cjs",
+      "test-doubao-multi-task-recovery.cjs",
+      "test-doubao-result-recovery.cjs",
+      "test-doubao-failure-outcomes.cjs",
+      "test-doubao-failure-persistence.cjs",
+      "test-submission-evidence.cjs",
+      "test-submission-lifecycle.cjs",
+      "test-model-result-recovery.cjs",
+      "test-model-multi-result-recovery.cjs",
+      "test-unified-execution.cjs"
+    ],
+    "accounts": [
+      "test-embedded-browser.cjs",
+      "test-account-groups.cjs",
+      "test-doubao-login-routing.cjs",
+      "test-doubao-account-load-balancing.cjs",
+      "test-doubao-quota-scheduler.cjs",
+      "test-doubao-batch-circuit-breaker.cjs",
+      "test-doubao-tenant-account-isolation.cjs",
+      "test-doubao-account-local-import.cjs",
+      "test-doubao-fast-model-menu.cjs",
+      "test-doubao-reference-upload-material-refresh.cjs",
+      "test-doubao-submission-context-validation.cjs",
+      "test-doubao-startup-queue-recovery.cjs",
+      "test-doubao-submission-unknown-recovery.cjs",
+      "test-doubao-ops-invariants.cjs",
+      "test-doubao-human-acceptance-baseline.cjs",
+      "test-desktop-auth.cjs",
+      "test-wave4-desktop-networking.cjs"
+    ]
+  },
+  "acceptance": {
+    "allScriptsExitZero": true,
+    "smokeChecks": 17,
+    "liveClientVisible": true,
+    "expiredUserSessionBlocksWrites": true,
+    "infiniteCanvasOutOfScope": true
+  }
+}

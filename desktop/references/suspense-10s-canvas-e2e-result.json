@@ -1,0 +1,12 @@
+{
+  "tenantId": "43ec40ae-962a-4c22-9f43-dc6d9e2ce92d",
+  "projectId": "cd6effafb41b4ddbae9911c336373938",
+  "tasks": {
+    "homeVideo": {"id": "db1601b946514e5189dcfaa228fea6b8", "state": "completed", "resultType": "video", "resultUrlRequired": true},
+    "canvasStoryboard": {"id": "a9859c1e0a2142b3aa6d27bf753b7000", "state": "completed", "resultType": "text"},
+    "canvasCharacter": {"id": "c66708acfbe843cba8242df4b5a7be56", "state": "completed", "resultType": "image"},
+    "canvasScene": {"id": "45799d7800744a19ab0de91223bbfc83", "state": "submission_unknown", "safeToRetry": false},
+    "canvasProp": {"id": "38a0ad084cbf464a947a4e02c6f43e72", "state": "completed", "resultType": "image"},
+    "canvasVideo": {"id": "3f5738dbe8834e8fb37b370910cd68b1", "state": "failed", "failureCode": "DOUBAO_SERVICE_BUSY", "retryMode": "retry_later", "safeToRetry": true}
+  }
+}

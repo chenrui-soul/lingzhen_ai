@@ -1,0 +1,258 @@
+/*
+ * Desktop responsive shell
+ * The central creation surface owns the remaining width. Navigation and task
+ * rails step down before any page is allowed to squeeze its primary content.
+ */
+:root {
+  --desktop-content-gap: clamp(14px, 1.25vw, 22px);
+  --desktop-control-height: 40px;
+  --desktop-radius-panel: 14px;
+}
+
+.shell,
+.shell[data-layout] {
+  --shell-left-width: 238px;
+  --shell-right-width: 320px;
+  grid-template-columns: var(--shell-left-width) minmax(0, 1fr) var(--shell-right-width);
+}
+
+.shell[data-layout].left-off { grid-template-columns: 0 minmax(0, 1fr) var(--shell-right-width); }
+.shell[data-layout].right-off { grid-template-columns: var(--shell-left-width) minmax(0, 1fr) 0; }
+.shell[data-layout].left-off.right-off { grid-template-columns: 0 minmax(0, 1fr) 0; }
+
+.shell[data-layout="spacious"] {
+  --shell-left-width: 248px;
+  --shell-right-width: 340px;
+}
+
+.shell[data-layout="standard"] {
+  --shell-left-width: 220px;
+  --shell-right-width: 300px;
+}
+
+.shell[data-layout="compact"] {
+  --shell-left-width: 82px;
+  --shell-right-width: 268px;
+}
+
+.shell[data-layout="minimal"] {
+  --shell-left-width: 76px;
+  --shell-right-width: 0px;
+}
+
+.shell[data-current-page="home"][data-layout="spacious"] { --shell-right-width: 340px; }
+.shell[data-current-page="home"][data-layout="standard"] { --shell-right-width: 300px; }
+.shell[data-current-page="home"][data-layout="compact"] { --shell-right-width: 268px; }
+.shell[data-current-page="home"][data-layout="minimal"] { --shell-right-width: 0px; }
+
+.shell:has(.resource-library),
+.shell[data-current-page="doubao"] {
+  --shell-right-width: 0px;
+}
+
+.shell .workspace {
+  min-width: 0;
+  padding: clamp(18px, 2.15vh, 26px) clamp(18px, 2vw, 32px) clamp(18px, 2.5vh, 30px);
+  overscroll-behavior: contain;
+}
+
+.shell[data-layout="compact"] .workspace,
+.shell[data-layout="minimal"] .workspace {
+  padding-right: 20px;
+  padding-left: 20px;
+}
+
+.shell .page-head {
+  min-width: 0;
+  gap: 20px;
+}
+
+.shell .page-head > div { min-width: 0; }
+.shell .page-head h1 { font-size: clamp(23px, 1.75vw, 29px); line-height: 1.2; }
+.shell .page-head p { max-width: 72ch; font-size: clamp(10px, .78vw, 13px); line-height: 1.65; }
+.shell .page-head > button { flex: 0 0 auto; white-space: nowrap; }
+
+.shell .glass {
+  border-radius: var(--desktop-radius-panel);
+  box-shadow: 0 14px 38px rgba(0, 0, 0, .16);
+}
+
+.shell .primary,
+.shell .ghost,
+.shell :is(input, select, textarea) {
+  font-family: "Segoe UI Variable Text", "Microsoft YaHei UI", "Microsoft YaHei", sans-serif;
+}
+
+/* Compact navigation keeps destinations available without taxing the canvas. */
+.shell:is([data-layout="compact"],[data-layout="minimal"]):not(.left-off) .sidebar {
+  padding: 14px 10px;
+  overflow: hidden;
+}
+
+.shell:is([data-layout="compact"],[data-layout="minimal"]):not(.left-off) .sidebar .label,
+.shell:is([data-layout="compact"],[data-layout="minimal"]):not(.left-off) .sidebar .engine {
+  display: none;
+}
+
+.shell:is([data-layout="compact"],[data-layout="minimal"]):not(.left-off) .sidebar .nav {
+  position: relative;
+  width: 54px;
+  height: 50px;
+  justify-content: center;
+  gap: 0;
+  margin: 0 auto 7px;
+  padding: 0;
+  font-size: 0 !important;
+}
+
+.shell:is([data-layout="compact"],[data-layout="minimal"]):not(.left-off) .sidebar .nav b {
+  width: auto;
+  font-size: 19px;
+}
+
+.shell:is([data-layout="compact"],[data-layout="minimal"]):not(.left-off) .sidebar .nav em {
+  display: none;
+}
+
+.shell:is([data-layout="compact"],[data-layout="minimal"]) .titlebar {
+  padding-right: 14px;
+  padding-left: 14px;
+}
+
+.shell:is([data-layout="compact"],[data-layout="minimal"]) .titlebar .brand {
+  width: 52px;
+}
+
+.shell:is([data-layout="compact"],[data-layout="minimal"]) .titlebar .brand > div {
+  display: none;
+}
+
+.shell:is([data-layout="compact"],[data-layout="minimal"]) .titlebar .brand img {
+  width: 36px;
+  height: 36px;
+}
+
+.shell:is([data-layout="compact"],[data-layout="minimal"]) .titlebar .user > span {
+  display: none;
+}
+
+/* At the minimum window size the right rail opens beside the canvas. */
+.shell[data-layout="minimal"]:not(.right-off) {
+  grid-template-columns: var(--shell-left-width) minmax(0, 1fr) 264px;
+}
+
+.shell[data-layout="minimal"]:not(.right-off) > .right {
+  position: static;
+  display: block;
+  width: auto;
+  border-left: 1px solid rgba(117, 154, 222, .2);
+  background: rgba(6, 13, 25, .985);
+}
+
+.shell[data-current-page="doubao"] > .right,
+.shell:has(.resource-library) > .right,
+.shell[data-current-page="doubao"] #right-panel-toggle,
+.shell:has(.resource-library) #right-panel-toggle {
+  display: none !important;
+}
+
+/* Home: keep the conversation and prompt editor comfortably wide. */
+.shell[data-current-page="home"] .workspace { padding: clamp(16px, 2vh, 26px) clamp(16px, 1.8vw, 30px) 18px; }
+.shell[data-current-page="home"] .home-chat-shell { grid-template-columns: clamp(210px, 16vw, 264px) minmax(0, 1fr); gap: var(--desktop-content-gap); }
+.shell[data-current-page="home"][data-layout="compact"] .home-chat-shell,
+.shell[data-current-page="home"][data-layout="minimal"] .home-chat-shell { grid-template-columns: 200px minmax(0, 1fr); gap: 12px; }
+.shell[data-current-page="home"][data-layout="minimal"]:not(.right-off) .home-chat-shell { grid-template-columns: 58px minmax(0, 1fr); }
+.shell[data-current-page="home"][data-layout="minimal"]:not(.right-off) .home-chat-sidebar { padding: 8px 6px; overflow: hidden; }
+.shell[data-current-page="home"][data-layout="minimal"]:not(.right-off) .home-chat-sidebar-head { height: 54px; justify-content: center; padding: 0; }
+.shell[data-current-page="home"][data-layout="minimal"]:not(.right-off) .home-chat-sidebar-head > div,
+.shell[data-current-page="home"][data-layout="minimal"]:not(.right-off) .home-chat-search,
+.shell[data-current-page="home"][data-layout="minimal"]:not(.right-off) .home-chat-history section > header,
+.shell[data-current-page="home"][data-layout="minimal"]:not(.right-off) .home-chat-select > span,
+.shell[data-current-page="home"][data-layout="minimal"]:not(.right-off) .home-chat-select > em,
+.shell[data-current-page="home"][data-layout="minimal"]:not(.right-off) .home-chat-more,
+.shell[data-current-page="home"][data-layout="minimal"]:not(.right-off) .home-chat-menu,
+.shell[data-current-page="home"][data-layout="minimal"]:not(.right-off) .home-chat-local-note { display: none; }
+.shell[data-current-page="home"][data-layout="minimal"]:not(.right-off) .home-chat-history { padding: 4px 0; }
+.shell[data-current-page="home"][data-layout="minimal"]:not(.right-off) .home-chat-item { width: 44px; margin: 0 auto 6px; }
+.shell[data-current-page="home"][data-layout="minimal"]:not(.right-off) .home-chat-select { min-height: 44px; grid-template-columns: 1fr; padding: 6px; }
+.shell[data-current-page="home"][data-layout="minimal"]:not(.right-off) .home-chat-select > i { margin: auto; }
+.shell[data-current-page="home"] .home-chat-stream { padding: clamp(18px, 2.1vw, 34px); }
+.shell[data-current-page="home"] .home-chat-composer { margin: 0 clamp(12px, 1.2vw, 18px) clamp(12px, 1.2vw, 18px); }
+.shell[data-current-page="home"] .home-chat-welcome > .cards.four { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+.shell[data-current-page="home"] .home-chat-welcome > .cards.three { grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
+.shell[data-current-page="home"] .home-chat-composer .home-compose-fields { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+
+/* Task center responds to its real container width, not the outer window. */
+.workspace:has(.task-center-layout) { container-type: inline-size; }
+.workspace:has(.task-center-layout) .task-center-layout { min-width: 0; }
+@container (max-width: 1190px) {
+  .task-center-layout { grid-template-columns: 1fr; grid-template-rows: minmax(190px, .8fr) minmax(270px, 1.2fr); }
+  .task-list, .task-detail { min-width: 0; min-height: 0; }
+}
+@container (max-width: 720px) {
+  .task-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .task-toolbar { align-items: stretch; }
+  .task-toolbar input { flex-basis: 100%; min-width: 0; }
+  .task-card { grid-template-columns: 34px minmax(0, 1fr) auto; }
+  .task-card-progress { display: none; }
+  .task-detail-actions { max-width: 100%; }
+}
+
+/* Resource library already uses container queries; give it the full canvas. */
+.shell:has(.resource-library) .workspace { padding: clamp(18px, 2vw, 28px); }
+.workspace:has(.resource-library) { container-type: inline-size; }
+
+/* Text creation collapses both secondary rails from the measured workspace. */
+.shell:has(.text-workspace) .text-workspace.is-narrow {
+  grid-template-columns: 46px 6px minmax(0, 1fr) 6px 46px;
+  min-height: 0;
+}
+
+.shell:has(.text-workspace) .text-workspace.is-narrow .text-layout-splitter { width: 6px; }
+.shell:has(.text-workspace) .text-workspace.is-narrow .text-editor-head { flex-wrap: wrap; }
+.shell:has(.text-workspace) .text-workspace.is-narrow .text-editor-head input { min-width: 160px; }
+
+/* Dense utility pages use elastic grids instead of fixed card counts. */
+.shell .metrics { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+.shell .accounts { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+.shell .settings-grid { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+.shell .template-grid { grid-template-columns: minmax(0, 1.25fr) minmax(260px, .75fr); }
+.shell .stages { grid-template-columns: repeat(9, minmax(88px, 1fr)); overflow-x: auto; padding-bottom: 6px; }
+
+.shell:is([data-layout="compact"],[data-layout="minimal"]) .doubao-manager-layout {
+  grid-template-columns: 190px minmax(0, 1fr) !important;
+}
+
+.shell[data-layout="minimal"] .doubao-manager-layout {
+  grid-template-columns: 180px minmax(0, 1fr) !important;
+}
+
+.shell:is([data-layout="compact"],[data-layout="minimal"]) .embedded-browser-head {
+  align-items: center;
+}
+
+.shell:is([data-layout="compact"],[data-layout="minimal"]) .embedded-actions {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.shell:is([data-layout="compact"],[data-layout="minimal"]) .desktop-settings {
+  right: 76px;
+  max-width: 280px;
+}
+
+.statusbar { min-width: 0; overflow: hidden; }
+.statusbar span { flex: 0 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+@media (max-height: 780px) {
+  .shell .workspace { padding-top: 14px; padding-bottom: 14px; }
+  .shell .page-head { margin-bottom: 10px; }
+  .shell .page-head p { margin-top: 4px; }
+  .shell[data-current-page="home"] .home-chat-stream { padding-top: 14px; padding-bottom: 14px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shell *,
+  .shell *::before,
+  .shell *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
+}

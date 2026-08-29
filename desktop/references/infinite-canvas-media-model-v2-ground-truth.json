@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 4,
+  "inputNodeTypes": ["text", "image-input", "video-input", "audio-input"],
+  "generationNodeTypes": ["image-generation", "video-generation", "audio-generation"],
+  "audioExtension": ".mp3",
+  "audioMime": "audio/mpeg",
+  "inlineReferenceLimitBytes": 33554432,
+  "fixtureContent": "lingframe-canvas-reference",
+  "expectedVideoModels": ["video-model"],
+  "expectedParameters": {
+    "mode": "image-to-video",
+    "ratio": "16:9",
+    "resolution": "1080p",
+    "duration": "10s",
+    "guidance": 7
+  }
+}

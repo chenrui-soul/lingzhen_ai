@@ -1,0 +1,28 @@
+{
+  "version": "v0.11.8",
+  "scenario": "创作首页豆包视频参考图上传与结果回填",
+  "referenceCount": 3,
+  "referenceTypes": [
+    "image",
+    "image",
+    "image"
+  ],
+  "requiredEvidenceFields": [
+    "referenceUpload.requestedCount",
+    "referenceUpload.uploadedCount",
+    "referenceUpload.verified",
+    "referenceUpload.items"
+  ],
+  "expectedResultNameSuffix": "豆包生成视频",
+  "expectedMaterialRefreshMarkers": [
+    "assetsStale",
+    "lingframe:generation-status",
+    "scheduleMaterialReload"
+  ],
+  "generatedAt": "2026-08-25T10:26:46.799Z",
+  "fixtureNames": [
+    "person-reference.png",
+    "scene-reference.png",
+    "prop-reference.png"
+  ]
+}

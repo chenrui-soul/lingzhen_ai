@@ -1,0 +1,6 @@
+dist
+node_modules
+coverage
+scripts/log
+src/api/generated
+pnpm-lock.yaml

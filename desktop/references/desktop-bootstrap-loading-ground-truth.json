@@ -1,0 +1,24 @@
+{
+  "test": "desktop-bootstrap-loading",
+  "slowNoticeMs": 8000,
+  "maximumDocumentOverflowPx": 1,
+  "requiredSelectors": [
+    ".auth-loading-delayed",
+    ".auth-loading-status",
+    "[data-bootstrap-retry-slow]",
+    "[data-bootstrap-wait]"
+  ],
+  "requiredCopy": [
+    "工作台加载时间较长",
+    "服务仍在连接，成功后会自动进入桌面。",
+    "重新检查",
+    "继续等待",
+    "重新检查不会重复创建项目、任务或素材。"
+  ],
+  "requiredBehaviors": [
+    "slow loading becomes actionable without declaring a false failure",
+    "ready auth change removes the gate immediately",
+    "manual retry remains available",
+    "concurrent bootstrap requests share one backend request"
+  ]
+}

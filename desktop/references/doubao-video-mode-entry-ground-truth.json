@@ -1,0 +1,76 @@
+{
+  "modeEvidence": [
+    "legacy model control",
+    "legacy parameter panel",
+    "video composer placeholder"
+  ],
+  "entryScope": "composer-toolbar",
+  "maxEntryAttempts": 2,
+  "scenarios": [
+    {
+      "name": "新版页面只有视频提示词输入框",
+      "initialStates": [
+        {
+          "active": true,
+          "videoComposer": true,
+          "legacyControls": false
+        }
+      ],
+      "expectedClicks": 0,
+      "expectedEscapePresses": 0
+    },
+    {
+      "name": "普通对话存在账号浮层和同名历史会话",
+      "initialStates": [
+        {
+          "active": false,
+          "videoComposer": false,
+          "legacyControls": false
+        },
+        {
+          "active": true,
+          "videoComposer": true,
+          "legacyControls": false
+        }
+      ],
+      "entry": {
+        "x": 640,
+        "y": 760,
+        "label": "视频生成",
+        "scope": "composer-toolbar",
+        "verified": true
+      },
+      "expectedClicks": 1,
+      "expectedEscapePresses": 2
+    },
+    {
+      "name": "首次点击未切换后自动重试",
+      "initialStates": [
+        {
+          "active": false,
+          "videoComposer": false,
+          "legacyControls": false
+        },
+        {
+          "active": false,
+          "videoComposer": false,
+          "legacyControls": false
+        },
+        {
+          "active": true,
+          "videoComposer": true,
+          "legacyControls": false
+        }
+      ],
+      "entry": {
+        "x": 640,
+        "y": 760,
+        "label": "视频生成",
+        "scope": "composer-toolbar",
+        "verified": true
+      },
+      "expectedClicks": 2,
+      "expectedEscapePresses": 4
+    }
+  ]
+}

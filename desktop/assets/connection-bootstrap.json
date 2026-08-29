@@ -1,0 +1,9 @@
+{
+  "version": 1,
+  "bootstrapUrls": [
+    "http://448a8u5458.qicp.vip"
+  ],
+  "productionDomainRequired": false,
+  "allowPublicHttp": true,
+  "note": "正式发布前通过 LINGFRAME_BOOTSTRAP_URLS 写入平台长期持有的 HTTPS 统一域名"
+}

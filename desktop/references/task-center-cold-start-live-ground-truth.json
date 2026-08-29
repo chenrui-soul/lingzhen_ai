@@ -1,0 +1,11 @@
+{
+  "test": "task-center-cold-start-live",
+  "expected": {
+    "completedCount": 2,
+    "failedCount": 1,
+    "assetCount": 2,
+    "accountCount": 1,
+    "loggedInCount": 1,
+    "requiresManualRefresh": false
+  }
+}

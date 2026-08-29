@@ -1,0 +1,10 @@
+{
+  "feature": "resource-asset-action-menu",
+  "maximumOpenMenus": 1,
+  "closeOnOutsideClick": true,
+  "closeOnAction": true,
+  "closeOnEscape": true,
+  "restoreFocusOnEscape": true,
+  "ariaExpandedTracksState": true,
+  "eventListenersBoundOnce": true
+}

@@ -1,0 +1,23 @@
+{
+  "version": "0.12.5",
+  "channel": "stable",
+  "rules": {
+    "httpAllowedOnlyForInternalBuild": true,
+    "backgroundDownloadAllowedWhileTasksRun": true,
+    "installBlockedWhileTasksRun": true,
+    "backupIncludes": ["system/*.json", "active-tenant/database/*.json"],
+    "backupExcludes": ["materials", "downloads", "chrome-profiles", "task-cache", "logs"],
+    "terminalFailureIsNotBlocking": true,
+    "singleUpdateDialog": true,
+    "settingsObserverNoSelfLoop": true
+  },
+  "taskCases": [
+    {"state":"generating","blocking":true},
+    {"state":"downloading","blocking":true},
+    {"state":"awaiting_verification","blocking":true},
+    {"state":"submission_unknown","blocking":true},
+    {"state":"failed","blocking":false},
+    {"state":"completed","blocking":false},
+    {"state":"cancelled","blocking":false}
+  ]
+}

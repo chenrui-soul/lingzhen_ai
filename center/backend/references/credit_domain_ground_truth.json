@@ -1,0 +1,178 @@
+{
+  "wave": "Wave 5",
+  "node": "5.4",
+  "status": "node_5_4_verified",
+  "completedNodes": ["5.0", "5.1", "5.2", "5.3", "5.4"],
+  "source": "WAVE5_CREDIT_MANAGEMENT_PLAN.md",
+  "database": {
+    "engine": "PostgreSQL 16",
+    "formalEndpoint": "127.0.0.1:5433/lingframe_identity",
+    "formalDatabaseModified": false,
+    "migrationVersion": 8,
+    "schema": "billing",
+    "tables": [
+      "credit_ledger_entries",
+      "credit_reservations",
+      "credit_settlements",
+      "model_price_versions",
+      "recharge_orders",
+      "recharge_packages",
+      "user_wallets"
+    ]
+  },
+  "wallet": {
+    "owner": "user",
+    "tenantScoped": false,
+    "integerCredits": true,
+    "fields": ["available_balance", "reserved_balance", "row_version"],
+    "legacyTable": "desktop_data.credit_accounts",
+    "legacyConflictPolicy": "abort_migration",
+    "legacyDuplicatePolicy": "same_balance_collapses_without_sum"
+  },
+  "states": {
+    "rechargeOrder": ["pending", "paid", "closed", "refund_pending", "refunded", "manual_review"],
+    "reservation": ["reserved", "settled", "released", "refunded"],
+    "priceVersion": ["draft", "active", "retired"]
+  },
+  "ledgerEntryTypes": [
+    "migration",
+    "recharge",
+    "reserve",
+    "settle",
+    "release",
+    "refund",
+    "manual_adjustment",
+    "reversal"
+  ],
+  "permissions": {
+    "desktopRead": "credits.self.read",
+    "desktopRecharge": "credits.self.recharge",
+    "management": "credits.manage",
+    "applicationRole": "lingframe_app",
+    "applicationRoleMayUpdateWallet": false,
+    "applicationRoleMayMutateLedger": false
+  },
+  "managementRead": {
+    "clientType": "management_web",
+    "permission": "credits.manage",
+    "readOnly": true,
+    "maxPageSize": 100,
+    "cursorOrder": "timestamp_desc_id_desc",
+    "endpoints": [
+      "/api/v1/management/credits/wallets",
+      "/api/v1/management/credits/orders",
+      "/api/v1/management/credits/ledger",
+      "/api/v1/management/credits/reservations/anomalies"
+    ],
+    "reservationAnomalyRules": [
+      "reserved_and_expired",
+      "reserved_without_expiry_and_not_updated_for_two_hours"
+    ],
+    "excludedFields": [
+      "channel_trade_no",
+      "idempotency_key",
+      "operator_user_id",
+      "operator_membership_id",
+      "price_version_id",
+      "row_version"
+    ]
+  },
+  "recharge": {
+    "packageStatuses": ["draft", "active", "inactive"],
+    "desktopEndpoints": [
+      "GET /api/v1/recharge-packages",
+      "POST /api/v1/recharge-orders",
+      "GET /api/v1/recharge-orders/{orderId}"
+    ],
+    "managementEndpoints": [
+      "GET /api/v1/management/credits/packages",
+      "POST /api/v1/management/credits/packages",
+      "PUT /api/v1/management/credits/packages/{packageId}",
+      "POST /api/v1/management/credits/sandbox/orders/{orderId}/events"
+    ],
+    "controlledFunctions": [
+      "billing.create_recharge_package",
+      "billing.update_recharge_package",
+      "billing.create_recharge_order",
+      "billing.close_recharge_order",
+      "billing.apply_sandbox_payment"
+    ],
+    "packageWritesUseOptimisticLock": true,
+    "orderCreateUsesUserScopedIdempotency": true,
+    "successfulPaymentCreditsWalletAndLedgerAtomically": true
+  },
+  "desktopCompatibility": {
+    "schemaVersion": 1,
+    "requiredCreditFields": ["available", "balance"],
+    "balanceIsSafeNonNegativeInteger": true,
+    "balanceSameAcrossTenantsForSameUser": true,
+    "platformExecutionReadyBeforeBillingProxy": false,
+    "localModelGatewayUnchanged": true,
+    "doubaoChannelUnchanged": true
+  },
+  "paymentBoundary": {
+    "realChannelConfigured": false,
+    "sandboxManagementOnly": true,
+    "clientMayDeclarePaid": false,
+    "callbackRequiresSignature": true,
+    "callbackRequiresOrderAndTradeNumberIdempotency": true
+  },
+  "invariants": [
+    "Each user has at most one personal wallet and the wallet has no tenant_id",
+    "Available and reserved balances never become negative",
+    "Every balance change and its ledger entry commit in one transaction",
+    "Ledger entries are append-only and cannot be updated or deleted",
+    "Business type plus idempotency key identifies at most one ledger entry",
+    "The client cannot declare recharge credits, bonus credits or cash amount as authoritative",
+    "A repeated user plus clientRequestId returns the original billing context",
+    "A taskId plus attemptId has at most one reservation",
+    "A task has at most one successful settlement",
+    "Settled plus released credits never exceed reserved credits",
+    "Insufficient credits prevent upstream platform task creation",
+    "Unknown upstream submission state keeps credits reserved and forbids automatic resend",
+    "Result transfer repair never creates a second settlement",
+    "Manual adjustments require operator, reason and idempotency key",
+    "The application role cannot directly update wallets or mutate ledger rows",
+    "Desktop responses never expose payment secrets, provider credentials, private routes or database data",
+    "Insufficient credits do not block login, Doubao, local BYOK, projects, assets or task history",
+    "Desktop bootstrap schemaVersion remains 1 and preserves credits.available plus credits.balance"
+  ],
+  "counterexamples": [
+    "Same user has different legacy balances in two tenants",
+    "Two concurrent reservations each fit alone but exceed the wallet together",
+    "The same payment callback arrives twice",
+    "The same task succeeds after a result-transfer retry",
+    "An online bootstrap returns a negative or unsafe credit balance",
+    "A management request attempts to edit wallet balance without a ledger entry"
+  ],
+  "verification": {
+    "contractChecks": {"total": 91, "passed": 91, "failed": 0},
+    "billingMigrationCheckGroups": {"total": 28, "passed": 28, "failed": 0},
+    "modelCatalogMigrationRegression": {"total": 31, "passed": 31, "failed": 0},
+    "backendTests": {"total": 147, "passed": 147, "failed": 0},
+    "frontendTests": {
+      "total": 54,
+      "passed": 54,
+      "failed": 0,
+      "lintPassed": true,
+      "typecheckPassed": true,
+      "productionBuildPassed": true
+    },
+    "managementUiAcceptance": {
+      "viewports": ["1280x800", "768x900", "390x844"],
+      "keyboardTabsPassed": true,
+      "consoleErrors": 0,
+      "consoleWarnings": 0
+    },
+    "desktopAuthTests": {"total": 30, "passed": 30, "failed": 0},
+    "desktopModelGatewayTests": {"total": 24, "passed": 24, "failed": 0},
+    "desktopBootstrapLoadingTests": {"total": 5, "passed": 5, "failed": 0},
+    "desktopSmokeTests": {"total": 17, "passed": 17, "failed": 0},
+    "formalDatabaseModified": false,
+    "runningBackendReplaced": false,
+    "logs": [
+      "scripts/log/wave5-credit-contract-20260826-042313.log",
+      "scripts/log/billing-migration-20260826-041142.log"
+    ]
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "viewports": [
+    {"width": 1920, "height": 1080, "mode": "spacious"},
+    {"width": 1440, "height": 900, "mode": "standard"},
+    {"width": 1280, "height": 800, "mode": "compact"},
+    {"width": 1120, "height": 700, "mode": "minimal"}
+  ],
+  "minimumHomePromptWidth": 500,
+  "minimumWorkspaceWidth": 760,
+  "maximumDocumentOverflow": 1,
+  "compactNavigationWidth": 90,
+  "minimumNavigationWidth": 70,
+  "maximumNavigationWidth": 86
+}

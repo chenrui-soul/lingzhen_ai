@@ -1,0 +1,17 @@
+{
+  "requiredNavigation": ["创作首页", "素材中心", "项目管理", "文本创作", "任务中心", "豆包管理", "无限画布", "短剧模板", "系统设置"],
+  "requiredPages": {
+    "text": "AI文本创作工作室",
+    "tasks": "任务中心",
+    "doubao": "豆包管理",
+    "canvas": "无限画布",
+    "template": "短剧模板"
+  },
+  "viewports": [
+    {"width": 1920, "height": 1080},
+    {"width": 1366, "height": 768},
+    {"width": 1280, "height": 720}
+  ],
+  "horizontalOverflowAllowed": false,
+  "originalLogoRequired": true
+}

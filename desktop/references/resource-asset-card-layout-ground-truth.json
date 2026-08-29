@@ -1,0 +1,8 @@
+{
+  "feature": "resource-asset-card-footer-layout",
+  "footerWrap": false,
+  "actionTextWrap": false,
+  "usageTextWrap": false,
+  "maximumFooterHeight": 48,
+  "requiredActions": ["删除", "操作"]
+}

@@ -1,0 +1,41 @@
+{
+  "test": "doubao-multi-task-recovery",
+  "version": "v0.12.0-multi-task-dock-result-recovery-20260815",
+  "zeroQuota": true,
+  "liveDock": {
+    "summaryCounters": ["running", "queued", "attention"],
+    "maxVisibleRows": 4,
+    "detailFollowsSelection": true,
+    "priority": ["awaiting_verification", "awaiting_login", "submission_unknown", "failed", "generating", "submitting", "queued", "completed"]
+  },
+  "indeterminateStates": ["generating", "submission_unknown"],
+  "failureCases": [
+    {
+      "text": "出于肖像保护考虑，Seedance 2.0 暂不支持上传真人脸素材作为参考。你可以试试换张参考图或者文生视频",
+      "code": "DOUBAO_FACE_REFERENCE_REJECTED",
+      "retryMode": "edit_assets",
+      "terminal": true,
+      "accountAction": "release"
+    },
+    {
+      "text": "参考图数量过多，请减少参考图数量后重试",
+      "code": "DOUBAO_REFERENCE_LIMIT_EXCEEDED",
+      "retryMode": "edit_assets",
+      "terminal": true,
+      "accountAction": "release"
+    },
+    {
+      "text": "视频额度没有了，本次未创建生成任务",
+      "code": "DOUBAO_VIDEO_QUOTA_EXHAUSTED",
+      "retryMode": "switch_account",
+      "terminal": true,
+      "accountAction": "release"
+    }
+  ],
+  "recovery": {
+    "conversationRequired": true,
+    "latestUserMessageFallbackAllowed": true,
+    "leftHistoryMustNotBeScanned": true,
+    "sameSignalFingerprintMustBeStable": true
+  }
+}

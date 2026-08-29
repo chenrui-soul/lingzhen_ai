@@ -1,0 +1,46 @@
+{
+  "version": 1,
+  "requiredFeatures": [
+    "独立画布模块",
+    "左右面板可收起",
+    "右键新增节点",
+    "拉线到空白处新增节点",
+    "工具栏切换选择和平移",
+    "框选多节点并打组",
+    "分组拖动与解组",
+    "选中连线显式删除",
+    "循环连接保护",
+    "上游信息传递",
+    "直接上游信息一次性同步",
+    "输入修改后不被上游重跑覆盖",
+    "按条重新添加上游文本或素材",
+    "素材管理与项目资源库打通",
+    "自动保存",
+    "历史版本",
+    "运行当前节点",
+    "运行整套流程",
+    "实时运行现场",
+    "响应式布局"
+  ],
+  "viewports": [
+    {"width": 1920, "height": 1080},
+    {"width": 1440, "height": 900},
+    {"width": 1280, "height": 800}
+  ],
+  "flowFixture": {
+    "nodes": [
+      {"id":"idea","type":"lingframe","position":{"x":0,"y":0},"data":{"kind":"text","title":"创意","content":"一只会飞的气球"}},
+      {"id":"outline","type":"lingframe","position":{"x":300,"y":0},"data":{"kind":"story-outline","title":"大纲","instruction":"生成三幕式大纲","output":"第一幕发现气球，第二幕穿越风暴，第三幕回到家。"}},
+      {"id":"prompt","type":"lingframe","position":{"x":600,"y":0},"data":{"kind":"video-prompt","title":"视频提示词","instruction":"整理视频提示词","status":"completed","output":{"type":"text","content":"生成电影感提示词"}}},
+      {"id":"video","type":"lingframe","position":{"x":900,"y":0},"data":{"kind":"video-generation","title":"视频生成","instruction":"16:9，5秒"}}
+    ],
+    "edges": [
+      {"id":"e1","source":"idea","target":"outline"},
+      {"id":"e2","source":"outline","target":"prompt"},
+      {"id":"e3","source":"prompt","target":"video"}
+    ],
+    "expectedOrder": ["idea","outline","prompt","video"],
+    "expectedVideoUpstreamIds": ["prompt"],
+    "expectedPromptFragments": ["16:9，5秒","生成电影感提示词"]
+  }
+}

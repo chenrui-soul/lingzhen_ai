@@ -1,0 +1,33 @@
+"use strict";
+const fs = require("fs");
+const path = require("path");
+const root = path.resolve(__dirname, "..");
+const read = file => fs.readFileSync(path.join(root, file), "utf8");
+const index = read("src/renderer/index.html");
+const core = read("src/renderer/text-quality-core.js");
+const adapter = read("src/renderer/text-workspace-quality.js");
+const css = read("src/renderer/styles/text-workspace-quality.css");
+const truth = JSON.parse(read("references/text-quality-batch-f-ground-truth.json"));
+const checks = [];
+const check = (name, ok, detail) => checks.push({name, ok:Boolean(ok), ...(detail === undefined ? {} : {detail})});
+
+const order = ["text-structure-core.js", "text-quality-core.js", "text-workspace-ai.js", "text-workspace-research.js", "text-workspace-structure.js", "text-workspace-quality.js"].map(name => index.indexOf(name));
+check("批次 F 核心和适配器加载顺序固定", order.every((value, index) => value >= 0 && (index === 0 || value > order[index - 1])), order);
+check("质量检查样式独立加载", index.includes("text-workspace-quality.css") && css.includes(".text-quality-workbench") && css.includes(".text-quality-issue") && css.includes(".text-quality-export-grid"));
+check("右侧检查导出标签和中央入口统一", adapter.includes('tab.dataset.textAssistTab = "quality"') && adapter.includes('body.dataset.textAssistBody = "quality"') && adapter.includes('editorExport.textContent = "检查/导出"'));
+check("四类检查和五类导出均由核心声明", truth.categories.every(key => core.includes(`${key}: Object.freeze`)) && truth.formats.every(key => core.includes(`${key}: Object.freeze`)), truth);
+check("检查结果只定位，不写入或触发正文 input", !/area\.value\s*=|dispatchEvent\(new Event\(["']input/.test(adapter) && adapter.includes("area.setSelectionRange") && adapter.includes("不自动修改正文"));
+check("结构问题只路由回原结构记录", adapter.includes("data-text-structure-timeline-select") && adapter.includes("data-text-structure-entity-select") && adapter.includes("data-text-structure-select-node"));
+check("导出只使用当前会话绑定和结构白名单", adapter.includes("projectId:projectId(workspace)") && adapter.includes("conversationId:conversationId(workspace)") && core.includes("function safeStructure") && core.includes("structure:safe"));
+check("批次 F 不创建生成任务或文本专用调度器", !/api\.(generation|tasks)\.(create|retry|cancel)/.test(adapter) && !/generation-orchestrator|task-center\.js|model-gateway\.js/.test(adapter));
+check("批次 F 不调用豆包、画布或素材写接口", !/api\.doubao\.|api\.assets\.(create|update|delete)|infinite-canvas|canvas-flow-core/.test(adapter));
+check("快捷键、F6 区域跳转和 Escape 焦点恢复已接入", adapter.includes('event.ctrlKey && event.altKey && key === "q"') && adapter.includes('event.ctrlKey && event.altKey && key === "e"') && adapter.includes('event.key !== "F6"') && adapter.includes('event.key === "Escape"') && adapter.includes("state.focusBefore"));
+check("窄屏使用临时覆盖层且不压缩正文", css.includes(".text-assist.text-quality-overlay") && css.includes("position:fixed!important") && adapter.includes("window.innerWidth <= 900"));
+check("高 DPI 有独立可读性和点击尺寸适配", css.includes("@media(min-resolution:144dpi)") && css.includes("min-height:44px") && css.includes(":focus-visible"));
+check("旧 TXT 导出被检查导出面板截获但预览不受影响", adapter.includes("event.stopImmediatePropagation()") && adapter.includes("[data-text-export]") && !adapter.includes("[data-text-preview]"));
+check("所有导出均为显式用户点击触发", adapter.includes("[data-text-quality-export]") && adapter.includes("downloadExport(workspace") && !/setInterval\([^)]*downloadExport/.test(adapter));
+
+const failed = checks.filter(item => !item.ok);
+const output = {test:"text-quality-routing", total:checks.length, passed:checks.length - failed.length, failed:failed.length, checks};
+console.log(JSON.stringify(output, null, 2));
+if (failed.length) process.exitCode = 1;

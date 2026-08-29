@@ -1,0 +1,35 @@
+{
+  "tenantId": "tenant-failure-persistence",
+  "task": {
+    "title": "豆包终止失败持久化测试",
+    "prompt": "仅用于本地数据桥接测试，不提交到豆包。",
+    "accountId": "account-persistence-a",
+    "accountName": "测试账号",
+    "conversationId": "conversation-persistence-a"
+  },
+  "failure": {
+    "state": "failed",
+    "stage": "failed",
+    "progressMode": "determinate",
+    "monitorError": "",
+    "monitorProbe": null,
+    "outcomeCode": "DOUBAO_FACE_REFERENCE_REJECTED",
+    "terminalFailureVerified": true,
+    "submittedVerified": true,
+    "safeToRetry": true,
+    "notSentVerified": false,
+    "retryMode": "edit_assets",
+    "accountAction": "release",
+    "failureCode": "DOUBAO_FACE_REFERENCE_REJECTED",
+    "failureCategory": "reference_policy",
+    "providerMessage": "出于肖像保护考虑，暂不支持上传真实人脸素材作为参考。",
+    "userAction": "更换非真人角色图或改用文生视频。",
+    "quotaConsumed": null,
+    "failureEvidence": {
+      "source": "doubao-current-conversation",
+      "conversationId": "conversation-persistence-a",
+      "bindingMode": "message-id",
+      "fingerprint": "failure-persistence-fixture"
+    }
+  }
+}

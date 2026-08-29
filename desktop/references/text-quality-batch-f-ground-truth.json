@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "categories": ["continuity", "spelling", "format", "risk"],
+  "formats": ["txt", "markdown", "json", "screenplay", "storyboard"],
+  "maximumTextLength": 500000,
+  "maximumIssues": 500,
+  "shortcuts": ["Ctrl+Alt+Q", "Ctrl+Alt+E", "F6", "Escape"],
+  "protectedMetadata": ["apiKey", "cookie", "authorization", "baseUrl", "accountProfile", "serviceUrl"],
+  "requiredChecks": [
+    "duplicate-character",
+    "unknown-character-reference",
+    "timeline-order",
+    "scene-location",
+    "prop-state",
+    "character-appearance",
+    "common-typo",
+    "duplicate-word",
+    "trailing-space",
+    "blank-lines",
+    "repeat-punctuation",
+    "ascii-punctuation",
+    "unbalanced-pair",
+    "long-paragraph",
+    "script-scene-heading",
+    "storyboard-required-fields",
+    "ad-absolute",
+    "ad-guarantee",
+    "medical-claim",
+    "finance-claim",
+    "scarcity-pressure",
+    "infringement-implication"
+  ]
+}

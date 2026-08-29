@@ -1,0 +1,48 @@
+{
+  "feature": "doubao-submission-context-validation",
+  "requirements": [
+    {
+      "case": "matching-current-conversation",
+      "currentConversationId": "conversation-1001",
+      "expectedConversationId": "conversation-1001",
+      "promptPresentInCurrentConversation": true,
+      "userMessage": true,
+      "expectedMatched": true,
+      "expectedAction": "continue-monitoring"
+    },
+    {
+      "case": "prompt-mismatch",
+      "currentConversationId": "conversation-1001",
+      "expectedConversationId": "conversation-1001",
+      "promptPresentInCurrentConversation": false,
+      "userMessage": false,
+      "expectedMatched": false,
+      "expectedAction": "keep-human-review"
+    },
+    {
+      "case": "conversation-id-mismatch",
+      "currentConversationId": "conversation-2002",
+      "expectedConversationId": "conversation-1001",
+      "promptPresentInCurrentConversation": true,
+      "userMessage": true,
+      "expectedMatched": false,
+      "expectedAction": "keep-human-review"
+    },
+    {
+      "case": "missing-current-conversation",
+      "currentConversationId": "",
+      "expectedConversationId": "conversation-1001",
+      "promptPresentInCurrentConversation": true,
+      "userMessage": true,
+      "expectedMatched": false,
+      "expectedAction": "keep-human-review"
+    }
+  ],
+  "invariants": [
+    "mismatch must not set submittedVerified to true",
+    "mismatch must not call monitor",
+    "mismatch must keep the account locked",
+    "match must persist conversationId and userMessageId before monitoring",
+    "match must call monitor exactly once"
+  ]
+}

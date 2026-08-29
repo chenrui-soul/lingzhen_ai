@@ -1,0 +1,52 @@
+{
+  "provider": {
+    "code": "wave34-provider",
+    "displayName": "Wave 3.4 Provider",
+    "protocolFamily": "openai_compatible",
+    "description": "Node 3.4 write contract provider"
+  },
+  "model": {
+    "code": "wave34-video-v1",
+    "displayName": "Wave 3.4 Video",
+    "capabilityType": "video",
+    "description": "Node 3.4 write contract model",
+    "parameterSchema": {
+      "type": "object",
+      "properties": {
+        "duration": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 30
+        }
+      }
+    },
+    "defaultParameters": {
+      "duration": 10
+    },
+    "defaultTenantEnabled": false,
+    "sortOrder": 30
+  },
+  "forbiddenContractKeys": [
+    "apiKey",
+    "authorization",
+    "baseUrl",
+    "credentialRef",
+    "headers",
+    "secret",
+    "token",
+    "__proto__",
+    "constructor",
+    "prototype"
+  ],
+  "expectedErrorCodes": [
+    "MODEL_PROVIDER_NOT_FOUND",
+    "MODEL_NOT_FOUND",
+    "MODEL_PROVIDER_CODE_CONFLICT",
+    "MODEL_CODE_CONFLICT",
+    "MODEL_SCHEMA_INVALID",
+    "MODEL_PROVIDER_NOT_ACTIVE",
+    "MODEL_PROVIDER_HAS_ACTIVE_MODELS",
+    "MODEL_ROW_VERSION_CONFLICT",
+    "CSRF_VALIDATION_FAILED"
+  ]
+}

@@ -1,0 +1,43 @@
+:root {
+  color-scheme: dark;
+
+  --lz-color-bg: #07111e;
+  --lz-color-bg-deep: #050c17;
+  --lz-color-surface: #0b1829;
+  --lz-color-surface-strong: #0e1d31;
+  --lz-color-field: #071426;
+  --lz-color-line: rgba(140, 177, 218, 0.17);
+  --lz-color-line-strong: rgba(91, 218, 241, 0.62);
+  --lz-color-text: #eef7ff;
+  --lz-color-muted: #9bb0c8;
+  --lz-color-subtle: #7087a3;
+  --lz-color-accent: #55d8f1;
+  --lz-color-accent-strong: #38bdd9;
+  --lz-color-danger: #ffab94;
+  --lz-color-success: #72ddc2;
+  --lz-color-warning: #ffbd76;
+
+  --lz-space-1: 0.25rem;
+  --lz-space-2: 0.5rem;
+  --lz-space-3: 0.75rem;
+  --lz-space-4: 1rem;
+  --lz-space-5: 1.25rem;
+  --lz-space-6: 1.5rem;
+  --lz-space-8: 2rem;
+  --lz-space-10: 2.5rem;
+  --lz-space-12: 3rem;
+
+  --lz-radius-control: 0.75rem;
+  --lz-radius-card: 1.25rem;
+  --lz-radius-shell: 1.5rem;
+  --lz-radius-pill: 999px;
+
+  --lz-shadow-panel: 0 1.5rem 4.5rem rgba(1, 8, 17, 0.22);
+  --lz-shadow-control: inset 0 1px 0 rgba(238, 247, 255, 0.04);
+  --lz-motion-standard: cubic-bezier(0.2, 0.75, 0.2, 1);
+
+  --lz-z-sticky: 200;
+  --lz-z-overlay: 300;
+  --lz-z-modal: 400;
+  --lz-z-toast: 500;
+}

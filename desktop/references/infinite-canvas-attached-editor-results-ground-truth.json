@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "attachedEditor": {
+    "maxGapPx": 16,
+    "viewportPaddingPx": 8,
+    "stableClickMaxDeltaPx": 1
+  },
+  "focusEditor": {
+    "minWidthPx": 720,
+    "minHeightPx": 560
+  },
+  "resultFixture": {
+    "assetId": "asset-image",
+    "assetName": "角色参考图.png",
+    "resultType": "image",
+    "expandedNodeKind": "image-input"
+  },
+  "inspectorModelSettings": {
+    "imageCategory": "image",
+    "requiredParameters": ["mode", "ratio", "resolution", "count", "seed"]
+  }
+}

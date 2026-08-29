@@ -1,0 +1,17 @@
+{
+  "name": "lingframe-infinite-canvas-web",
+  "private": true,
+  "version": "1.0.0",
+  "license": "UNLICENSED",
+  "scripts": {
+    "build": "esbuild src/index.jsx --bundle --format=iife --target=es2020 --minify --outfile=../infinite-canvas-v1.js --loader:.css=css"
+  },
+  "dependencies": {
+    "@xyflow/react": "12.11.3",
+    "react": "19.1.1",
+    "react-dom": "19.1.1"
+  },
+  "devDependencies": {
+    "esbuild": "0.25.9"
+  }
+}

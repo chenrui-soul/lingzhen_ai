@@ -1,0 +1,21 @@
+"use strict";
+const fs=require("fs"),path=require("path"),vm=require("vm");const root=path.resolve(__dirname,"..");const truth=JSON.parse(fs.readFileSync(path.join(root,"references","home-account-profile-ground-truth.json"),"utf8"));const read=f=>fs.readFileSync(path.join(root,f),"utf8");const app=read("src/renderer/app.js"),desktop=read("src/renderer/desktop-ui.js"),generation=read("src/renderer/generation-ui.js"),css=read("src/renderer/styles/app.css");const checks=[];const check=(name,value)=>checks.push({name,ok:Boolean(value)});
+check("品牌文案",app.includes(truth.brandCopy));
+check("首页真实输入",app.includes("data-home-prompt")&&app.includes("textarea"));
+check("首页通道选择",app.includes("data-home-channel")&&app.includes('value="doubao"')&&app.includes('value="model-gateway"'));
+check("首页账号选择",app.includes("data-home-account-select"));
+check("首页模型选择",app.includes("data-home-model-select")&&app.includes("models.bootstrap"));
+check("首页比例选择",app.includes("data-home-ratio"));
+check("首页统一任务提交",app.includes("window.lingframe.generation.create(input)"));
+check("首页结果回填提示",app.includes(truth.resultBackfillLabel));
+check("首页快捷工作流可跳转",app.includes("[data-page=\"canvas\"]")&&app.includes("[data-page=\"template\"]"));
+check("租户级账号资料",desktop.includes("lingframe.doubaoProfiles.${snapshot.identity?.tenantId || 'local'}"));
+check("备注名编辑",desktop.includes("工作台备注名")&&desktop.includes("data-profile-name"));
+check("头像上传",desktop.includes("data-profile-avatar")&&desktop.includes("FileReader"));
+check("头像大小限制",desktop.includes("1024*1024"));
+check("头像恢复",desktop.includes("data-profile-remove-avatar"));
+check("不修改豆包昵称提示",desktop.includes("不会修改豆包平台昵称"));
+check("任务使用备注名",generation.includes("window.lingframeAccountStore?.accounts?.()")&&generation.includes("input.accountName = item?.name"));
+check("头像样式",css.includes("profile-avatar-preview")&&css.includes("object-fit:cover"));
+for(const file of ["src/renderer/app.js","src/renderer/desktop-ui.js","src/renderer/generation-ui.js"]){try{new vm.Script(read(file),{filename:file});check(`语法 ${file}`,true)}catch(error){check(`语法 ${file}`,false);checks.at(-1).error=error.message}}
+const failed=checks.filter(x=>!x.ok),result={groundTruth:truth,total:checks.length,passed:checks.length-failed.length,failed:failed.length,checks};const logDir=path.join(root,"scripts","log");fs.mkdirSync(logDir,{recursive:true});fs.writeFileSync(path.join(logDir,"home-account-profile.json"),JSON.stringify(result,null,2));console.log(JSON.stringify(result,null,2));if(failed.length)process.exitCode=1;

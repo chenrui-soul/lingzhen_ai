@@ -1,0 +1,35 @@
+# Dependencies and build output
+**/node_modules/
+**/dist/
+**/dist-*/
+**/target/
+
+# Runtime data and local test artifacts
+**/.local-user-data*/
+**/.runtime-*/
+**/account_*/
+**/backups/
+**/scripts/log/
+**/scripts/tmp/
+**/tests/log/
+**/.ai-memory/
+**/.asar-activation-check/
+
+# Secrets and local configuration
+**/.env
+**/.env.*
+!**/.env.example
+!**/.env.postgres.example
+**/secrets/
+**/*-secrets*.json
+**/connection-config-cache.json
+
+# OS/editor files and generated packages
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.exe
+*.blockmap
+*.zip
+*.7z

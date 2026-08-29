@@ -1,0 +1,21 @@
+{
+  "test": "doubao-intermediate-recovery",
+  "tenantId": "tenant-doubao-intermediate-recovery",
+  "safeRestartStates": [
+    "preparing",
+    "assigned",
+    "launching",
+    "checking_login"
+  ],
+  "protectedRestartStates": [
+    "uploading",
+    "configuring",
+    "submitting",
+    "awaiting_confirmation"
+  ],
+  "expectedProtectedState": "submission_unknown",
+  "expectedProtectedRecoveryState": "interrupted_browser_automation",
+  "expectedGenerateTimeoutCode": "DOUBAO_EXECUTION_TIMEOUT",
+  "expectedTimeoutRecoveryState": "execution_timeout_manual_review",
+  "expectedProviderResubmissionsDuringRecovery": 0
+}

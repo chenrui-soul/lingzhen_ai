@@ -1,0 +1,28 @@
+{
+  "test": "project-resource-safe-copy-batch-b",
+  "rules": {
+    "directProjectMove": "rejected",
+    "crossProjectAction": "copy",
+    "copyCreatesNewAssetId": true,
+    "copyKeepsSource": true,
+    "copyProvenanceFields": ["sourceAssetId", "sourceProjectId"],
+    "deleteProtection": ["task-input", "task-result", "text-conversation", "infinite-canvas", "staged-reference"]
+  },
+  "protectedHashes": {
+    "src/renderer/app.js": "BE1C3F957BDAD467C72D0162F00E1601729D3AF8745F0F502AA385B993D178AC",
+    "src/main/generation-orchestrator.cjs": "941806E4E47F0131300A2953DE72BD3EA846535726FFB9000CBC3F51098DA376",
+    "src/main/embedded-browser-manager.cjs": "849368660DF7E37C2530E8E5BEE95D2D6112C5DF72365825F2169DA8C7FE043C",
+    "src/renderer/task-center.js": "6CACC01EB9E69CE551FBE811F6D22F51F6066BF18C330E20867F178A5E1F918B",
+    "src/renderer/generation-ui.js": "E87F93479776B4AF9CFA7860EE02D14985075E5FC950AB443476D18F55CE47AE",
+    "src/renderer/text-workspace.js": "56587DD87E7E881077749B4EA9FE70CFEE239F3A62925487D1733CFD2A064D8B",
+    "src/renderer/infinite-canvas.js": "5DDBB09E55C21A8D9C39BBEB7606BE60C4ABABAC43DF48664F67B7762657571A",
+    "src/renderer/app-fixes.js": "60822638FABD5A71CC53025C745C60633150BB8A144BB41C66B87F4CD76AD807",
+    "src/renderer/text-workspace-layout.js": "578EDEFECC99256A4C21F32BDE394A2426EF03F10772AB49288E840C368F0E18",
+    "src/renderer/text-workspace-assets.js": "9C50DBFE8C06263F236A96FCECEE6C239E62A8CA6E84AFF096A82D812850C144",
+    "src/renderer/canvas-flow-core.js": "062C1DBE2C390FB1119F31214679B294765527267E0483AA27A65E59D278BC9C",
+    "src/renderer/canvas-input-adapter.js": "435B23FA180B7B95732252F0F0EABB48EEDA5408B545615283EE201DEB0561C1",
+    "src/renderer/canvas-workflow-portability.js": "F20447890F6CE904EAAB654A3873CFBCEE97AC99B96D78A87C56ACA1AB46D979",
+    "src/preload/preload.cjs": "5E5709692E45EE96B02CF22B46431B62D0D050317B421C9BAC71A306D2F2117F",
+    "src/main/main.cjs": "048C15341EA5ADBB7DB315B3907486D76FA09018A407D03A473A81CC67685B51"
+  }
+}

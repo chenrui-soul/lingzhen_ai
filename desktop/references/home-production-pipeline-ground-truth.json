@@ -1,0 +1,15 @@
+{
+  "tenantId": "tenant-home-production-a",
+  "scriptTitle": "10秒悬疑反转分镜提示词",
+  "scriptPrompt": "请把10秒悬疑反转剧本改写为可直接用于视频生成的分镜提示词。",
+  "generatedStoryboard": "镜头1（0-2秒）：深夜暴雨，小巷便利店门口，年轻男人撑黑伞冲入画面，湿透并惊慌回望。\n镜头2（2-5秒）：男人推门，女店员脸色煞白，视线越过男人盯住伞后。\n镜头3（5-8秒）：女店员颤抖警告有人贴在伞面后侧，男人瞬间僵住。\n镜头4（8-10秒）：镜头下移并后拉，泥泞陌生人紧贴黑伞后方，男人猛然转身，画面戛然而止。",
+  "requiredHomeMarkers": [
+    "lingframe:home-task-created",
+    "lingframe:generation-status",
+    "showAssetSourceChooser",
+    "openAssetPicker",
+    "编辑生成结果"
+  ],
+  "generatedAt": "2026-08-25T10:26:25.528Z",
+  "validation": "exact-text-and-material-asset"
+}

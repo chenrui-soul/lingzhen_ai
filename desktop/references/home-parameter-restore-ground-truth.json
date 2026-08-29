@@ -1,0 +1,31 @@
+{
+  "doubaoSelectors": [
+    "[data-home-channel]",
+    "[data-home-group]",
+    "[data-home-account-select]",
+    "[data-home-doubao-model]",
+    "[data-home-ratio]",
+    "[data-home-duration]"
+  ],
+  "gatewaySelectors": [
+    "[data-home-model-type]",
+    "[data-home-model-select]",
+    "[data-home-gateway-duration]",
+    "[data-home-gateway-resolution]"
+  ],
+  "doubaoModels": ["Seedance 2.0 Fast", "Seedance 2.0 Mini"],
+  "doubaoDefaultModel": "Seedance 2.0 Mini",
+  "doubaoDefaultDuration": "10s",
+  "ratios": ["自动", "3:4", "4:3", "9:16", "16:9", "1:1", "21:9"],
+  "modelTypes": ["text", "audio", "image", "video"],
+  "videoDurations": ["5s", "10s"],
+  "videoResolutions": ["720p", "1080p"],
+  "viewports": [
+    {"width": 2048, "height": 1152},
+    {"width": 1440, "height": 900}
+  ],
+  "maximumAllowedOverlapPx": 0,
+  "maximumStatusBarWidthLarge": 284,
+  "maximumStatusBarWidthCompact": 224,
+  "homeAssetButtons": ["text", "image", "video", "audio"]
+}

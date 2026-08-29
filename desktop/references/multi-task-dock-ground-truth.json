@@ -1,0 +1,9 @@
+{
+  "resultUrlMinimumLength": 2000,
+  "resultUrlStorageLimit": 8192,
+  "copyMode": "one-url-per-line-deduplicated",
+  "doubaoScheduling": "same-account-serial-different-account-parallel",
+  "modelGatewayScheduling": "parallel",
+  "liveDock": "global-body-mounted-multi-task",
+  "activeLiveViewCount": 1
+}

@@ -1,0 +1,20 @@
+{
+  "rules": {
+    "liveStates": [
+      "preparing", "checking_login", "uploading_references", "uploading", "configuring",
+      "submitting", "generating", "monitoring", "result_detected", "downloading", "verifying",
+      "queued", "awaiting_quota", "awaiting_verification", "awaiting_login", "submission_unknown", "paused"
+    ],
+    "terminalStates": ["completed", "failed", "cancelled"],
+    "attentionStates": ["awaiting_verification", "awaiting_login", "submission_unknown", "paused"],
+    "recoverableFailureRequirement": "failed + doubao + resultUrls + recover_result/result_download_failed/result_review_required/validating_result/manual_retry"
+  },
+  "cases": [
+    {"name":"pre-submit configuration failure from screenshot", "task":{"state":"failed","executionChannel":"doubao","notSentVerified":true,"safeToRetry":true,"statusText":"执行前配置失败，本次请求未提交，可安全重试"}, "live":false, "attention":false, "reason":"终态失败由任务中心负责重试，不能伪装成实时任务"},
+    {"name":"provider terminal failure after submission", "task":{"state":"failed","executionChannel":"doubao","terminalFailureVerified":true,"safeToRetry":true,"submittedVerified":true}, "live":false, "attention":false, "reason":"豆包已明确结束，原任务留在任务中心"},
+    {"name":"result upload failure with existing video", "task":{"state":"failed","executionChannel":"doubao","resultUrls":["https://example.test/video.mp4"],"retryMode":"recover_result"}, "live":true, "attention":true, "reason":"仍有本地回传动作可执行"},
+    {"name":"manual verification", "task":{"state":"awaiting_verification","executionChannel":"doubao"}, "live":true, "attention":true, "reason":"等待用户在原豆包窗口完成验证"},
+    {"name":"running generation", "task":{"state":"generating","executionChannel":"doubao"}, "live":true, "attention":false, "reason":"执行中但不需要人工处理"},
+    {"name":"completed", "task":{"state":"completed","executionChannel":"doubao"}, "live":false, "attention":false, "reason":"完成任务只在历史和任务中心展示"}
+  ]
+}

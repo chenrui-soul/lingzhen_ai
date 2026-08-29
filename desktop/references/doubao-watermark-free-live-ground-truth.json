@@ -1,0 +1,13 @@
+{
+  "taskId": "5b76d37d7bde4c80bfc962dc4c882512",
+  "tenantId": "43ec40ae-962a-4c22-9f43-dc6d9e2ce92d",
+  "accountId": "desktop-1",
+  "accountName": "白同学",
+  "videoVid": "v0269cg10004da3cofq7dldbokquff60",
+  "conversationId": "38438304333091586",
+  "messageId": "53113317678646786",
+  "expectedNodeName": "video.mp4",
+  "expectedNodeType": 6,
+  "minimumBytes": 65536,
+  "apiBaseQuery": "aid=497858&device_platform=web&samantha_web=1&use-olympus-account=1&version_code=20800&pkg_type=release_version"
+}

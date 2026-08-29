@@ -1,0 +1,10 @@
+{
+  "brandCopy": "灵感，即刻成帧。",
+  "homeRequiredControls": ["prompt", "channel", "account", "model", "ratio", "submit"],
+  "channels": ["doubao", "model-gateway"],
+  "accountProfileFields": ["name", "avatar"],
+  "avatarMaxBytes": 1048576,
+  "storageScope": "tenant",
+  "platformNicknameMutation": false,
+  "resultBackfillLabel": "项目资源库和任务中心"
+}

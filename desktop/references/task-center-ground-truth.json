@@ -1,0 +1,13 @@
+{
+  "tenantA": "cccccccc-cccc-4ccc-8ccc-cccccccccccc",
+  "tenantB": "dddddddd-dddd-4ddd-8ddd-dddddddddddd",
+  "states": ["draft", "queued", "awaiting_verification", "submission_unknown", "completed", "failed", "cancelled"],
+  "expected": {
+    "createdTasks": 4,
+    "safeRetryCreatesChild": true,
+    "tenantBTasks": 0,
+    "duplicateVidRejected": true,
+    "crossProjectResultRejected": true,
+    "unknownSubmissionRetryRejected": true
+  }
+}

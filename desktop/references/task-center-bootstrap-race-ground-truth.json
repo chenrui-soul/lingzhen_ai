@@ -1,0 +1,10 @@
+{
+  "test": "task-center-bootstrap-race",
+  "expected": {
+    "firstResponseLocked": true,
+    "bootstrapCalls": 2,
+    "taskId": "task-bootstrap-recovered",
+    "taskTitle": "工作台就绪后恢复的任务",
+    "completedCount": 1
+  }
+}

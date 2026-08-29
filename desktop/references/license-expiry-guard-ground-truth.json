@@ -1,0 +1,46 @@
+{
+  "version": 1,
+  "expected": {
+    "active": {
+      "usable": true,
+      "mode": "active",
+      "generate": true,
+      "readLocal": true
+    },
+    "expiring": {
+      "usable": true,
+      "mode": "expiring",
+      "generate": true
+    },
+    "expired": {
+      "usable": false,
+      "state": "expired",
+      "mode": "restricted",
+      "generate": false,
+      "writeLocal": false,
+      "readLocal": true,
+      "resultRecovery": true,
+      "agentFallback": false
+    },
+    "offlineGraceExpired": {
+      "usable": false,
+      "state": "offline_grace_expired",
+      "mode": "restricted",
+      "generate": false,
+      "resultRecovery": true
+    },
+    "clockRollback": {
+      "usable": false,
+      "state": "clock_rollback_detected",
+      "mode": "restricted",
+      "generate": false
+    }
+  },
+  "protectedMainCapabilities": [
+    "write-local",
+    "generate",
+    "account-control",
+    "agent-control",
+    "result-recovery"
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "test": "home-asset-picker-project-switch",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "sourceProjectImageCount": {
+    "min": 5,
+    "max": 8
+  },
+  "targetProjectImageCount": {
+    "min": 9
+  },
+  "requiredCssDeclaration": "grid-auto-rows: max-content",
+  "expected": {
+    "buttonInsideOwnCard": true,
+    "buttonHitTestable": true,
+    "pointerClickTogglesSelection": true,
+    "pointerClickDoesNotOpenPreview": true
+  }
+}

@@ -1,0 +1,409 @@
+{
+  "wave": "Wave 3",
+  "status": "in_progress",
+  "source": "Wave 3 model catalog plan, 2026-08-25",
+  "lastVerifiedAt": "2026-08-25T14:47:13+08:00",
+  "completedNodes": ["3.0", "3.1", "3.2", "3.3", "3.4", "3.5", "3.6", "3.7"],
+  "completedBackendSubnodes": ["3.4", "3.5", "3.6"],
+  "backendBaseUrl": "http://127.0.0.1:9001",
+  "frontendBaseUrl": "http://127.0.0.1:5173",
+  "desktopBootstrapSchemaVersion": 1,
+  "desktopContractLimits": {
+    "maxPlatformModels": 500,
+    "maxParameterDepth": 12,
+    "maxArrayItems": 1000,
+    "maxObjectKeys": 200,
+    "executionReady": false
+  },
+  "databaseMigration": {
+    "version": 5,
+    "schema": "model_catalog",
+    "database": "PostgreSQL 16 isolated container",
+    "passedCheckGroups": 31,
+    "log": "lingzhen_center_backend/scripts/log/database-migrations-20260825-144410.log",
+    "formalDatabaseModified": false,
+    "fullChainRegression": "V2-V5 passed after U5-U2 rollback"
+  },
+  "endpoints": [
+    {
+      "path": "/api/v1/management/model-catalog/providers",
+      "methods": ["GET", "POST"],
+      "readPermission": "model_catalog.read",
+      "writePermission": "model_catalog.manage",
+      "writeRequiresCsrf": true,
+      "forbiddenRequestFields": ["tenantId", "status"]
+    },
+    {
+      "path": "/api/v1/management/model-catalog/providers/{providerId}",
+      "methods": ["PUT"],
+      "permission": "model_catalog.manage",
+      "requiredRequestFields": ["rowVersion"],
+      "writeRequiresCsrf": true,
+      "forbiddenRequestFields": ["tenantId", "code"]
+    },
+    {
+      "path": "/api/v1/management/model-catalog/models",
+      "methods": ["GET", "POST"],
+      "readPermission": "model_catalog.read",
+      "writePermission": "model_catalog.manage",
+      "writeRequiresCsrf": true,
+      "forbiddenRequestFields": ["tenantId", "status"]
+    },
+    {
+      "path": "/api/v1/management/model-catalog/models/{modelId}",
+      "methods": ["PUT"],
+      "permission": "model_catalog.manage",
+      "requiredRequestFields": ["rowVersion"],
+      "writeRequiresCsrf": true,
+      "forbiddenRequestFields": ["tenantId"]
+    },
+    {
+      "path": "/api/v1/management/model-catalog/publish-preview",
+      "methods": ["GET"],
+      "permission": "model_catalog.publish",
+      "forbiddenQueryParameters": ["tenantId"]
+    },
+    {
+      "path": "/api/v1/management/model-catalog/versions/publish",
+      "methods": ["POST"],
+      "permission": "model_catalog.publish",
+      "requiredHeaders": ["Idempotency-Key", "X-CSRF-Token"],
+      "forbiddenRequestFields": ["tenantId"]
+    },
+    {
+      "path": "/api/v1/management/tenant-models",
+      "methods": ["GET"],
+      "permission": "tenant_model.read",
+      "forbiddenQueryParameters": ["tenantId"]
+    },
+    {
+      "path": "/api/v1/management/tenant-models/{modelId}",
+      "methods": ["PUT"],
+      "permission": "tenant_model.manage",
+      "requiredRequestFields": ["policy", "rowVersion"],
+      "writeRequiresCsrf": true,
+      "forbiddenRequestFields": ["tenantId"]
+    },
+    {
+      "path": "/api/v1/desktop/models",
+      "methods": ["GET"],
+      "permission": "model.use"
+    },
+    {
+      "path": "/api/v1/desktop/bootstrap",
+      "methods": ["GET"],
+      "permission": "desktop.bootstrap",
+      "requiredResponseFields": ["schemaVersion", "models"],
+      "requiredSchemaVersion": 1
+    }
+  ],
+  "node32Verification": {
+    "backendTests": {
+      "total": 75,
+      "passed": 75,
+      "failed": 0,
+      "modelCatalogIntegrationTests": 6,
+      "archUnitTests": 4
+    },
+    "openApi": "Only implemented read operations are exposed; Wave 3 write operations remain absent",
+    "tenantIsolation": "A/B tenant isolation passed",
+    "terminalIsolation": "management_web and desktop endpoints are mutually restricted",
+    "permissionDeniedContract": "HTTP 403 + PERMISSION_DENIED",
+    "testLog": "lingzhen_center_backend/scripts/log/model-catalog-read-tests-20260825-0507.log"
+  },
+  "node33Verification": {
+    "frontendTests": {
+      "total": 28,
+      "passed": 28,
+      "failed": 0
+    },
+    "qualityGates": ["eslint", "typescript", "vitest", "production-build"],
+    "states": ["loading", "empty", "error", "forbidden", "success"],
+    "navigation": "Permission-driven models entry and any-of route guard",
+    "tabPermissions": {
+      "platform": "model_catalog.read",
+      "tenant": "tenant_model.read"
+    },
+    "keyboard": "ArrowLeft/ArrowRight/Home/End tab switching and visible focus rings passed",
+    "responsive": "1280x800, 768x900 and 390x844 browser rendering passed",
+    "sensitiveFieldsVisible": false,
+    "tenantIdSentByFrontend": false,
+    "browserDataSource": "Temporary localhost read-only mock for success states; removed after acceptance",
+    "formalDatabaseModified": false
+  },
+  "node34BackendVerification": {
+    "scope": "Backend write contract only; management drawer forms are pending",
+    "backendTests": {
+      "total": 92,
+      "passed": 92,
+      "failed": 0,
+      "writeIntegrationTests": 5,
+      "commandServiceTests": 7,
+      "contractValidatorTests": 2,
+      "csrfFilterTests": 3,
+      "archUnitTests": 4
+    },
+    "writeMethods": [
+      "POST providers",
+      "PUT providers/{providerId}",
+      "POST models",
+      "PUT models/{modelId}"
+    ],
+    "optimisticLock": "Atomic row_version predicate and increment; stale writes return MODEL_ROW_VERSION_CONFLICT",
+    "csrf": "All authenticated management_web POST/PUT/PATCH/DELETE requests require matching LZ_CSRF cookie and X-CSRF-Token header",
+    "requestWhitelist": "Unknown fields including tenantId are rejected as INVALID_REQUEST_BODY",
+    "jsonContractLimits": {
+      "maxBytesPerObject": 65536,
+      "maxDepth": 12,
+      "maxArrayItems": 1000,
+      "maxObjectKeys": 200,
+      "sensitiveAndPrototypeKeysRejected": true
+    },
+    "openApi": "Only provider/model POST and resource PUT operations were added; publish and tenant-policy writes remain absent",
+    "testLog": "lingzhen_center_backend/scripts/log/model-catalog-write-tests-20260825-115938.log",
+    "formalDatabaseModified": false
+  },
+  "node34FrontendVerification": {
+    "scope": "Management provider/model create, edit and status UI",
+    "frontendTests": {
+      "total": 34,
+      "passed": 34,
+      "failed": 0
+    },
+    "qualityGates": ["eslint", "typescript", "vitest", "production-build"],
+    "permissions": {
+      "read": "model_catalog.read",
+      "write": "model_catalog.manage",
+      "readOnlyActionsHidden": true
+    },
+    "writeFlows": [
+      "provider create/edit/status in a single drawer",
+      "model create/edit in a responsive drawer",
+      "model activate/deactivate with one confirmation dialog",
+      "parameter schema and default parameter JSON validation",
+      "optimistic-lock conflict refresh and resubmit guidance"
+    ],
+    "security": {
+      "csrfHeaderFromHttpInterceptor": true,
+      "tenantIdSentByFrontend": false,
+      "rowVersionVisibleToUser": false,
+      "localMutationErrorsDoNotOpenDuplicateGlobalDialog": true
+    },
+    "accessibility": {
+      "singleOverlayAtATime": true,
+      "triggerFocusRestoredAfterDrawerClose": true,
+      "errorsUseTextAndRole": true
+    },
+    "responsive": "1280x800, 768x900 and 390x844 browser rendering passed",
+    "browserDataSource": "Local Wave 3 UI acceptance mock on 9101; no formal database writes",
+    "browserMockScript": "scripts/run-wave3-ui-mock.mjs",
+    "formalDatabaseModified": false
+  },
+  "node35Verification": {
+    "scope": "Publish preview, immutable publication transaction and management confirmation drawer",
+    "backendTests": {
+      "total": 100,
+      "passed": 100,
+      "failed": 0,
+      "publicationIntegrationTests": 1,
+      "publicationServiceTests": 7,
+      "archUnitTests": 4
+    },
+    "frontendTests": {
+      "total": 41,
+      "passed": 41,
+      "failed": 0
+    },
+    "qualityGates": ["eslint", "typescript", "vitest", "production-build"],
+    "publicationTransactionOrder": [
+      "transaction advisory lock",
+      "idempotency replay check",
+      "current version check",
+      "draft content hash check",
+      "unsealed version header",
+      "full snapshot",
+      "published_at seal",
+      "current version switch"
+    ],
+    "conflictContracts": [
+      "MODEL_CATALOG_CURRENT_VERSION_CONFLICT",
+      "MODEL_CATALOG_PREVIEW_STALE",
+      "MODEL_CATALOG_PUBLISH_CONFLICT",
+      "MODEL_CATALOG_NO_CHANGES"
+    ],
+    "managementFlow": [
+      "permission-driven publish entry",
+      "preview diff and blockers",
+      "same-drawer confirmation step",
+      "idempotent publish request",
+      "automatic preview refresh after stale or current-version conflict",
+      "catalog root, versions and tenant models invalidated after success"
+    ],
+    "security": {
+      "permission": "model_catalog.publish",
+      "csrfRequired": true,
+      "idempotencyKeyRequired": true,
+      "tenantIdSentByFrontend": false,
+      "contentHashVisibleToUser": false,
+      "publishedSnapshotImmutable": true
+    },
+    "accessibility": {
+      "singleDrawerForPreviewAndConfirmation": true,
+      "escapeClosesDrawer": true,
+      "triggerFocusRestored": true,
+      "blockersUseTextAndAlertRole": true
+    },
+    "responsive": "1280x800, 768x900 and 390x844 preview/confirmation browser rendering passed without horizontal overflow",
+    "screenshots": [
+      "scripts/log/screenshots/model-publish-preview-1280.png",
+      "scripts/log/screenshots/model-publish-preview-768.png",
+      "scripts/log/screenshots/model-publish-preview-390.png",
+      "scripts/log/screenshots/model-publish-confirm-390.png"
+    ],
+    "browserConsoleErrors": 0,
+    "browserDataSource": "Local Wave 3 UI acceptance mock on 9101; publish responses are ephemeral and no formal database writes occur",
+    "databaseMigrationRegression": "31/31 isolated PostgreSQL 16 check groups passed",
+    "formalDatabaseModified": false
+  },
+  "node36Verification": {
+    "scope": "Current tenant inherit/enabled/hidden policy write and immediate desktop catalog reflection",
+    "backendTests": {
+      "total": 109,
+      "passed": 109,
+      "failed": 0,
+      "tenantPolicyIntegrationTests": 3,
+      "tenantPolicyCommandServiceTests": 6,
+      "archUnitTests": 4
+    },
+    "frontendTests": {
+      "total": 46,
+      "passed": 46,
+      "failed": 0,
+      "tenantPolicyComponentTests": 6,
+      "modelCatalogApiTests": 6
+    },
+    "qualityGates": ["eslint", "typescript", "vitest", "production-build"],
+    "policyLifecycle": ["inherit", "enabled", "hidden", "inherit"],
+    "optimisticLock": "First explicit write uses rowVersion null; persisted policies require the latest rowVersion; stale writes return TENANT_MODEL_ROW_VERSION_CONFLICT",
+    "tenantIsolation": "Tenant A writes do not create or alter Tenant B policy rows",
+    "desktopConsistency": "desktop/models and desktop/bootstrap reflect policy changes on the next read and remain identical",
+    "security": {
+      "tenantIdFromSessionContextOnly": true,
+      "unknownRequestFieldsRejected": true,
+      "csrfRequired": true,
+      "desktopTokenRejected": true,
+      "unpublishedModelRejected": true
+    },
+    "managementFlow": [
+      "permission-driven inline three-state control",
+      "one model policy save at a time",
+      "row-level saving, success and error feedback",
+      "automatic tenant catalog refresh after 409 conflict",
+      "read-only users keep the policy badge without write controls"
+    ],
+    "accessibility": {
+      "nativeButtonsWithAriaPressed": true,
+      "mobileTouchTargetHeight": 44,
+      "focusRestoredAfterRefresh": true,
+      "errorsUseTextAndAlertRole": true
+    },
+    "responsive": "1280x800, 768x900 and 390x844 passed without page overflow; 768 and 390 use single-layer cards",
+    "browserConsoleErrors": 0,
+    "browserDataSource": "Local Wave 3 UI acceptance mock on 9101; policy writes are ephemeral and no formal database writes occur",
+    "databaseMigrationRegression": "31/31 isolated PostgreSQL 16 check groups passed",
+    "formalDatabaseModified": false
+  },
+  "node37Verification": {
+    "scope": "Desktop bootstrap platform catalog cache, offline read and identity isolation",
+    "desktopAuthTests": {
+      "total": 30,
+      "passed": 30,
+      "failed": 0,
+      "newCounterexamples": [
+        "invalid HTTP 200 bootstrap contract cannot reuse an older cache",
+        "invalid HTTP 200 identity response cannot reuse an older cache",
+        "tenant selection clears the previous authenticated workspace",
+        "obsolete cache versions are removed",
+        "server-side tenant changes clear the previous cache",
+        "sensitive Skill metadata is rejected before cache write"
+      ]
+    },
+    "desktopRegression": {
+      "modelGateway": "24/24",
+      "smoke": "17/17",
+      "nodeSyntaxChecks": [
+        "src/main/desktop-auth-client.cjs",
+        "scripts/test-desktop-auth.cjs"
+      ]
+    },
+    "backendRegression": {
+      "total": 109,
+      "passed": 109,
+      "failed": 0,
+      "desktopBootstrapServiceTests": 14,
+      "desktopModelCatalogServiceTests": 4,
+      "archUnitTests": 4
+    },
+    "frontendRegression": {
+      "total": 46,
+      "passed": 46,
+      "failed": 0,
+      "qualityGates": ["eslint", "typescript", "vitest", "production-build"]
+    },
+    "cacheContract": {
+      "schemaVersion": 1,
+      "identityBinding": ["userId", "tenantId"],
+      "offlineFallbackOnlyFor": ["network unavailable", "timeout", "HTTP 5xx"],
+      "clearedOn": ["logout", "user change", "tenant change", "tenant selection", "invalid contract", "obsolete cache version"],
+      "sensitiveFieldsCached": false,
+      "platformExecutionReady": false
+    },
+    "selectorIsolation": "models:bootstrap still reads only ModelGatewayBridge; platform catalog remains in auth bootstrap data",
+    "databaseMigrationRegression": "31/31 isolated PostgreSQL 16 check groups passed",
+    "formalDatabaseModified": false
+  },
+  "routes": [
+    {
+      "path": "models",
+      "permissionsAnyOf": ["model_catalog.read", "tenant_model.read"]
+    }
+  ],
+  "forbiddenResponseFields": [
+    "apiKey",
+    "authorization",
+    "credential",
+    "credentialRef",
+    "baseUrl",
+    "customHeaders",
+    "headers",
+    "privateHeaders",
+    "databaseUrl",
+    "secret",
+    "token"
+  ],
+  "forbiddenContractKeys": ["constructor", "__proto__", "prototype"],
+  "invariants": [
+    "At most one catalog version is current",
+    "Published version items are immutable",
+    "Draft changes do not affect desktop responses before publication",
+    "Tenant ID comes only from SessionContext",
+    "A tenant cannot read or change B tenant model policies",
+    "Repeated publication idempotency key does not create a second version",
+    "A stale preview hash or current version never publishes a new catalog version",
+    "Desktop bootstrap schemaVersion remains 1",
+    "Provider and model updates require the latest rowVersion",
+    "Management catalog writes require CSRF and model_catalog.manage",
+    "Tenant policy writes require CSRF, tenant_model.manage and the SessionContext tenant ID",
+    "Tenant policy rowVersion conflicts never overwrite a newer policy",
+    "Draft provider and model writes do not alter the current published snapshot",
+    "Platform catalog models are not merged into the local model gateway selector during Wave 3",
+    "Offline bootstrap cache is usable only for the same userId and tenantId",
+    "Invalid online identity or bootstrap contracts never downgrade to an older offline cache",
+    "Logout, user change, tenant change and tenant selection clear the previous bootstrap cache"
+  ],
+  "viewports": [
+    { "width": 1280, "height": 800 },
+    { "width": 768, "height": 900 },
+    { "width": 390, "height": 844 }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "storageScope": "current-user-and-tenant",
+  "authority": "main-process-registry",
+  "requiredBehaviors": [
+    "different users or tenants never share account registries",
+    "foreign account ids are rejected by main process",
+    "automatic scheduling only uses authorized candidates",
+    "legacy placeholder accounts migrate only when the current tenant has a matching browser profile",
+    "the generic task IPC can create drafts only",
+    "retrying a legacy task filters foreign account candidates before persisting the child task",
+    "renderer never scans another tenant localStorage key",
+    "tenant switching invalidates the old execution context",
+    "disposing the old orchestrator releases account locks and rejects later writes",
+    "tenant switching aborts the old agent lifecycle and destroys old embedded browser sessions",
+    "removing an account is blocked while active tasks are bound and closes the account browser session before registry deletion"
+  ],
+  "errorCode": "DOUBAO_ACCOUNT_NOT_AUTHORIZED"
+}

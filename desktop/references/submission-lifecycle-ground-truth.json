@@ -1,0 +1,7 @@
+{
+  "generateWaitCalls": 0,
+  "monitorWaitCalls": 1,
+  "monitorTimeoutMs": 10000,
+  "preservedEvidencePrompt": "PROMPT-LIFECYCLE",
+  "monitorVisibleState": "generating"
+}
