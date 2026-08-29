@@ -10,6 +10,7 @@ import com.lingzhen.center.model.enums.ClientType;
 import com.lingzhen.center.model.enums.ModelCapabilityType;
 import com.lingzhen.center.model.enums.ModelCatalogStatus;
 import com.lingzhen.center.repository.ModelCatalogRepository;
+import com.lingzhen.center.repository.ModelPriceRepository;
 import com.lingzhen.center.repository.ModelRuntimeConfigRepository;
 import com.lingzhen.center.service.ModelCatalogQueryService;
 import org.springframework.http.HttpStatus;
@@ -27,16 +28,24 @@ public class ModelCatalogQueryServiceImpl implements ModelCatalogQueryService {
 
     private final ModelCatalogRepository repository;
     private final ModelRuntimeConfigRepository runtimeConfigs;
+    private final ModelPriceRepository modelPrices;
 
     public ModelCatalogQueryServiceImpl(ModelCatalogRepository repository) {
-        this(repository, null);
+        this(repository, null, null);
+    }
+
+    public ModelCatalogQueryServiceImpl(ModelCatalogRepository repository,
+                                        ModelRuntimeConfigRepository runtimeConfigs) {
+        this(repository, runtimeConfigs, null);
     }
 
     @org.springframework.beans.factory.annotation.Autowired
     public ModelCatalogQueryServiceImpl(ModelCatalogRepository repository,
-                                        ModelRuntimeConfigRepository runtimeConfigs) {
+                                        ModelRuntimeConfigRepository runtimeConfigs,
+                                        ModelPriceRepository modelPrices) {
         this.repository = repository;
         this.runtimeConfigs = runtimeConfigs;
+        this.modelPrices = modelPrices;
     }
 
     @Override
@@ -100,6 +109,9 @@ public class ModelCatalogQueryServiceImpl implements ModelCatalogQueryService {
                             var runtime = runtimeConfigs == null
                                     ? java.util.Optional.<ModelRuntimeConfigRepository.RuntimeConfigRow>empty()
                                     : runtimeConfigs.findByModelId(item.id());
+                            var price = modelPrices == null
+                                    ? java.util.Optional.<ModelPriceRepository.PriceRow>empty()
+                                    : modelPrices.findActive(item.id());
                             return new ModelPageResponse.ModelItem(
                                 item.id(),
                                 new ModelPageResponse.ProviderSummary(
@@ -126,7 +138,10 @@ public class ModelCatalogQueryServiceImpl implements ModelCatalogQueryService {
                                 runtime.map(ModelRuntimeConfigRepository.RuntimeConfigRow::cancelPath).orElse(null),
                                 runtime.map(ModelRuntimeConfigRepository.RuntimeConfigRow::timeoutSeconds).orElse(120),
                                 runtime.map(ModelRuntimeConfigRepository.RuntimeConfigRow::enabled).orElse(false),
-                                runtime.map(ModelRuntimeConfigRepository.RuntimeConfigRow::rowVersion).orElse(0L)
+                                runtime.map(ModelRuntimeConfigRepository.RuntimeConfigRow::rowVersion).orElse(0L),
+                                price.map(ModelPriceRepository.PriceRow::baseCredits).orElse(0L),
+                                price.map(ModelPriceRepository.PriceRow::maxReserveCredits).orElse(0L),
+                                price.map(ModelPriceRepository.PriceRow::rowVersion).orElse(0L)
                         );
                         })
                         .toList(),

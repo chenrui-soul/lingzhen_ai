@@ -68,6 +68,24 @@ const check = async (name, operation) => {
     assert.match(calls.at(-1).pathname, new RegExp(`${truth.platformTaskId}$`));
   });
 
+  await check("missing model query address enters manual review instead of polling forever", async () => {
+    response = {
+      taskId: truth.platformTaskId,
+      state: "submission_unknown",
+      errorCode: "PLATFORM_STATUS_PATH_NOT_CONFIGURED",
+      errorMessage: "管理员尚未配置该模型的任务查询地址",
+      resultUrls: [],
+      resultText: "",
+    };
+    const result = await routed.queryGeneration(truth.platformProviderId, truth.platformModelId, {
+      providerJobId: truth.platformTaskId,
+      type: "video",
+    });
+    assert.equal(result.supported, false);
+    assert.equal(result.status, "unsupported");
+    assert.match(result.error, /查询地址/);
+  });
+
   await check("local BYOK models remain on the local gateway", async () => {
     const before = calls.length;
     const result = await routed.generate(truth.localProviderId, truth.localModelId, {prompt: "本地测试"});

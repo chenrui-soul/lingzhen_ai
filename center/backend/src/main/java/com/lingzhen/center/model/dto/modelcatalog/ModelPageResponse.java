@@ -38,7 +38,10 @@ public record ModelPageResponse(
             String cancelPath,
             int timeoutSeconds,
             boolean runtimeEnabled,
-            long runtimeRowVersion
+            long runtimeRowVersion,
+            long baseCredits,
+            long maxReserveCredits,
+            long priceRowVersion
     ) {
     }
 }

@@ -38,7 +38,8 @@ public record CreateModelRequest(
         Integer timeoutSeconds,
         Boolean runtimeEnabled,
         @PositiveOrZero Long baseCredits,
-        @PositiveOrZero Long maxReserveCredits
+        @PositiveOrZero Long maxReserveCredits,
+        String status
 ) {
 
     public CreateModelRequest(
@@ -48,7 +49,7 @@ public record CreateModelRequest(
     ) {
         this(providerId, code, displayName, capabilityType, description, parameterSchema,
                 defaultParameters, defaultTenantEnabled, sortOrder,
-                null, null, null, null, null, null, null, null, null);
+                null, null, null, null, null, null, null, null, null, "draft");
     }
 
     @JsonAnySetter

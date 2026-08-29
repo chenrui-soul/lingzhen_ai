@@ -7,6 +7,8 @@ import com.lingzhen.center.model.dto.modelcatalog.ModelPageResponse;
 import com.lingzhen.center.model.dto.modelcatalog.ModelProviderPageResponse;
 import com.lingzhen.center.model.enums.ClientType;
 import com.lingzhen.center.repository.ModelCatalogRepository;
+import com.lingzhen.center.repository.ModelPriceRepository;
+import com.lingzhen.center.repository.ModelRuntimeConfigRepository;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
@@ -28,7 +30,10 @@ class ModelCatalogQueryServiceImplTest {
     private static final Instant NOW = Instant.parse("2026-08-25T05:00:00Z");
 
     private final ModelCatalogRepository repository = mock(ModelCatalogRepository.class);
-    private final ModelCatalogQueryServiceImpl service = new ModelCatalogQueryServiceImpl(repository);
+    private final ModelRuntimeConfigRepository runtimeConfigs = mock(ModelRuntimeConfigRepository.class);
+    private final ModelPriceRepository modelPrices = mock(ModelPriceRepository.class);
+    private final ModelCatalogQueryServiceImpl service =
+            new ModelCatalogQueryServiceImpl(repository, runtimeConfigs, modelPrices);
 
     @Test
     void providersMapsRepositoryPageAndCalculatesTotalPages() {
@@ -86,6 +91,10 @@ class ModelCatalogQueryServiceImplTest {
                         )),
                         1
                 ));
+        when(runtimeConfigs.findByModelId(modelId)).thenReturn(Optional.empty());
+        when(modelPrices.findActive(modelId)).thenReturn(Optional.of(new ModelPriceRepository.PriceRow(
+                UUID.randomUUID(), modelId, 2, "credits", 50, 50, Map.of(), 4
+        )));
 
         ModelPageResponse response = service.models(
                 context,
@@ -102,6 +111,9 @@ class ModelCatalogQueryServiceImplTest {
             assertThat(item.id()).isEqualTo(modelId);
             assertThat(item.provider().id()).isEqualTo(providerId);
             assertThat(item.capabilityType()).isEqualTo("video");
+            assertThat(item.baseCredits()).isEqualTo(50);
+            assertThat(item.maxReserveCredits()).isEqualTo(50);
+            assertThat(item.priceRowVersion()).isEqualTo(4);
         });
     }
 

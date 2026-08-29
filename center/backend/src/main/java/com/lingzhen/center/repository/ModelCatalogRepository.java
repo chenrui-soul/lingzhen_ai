@@ -103,8 +103,18 @@ public interface ModelCatalogRepository {
             Map<String, Object> parameterSchema,
             Map<String, Object> defaultParameters,
             boolean defaultTenantEnabled,
-            int sortOrder
+            int sortOrder,
+            String status
     ) {
+        public ModelCreateCommand(
+                UUID id, UUID providerId, String code, String displayName,
+                String capabilityType, String description,
+                Map<String, Object> parameterSchema, Map<String, Object> defaultParameters,
+                boolean defaultTenantEnabled, int sortOrder
+        ) {
+            this(id, providerId, code, displayName, capabilityType, description,
+                    parameterSchema, defaultParameters, defaultTenantEnabled, sortOrder, "draft");
+        }
     }
 
     record ModelUpdateCommand(

@@ -20,6 +20,7 @@
 **/.env.*
 !**/.env.example
 !**/.env.postgres.example
+!**/.env.minio.example
 **/secrets/
 **/*-secrets*.json
 **/connection-config-cache.json

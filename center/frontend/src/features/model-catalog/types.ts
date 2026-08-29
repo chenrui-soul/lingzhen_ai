@@ -181,6 +181,7 @@ export interface CreateCatalogModelRequest {
   runtimeEnabled?: boolean;
   baseCredits?: number;
   maxReserveCredits?: number;
+  status?: string;
 }
 
 export interface UpdateCatalogModelRequest extends CreateCatalogModelRequest {

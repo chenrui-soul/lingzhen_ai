@@ -8,7 +8,6 @@ import {
   PhPencilSimple,
   PhPlus,
   PhPower,
-  PhRocketLaunch,
   PhStack,
 } from '@phosphor-icons/vue';
 import Modal from 'ant-design-vue/es/modal';
@@ -19,7 +18,6 @@ import { toAppError } from '@/api/errors';
 import AppState from '@/components/AppState.vue';
 import { useAuthStore } from '@/features/auth/stores/auth-store';
 import ModelCatalogEditorDrawer from '@/features/model-catalog/components/ModelCatalogEditorDrawer.vue';
-import CatalogPublishDrawer from '@/features/model-catalog/components/CatalogPublishDrawer.vue';
 import ProviderManagerDrawer from '@/features/model-catalog/components/ProviderManagerDrawer.vue';
 import {
   capabilityLabel,
@@ -56,16 +54,12 @@ const modelsQuery = useCatalogModelsQuery(filters);
 const providersQuery = useModelProvidersQuery();
 const versionsQuery = useCatalogVersionsQuery();
 const updateModelMutation = useUpdateCatalogModelMutation();
-const activeDrawer = ref<'providers' | 'model' | 'publish' | null>(null);
+const activeDrawer = ref<'providers' | 'model' | null>(null);
 const selectedModelId = ref('');
 const lastTrigger = ref<HTMLElement | null>(null);
 const statusConfirmVisible = ref(false);
-const publishAfterModelSave = ref(false);
 const canManage = computed(() =>
   Boolean(authStore.currentUser?.permissions?.includes('model_catalog.manage')),
-);
-const canPublish = computed(() =>
-  Boolean(authStore.currentUser?.permissions?.includes('model_catalog.publish')),
 );
 const editingModel = computed(
   () => modelsQuery.data.value?.items.find((model) => model.id === selectedModelId.value) ?? null,
@@ -146,12 +140,6 @@ function openCreateModel(event: Event): void {
   activeDrawer.value = 'model';
 }
 
-function openPublish(event: Event): void {
-  if (!canPublish.value || activeDrawer.value || statusConfirmVisible.value) return;
-  rememberTrigger(event);
-  activeDrawer.value = 'publish';
-}
-
 function openEditModel(model: CatalogModel, event: Event): void {
   if (!canManage.value || activeDrawer.value || statusConfirmVisible.value) return;
   rememberTrigger(event);
@@ -160,16 +148,7 @@ function openEditModel(model: CatalogModel, event: Event): void {
 }
 
 function closeDrawer(): void {
-  if (publishAfterModelSave.value) {
-    publishAfterModelSave.value = false;
-    activeDrawer.value = 'publish';
-    return;
-  }
   activeDrawer.value = null;
-}
-
-function handleModelSavedAndPublish(): void {
-  publishAfterModelSave.value = true;
 }
 
 function restoreTriggerFocus(): void {
@@ -186,10 +165,6 @@ async function handleProviderConflict(): Promise<void> {
   await providersQuery.refetch();
 }
 
-async function handlePublishInvalidated(): Promise<void> {
-  await refreshAll();
-}
-
 async function toggleModelStatus(model: CatalogModel, event: Event): Promise<void> {
   if (!canManage.value || activeDrawer.value || statusConfirmVisible.value) return;
   rememberTrigger(event);
@@ -199,8 +174,8 @@ async function toggleModelStatus(model: CatalogModel, event: Event): Promise<voi
     title: targetStatus === 'active' ? '启用这个模型？' : '停用这个模型？',
     content:
       targetStatus === 'active'
-        ? `启用后，${model.displayName} 可以进入后续发布流程。`
-        : `停用后，${model.displayName} 不会进入新的发布目录。`,
+        ? `启用后，${model.displayName} 会立即同步到桌面端。`
+        : `停用后，${model.displayName} 会立即从桌面端可用模型中移除。`,
     okText: targetStatus === 'active' ? '确认启用' : '确认停用',
     cancelText: '取消',
     centered: true,
@@ -276,19 +251,16 @@ async function toggleModelStatus(model: CatalogModel, event: Event): Promise<voi
       </article>
     </section>
 
-    <section v-if="canManage || canPublish" class="catalog-actions" aria-label="模型目录维护操作">
+    <section v-if="canManage" class="catalog-actions" aria-label="模型目录维护操作">
       <div>
         <strong>目录维护</strong>
-        <span>草稿维护与正式发布分离，发布前会先校验目录差异。</span>
+        <span>模型保存后自动同步到桌面端，版本记录由系统后台保留。</span>
       </div>
       <div>
         <a-button v-if="canManage" @click="openProviders"
           ><PhBuildings :size="17" />厂商管理</a-button
         >
         <a-button v-if="canManage" @click="openCreateModel"><PhPlus :size="17" />新增模型</a-button>
-        <a-button v-if="canPublish" type="primary" @click="openPublish">
-          <PhRocketLaunch :size="17" />发布目录
-        </a-button>
       </div>
     </section>
 
@@ -441,15 +413,7 @@ async function toggleModelStatus(model: CatalogModel, event: Event): Promise<voi
       @close="closeDrawer"
       @closed="restoreTriggerFocus"
       @saved="refreshAll"
-      @saved-and-publish="handleModelSavedAndPublish"
       @conflict="handleModelConflict"
-    />
-    <CatalogPublishDrawer
-      :open="activeDrawer === 'publish'"
-      @close="closeDrawer"
-      @closed="restoreTriggerFocus"
-      @published="refreshAll"
-      @preview-invalidated="handlePublishInvalidated"
     />
   </div>
 </template>

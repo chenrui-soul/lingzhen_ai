@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/vue';
+import { render, screen } from '@testing-library/vue';
 import { createPinia, setActivePinia } from 'pinia';
 import { ref } from 'vue';
 
@@ -59,12 +59,6 @@ function renderPanel() {
         AButton: { template: '<button><slot /></button>' },
         ASelect: { template: '<div />' },
         APagination: { template: '<div />' },
-        CatalogPublishDrawer: {
-          props: ['open'],
-          emits: ['close', 'closed'],
-          template:
-            '<button v-if="open" @click="$emit(\'close\'); $emit(\'closed\')">关闭发布抽屉</button>',
-        },
         ModelCatalogEditorDrawer: true,
         ProviderManagerDrawer: true,
       },
@@ -136,10 +130,10 @@ describe('PlatformCatalogPanel', () => {
 
     expect(screen.getByText('厂商管理')).toBeInTheDocument();
     expect(screen.getByText('新增模型')).toBeInTheDocument();
-    expect(screen.getByText('草稿维护与正式发布分离，发布前会先校验目录差异。')).toBeInTheDocument();
+    expect(screen.getByText('模型保存后自动同步到桌面端，版本记录由系统后台保留。')).toBeInTheDocument();
   });
 
-  it('shows the publish entry only with model_catalog.publish', () => {
+  it('does not expose a separate publish step', () => {
     const authStore = useAuthStore();
     if (authStore.currentUser) {
       authStore.currentUser.permissions = ['model_catalog.read', 'model_catalog.publish'];
@@ -147,23 +141,9 @@ describe('PlatformCatalogPanel', () => {
     prepareQueries();
     renderPanel();
 
-    expect(screen.getByText('发布目录')).toBeInTheDocument();
+    expect(screen.queryByText('发布目录')).not.toBeInTheDocument();
     expect(screen.queryByText('厂商管理')).not.toBeInTheDocument();
     expect(screen.queryByText('新增模型')).not.toBeInTheDocument();
   });
 
-  it('restores focus to the publish trigger after the drawer closes', async () => {
-    const authStore = useAuthStore();
-    if (authStore.currentUser) {
-      authStore.currentUser.permissions = ['model_catalog.read', 'model_catalog.publish'];
-    }
-    prepareQueries();
-    renderPanel();
-
-    const publishButton = screen.getByRole('button', { name: '发布目录' });
-    await fireEvent.click(publishButton);
-    await fireEvent.click(screen.getByRole('button', { name: '关闭发布抽屉' }));
-
-    expect(publishButton).toHaveFocus();
-  });
 });

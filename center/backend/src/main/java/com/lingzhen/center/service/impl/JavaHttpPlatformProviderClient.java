@@ -70,13 +70,23 @@ public class JavaHttpPlatformProviderClient implements PlatformProviderClient {
         }
     }
 
-    private URI endpoint(String baseUrl, String requestPath) {
+    static URI endpoint(String baseUrl, String requestPath) {
+        // 管理员可以在模型页面直接填写完整的查询/提交地址。完整 URL
+        // 必须原样使用，不能再与 baseUrl 拼接，否则会导致 404。
+        String configuredPath = requestPath == null ? "" : requestPath.trim();
+        if (configuredPath.matches("https?://[^\\s]+")) {
+            return URI.create(configuredPath);
+        }
         URI base = URI.create(baseUrl);
         if (!"http".equalsIgnoreCase(base.getScheme()) && !"https".equalsIgnoreCase(base.getScheme())) {
             throw new IllegalArgumentException("平台模型服务地址协议无效");
         }
+        String path = configuredPath;
+        if (path.isBlank()) {
+            // 空路径表示管理员配置的 baseUrl 本身就是完整调用地址，不再补任何默认路径。
+            return base;
+        }
         String basePath = base.getPath() == null ? "" : base.getPath().replaceAll("/+$", "");
-        String path = requestPath == null ? "" : requestPath.trim();
         if (!path.startsWith("/")) path = "/" + path;
         return URI.create(base.getScheme() + "://" + base.getAuthority() + basePath + path);
     }

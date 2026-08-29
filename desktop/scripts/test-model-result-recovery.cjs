@@ -160,7 +160,8 @@ async function testCaiCaiAsyncImageContract() {
     if (options.method === "POST") return {ok: true, body: {id: "task-image-1", object: "image_task", status: "processing"}};
     return {ok: true, body: {id: "task-image-1", object: "image_task", status: "completed", image_urls: ["https://result.invalid/async.png"]}};
   }});
-  const provider = bridge.createProvider({name: "词元", baseUrl: "https://caicaiapi.cloud/v1", apiKey: "test"});
+  const provider = bridge.createProvider({name: "词元", baseUrl: "https://caicaiapi.cloud/v1", apiKey: "test",
+    imageTasksPath: "/v1/images/tasks", imageStatusPath: "/v1/images/tasks/{id}"});
   bridge.addModel(provider.id, {id: "gpt-image-2", capabilities: {type: "image", confirmed: true}});
   const created = await bridge.generate(provider.id, "gpt-image-2", {prompt: "test", clientRequestId: "client-image-1"});
   assert.equal(calls[0].requestPath, "/v1/images/tasks");

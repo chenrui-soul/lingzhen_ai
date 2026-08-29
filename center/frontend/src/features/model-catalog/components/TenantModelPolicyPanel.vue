@@ -39,7 +39,7 @@ const canReadPlatform = computed(() =>
 const emptyStateActionLabel = computed(() => (canReadPlatform.value ? '前往平台目录' : ''));
 const emptyStateDescription = computed(() =>
   canReadPlatform.value
-    ? '请先在平台目录创建并启用模型，再通过“发布目录”生成正式版本；发布后这里会自动显示租户策略。'
+    ? '请先在平台目录创建并启用模型；保存后这里会自动显示租户策略。'
     : '当前账号没有平台目录读取或发布权限，无法创建和发布模型目录，请联系管理员开通相应权限。',
 );
 const error = computed(() =>

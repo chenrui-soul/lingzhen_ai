@@ -23,6 +23,43 @@ services:
       start_period: 10s
     stop_grace_period: 30s
 
+  minio:
+    image: minio/minio:RELEASE.2025-04-22T22-12-26Z
+    container_name: lingframe-minio
+    restart: unless-stopped
+    env_file:
+      - .env.minio
+    command: server /data --console-address ":9001"
+    ports:
+      - "127.0.0.1:9100:9000"
+      - "127.0.0.1:9101:9001"
+    volumes:
+      - lingframe_minio_data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://127.0.0.1:9000/minio/health/live || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 10s
+
+  minio-init:
+    image: minio/minio:RELEASE.2025-04-22T22-12-26Z
+    container_name: lingframe-minio-init
+    restart: "no"
+    env_file:
+      - .env.minio
+    depends_on:
+      minio:
+        condition: service_healthy
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - >-
+        mc alias set local http://minio:9000 "$${MINIO_ROOT_USER}" "$${MINIO_ROOT_PASSWORD}" &&
+        mc mb --ignore-existing local/lingframe-assets &&
+        mc anonymous set none local/lingframe-assets
+
 volumes:
   lingframe_license_postgres_data:
     name: lingframe_license_postgres_data
+  lingframe_minio_data:
+    name: lingframe_minio_data

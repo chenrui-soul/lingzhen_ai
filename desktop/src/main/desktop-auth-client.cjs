@@ -847,6 +847,33 @@ class DesktopAuthClient extends EventEmitter {
       return this.request(pathname, {...options, token: this.session.accessToken});
     }
   }
+  async authenticatedUpload(pathname, filePath, {contentType = "application/octet-stream", filename = "upload.bin"} = {}) {
+    const fsModule = require("fs");
+    const bytes = fsModule.readFileSync(filePath);
+    let current = this.session || this.hydratedSession();
+    if (!current?.refreshToken) { const error = new Error("登录会话不存在，请重新登录"); error.code = "AUTHENTICATION_REQUIRED"; throw error; }
+    if (!current.accessToken || parseTime(current.accessTokenExpiresAt) <= this.now() + 60_000) { await this.refresh({loadWorkspace: false}); current = this.session; }
+    const perform = async token => {
+      const form = new FormData();
+      form.append("file", new Blob([bytes], {type: contentType}), filename);
+      const baseUrls = this.serverUrls();
+      let lastError = null;
+      for (const baseUrl of baseUrls) {
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), 120000);
+        try {
+          const response = await this.fetchFn(`${baseUrl}${pathname}`, {method: "POST", headers: {Authorization: `Bearer ${token}`, "User-Agent": `LingFrameAI-Desktop/${this.appVersion}`}, body: form, signal: controller.signal});
+          const data = await response.json().catch(() => ({}));
+          if (!response.ok) { const error = new Error(data.message || data.error || `身份服务返回 ${response.status}`); error.status = response.status; error.code = data.code || "AUTH_REQUEST_REJECTED"; throw error; }
+          this.lastServerUrl = baseUrl; return data;
+        } catch (error) { lastError = error; if (Number(error?.status || 0) > 0 && Number(error.status) < 500) throw error; }
+        finally { clearTimeout(timer); }
+      }
+      throw lastError || new Error("素材上传服务暂时不可用，请稍后重试");
+    };
+    try { return await perform(current.accessToken); }
+    catch (error) { if (Number(error?.status || 0) !== 401) throw error; await this.refresh({loadWorkspace: false}); return perform(this.session.accessToken); }
+  }
   agentConfig() { return null; }
   credentials() { return {}; }
   assert(capability = "write-local") {

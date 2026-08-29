@@ -17,6 +17,7 @@ import com.lingzhen.center.repository.ModelRuntimeConfigRepository;
 import com.lingzhen.center.repository.ModelPriceRepository;
 import com.lingzhen.center.security.ProviderCredentialCipher;
 import com.lingzhen.center.service.ModelCatalogCommandService;
+import com.lingzhen.center.service.CatalogPublicationService;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
@@ -35,10 +36,11 @@ public class ModelCatalogCommandServiceImpl implements ModelCatalogCommandServic
     private final ModelRuntimeConfigRepository modelRuntimeConfigs;
     private final ProviderCredentialCipher credentialCipher;
     private final ModelPriceRepository modelPrices;
+    private final CatalogPublicationService publicationService;
 
     public ModelCatalogCommandServiceImpl(ModelCatalogRepository repository,
                                           ModelCatalogContractValidator contractValidator) {
-        this(repository, contractValidator, null, null, null);
+        this(repository, contractValidator, null, null, null, null);
     }
     private final ModelCatalogContractValidator contractValidator;
 
@@ -48,13 +50,15 @@ public class ModelCatalogCommandServiceImpl implements ModelCatalogCommandServic
             ModelCatalogContractValidator contractValidator,
             ProviderCredentialCipher credentialCipher,
             ModelRuntimeConfigRepository modelRuntimeConfigs,
-            ModelPriceRepository modelPrices
+            ModelPriceRepository modelPrices,
+            CatalogPublicationService publicationService
     ) {
         this.repository = repository;
         this.contractValidator = contractValidator;
         this.credentialCipher = credentialCipher;
         this.modelRuntimeConfigs = modelRuntimeConfigs;
         this.modelPrices = modelPrices;
+        this.publicationService = publicationService;
     }
 
     public ModelCatalogCommandServiceImpl(
@@ -63,7 +67,17 @@ public class ModelCatalogCommandServiceImpl implements ModelCatalogCommandServic
             ProviderCredentialCipher credentialCipher,
             ModelRuntimeConfigRepository modelRuntimeConfigs
     ) {
-        this(repository, contractValidator, credentialCipher, modelRuntimeConfigs, null);
+        this(repository, contractValidator, credentialCipher, modelRuntimeConfigs, null, null);
+    }
+
+    public ModelCatalogCommandServiceImpl(
+            ModelCatalogRepository repository,
+            ModelCatalogContractValidator contractValidator,
+            ProviderCredentialCipher credentialCipher,
+            ModelRuntimeConfigRepository modelRuntimeConfigs,
+            ModelPriceRepository modelPrices
+    ) {
+        this(repository, contractValidator, credentialCipher, modelRuntimeConfigs, modelPrices, null);
     }
 
     @Override
@@ -87,6 +101,7 @@ public class ModelCatalogCommandServiceImpl implements ModelCatalogCommandServic
                         "MODEL_PROVIDER_CODE_CONFLICT",
                         "厂商代码已存在"
                 ));
+        autoPublish(sessionContext);
         return providerResponse(result);
     }
 
@@ -121,6 +136,7 @@ public class ModelCatalogCommandServiceImpl implements ModelCatalogCommandServic
                                     request.rowVersion()
                             ))
                     .orElseThrow(this::rowVersionConflict);
+            autoPublish(sessionContext);
             return providerResponse(result);
         } catch (DataIntegrityViolationException exception) {
             throw mapDataConflict(exception);
@@ -148,7 +164,8 @@ public class ModelCatalogCommandServiceImpl implements ModelCatalogCommandServic
                                     contract.parameterSchema(),
                                     contract.defaultParameters(),
                                     Boolean.TRUE.equals(request.defaultTenantEnabled()),
-                                    request.sortOrder() == null ? 0 : request.sortOrder()
+                                    request.sortOrder() == null ? 0 : request.sortOrder(),
+                                    status(request.status() == null ? "draft" : request.status())
                             ))
                     .orElseThrow(() -> new ApiException(
                             HttpStatus.CONFLICT,
@@ -158,6 +175,7 @@ public class ModelCatalogCommandServiceImpl implements ModelCatalogCommandServic
             saveModelRuntimeConfig(result.id(), request.baseUrl(), request.apiKey(), request.submitPath(),
                     request.statusPath(), request.cancelPath(), request.timeoutSeconds(), request.runtimeEnabled(), null);
             saveModelPrice(sessionContext, result.id(), request.baseCredits(), request.maxReserveCredits(), null);
+            autoPublish(sessionContext);
             return modelResponse(result);
         } catch (DataIntegrityViolationException exception) {
             throw mapDataConflict(exception);
@@ -207,6 +225,7 @@ public class ModelCatalogCommandServiceImpl implements ModelCatalogCommandServic
                     request.runtimeRowVersion());
             saveModelPrice(sessionContext, result.id(), request.baseCredits(), request.maxReserveCredits(),
                     request.priceRowVersion());
+            autoPublish(sessionContext);
             return modelResponse(result);
         } catch (DataIntegrityViolationException exception) {
             throw mapDataConflict(exception);
@@ -222,6 +241,12 @@ public class ModelCatalogCommandServiceImpl implements ModelCatalogCommandServic
                     "MODEL_CATALOG_MANAGE_FORBIDDEN",
                     "当前账号没有维护平台模型目录的权限"
             );
+        }
+    }
+
+    private void autoPublish(SessionContext sessionContext) {
+        if (publicationService != null) {
+            publicationService.publishLatest(sessionContext);
         }
     }
 

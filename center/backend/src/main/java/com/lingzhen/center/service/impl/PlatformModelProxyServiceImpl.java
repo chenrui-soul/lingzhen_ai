@@ -124,6 +124,12 @@ public class PlatformModelProxyServiceImpl implements PlatformModelProxyService 
         ModelRuntimeEndpoint provider = provider(task.modelId());
         if (task.providerJobId().isBlank()) return save(task.with("submission_unknown", "", task.resultUrls(), task.resultText(),
                 "PLATFORM_IDENTIFIER_MISSING", "平台任务缺少可查询标识", task.raw()));
+        // 查询地址是模型级配置。未配置时必须停止自动轮询并进入人工核对，
+        // 不能抛出 503 让桌面端把任务误认为仍在生成中。
+        if (provider.statusPath() == null || provider.statusPath().isBlank()) {
+            return save(task.with("submission_unknown", task.providerJobId(), task.resultUrls(), task.resultText(),
+                    "PLATFORM_STATUS_PATH_NOT_CONFIGURED", "管理员尚未配置该模型的任务查询地址，请补充后继续查询原任务", task.raw()));
+        }
         PlatformProviderClient.ProviderResponse result = client.status(new PlatformProviderClient.ProviderRequest(
                 provider.baseUrl(), provider.apiKey(), statusPath(provider, task.creationType(), task.providerJobId()),
                 task.providerJobId(), Map.of(), timeout(provider)));
@@ -227,21 +233,25 @@ public class PlatformModelProxyServiceImpl implements PlatformModelProxyService 
     }
 
     private String submitPath(ModelRuntimeEndpoint provider, String type) {
-        if (provider.submitPath() != null && !provider.submitPath().isBlank()) return provider.submitPath();
-        return switch (type) { case "video" -> "/v1/videos"; case "image" -> "/v1/images/generations"; case "audio" -> "/v1/audio/speech"; default -> "/v1/chat/completions"; };
+        // submitPath 为空时，baseUrl 就是管理员配置的完整提交地址。
+        return provider.submitPath() == null ? "" : provider.submitPath().trim();
     }
 
     private String statusPath(ModelRuntimeEndpoint provider, String type, String id) {
-        String path = provider.statusPath();
-        if (path == null || path.isBlank()) path = switch (type) { case "video" -> "/v1/videos/{id}"; case "image" -> "/v1/images/generations/{id}"; default -> ""; };
-        if (path.isBlank()) return path;
+        String path = configuredPath(provider.statusPath(), "查询");
         return path.replace("{id}", java.net.URLEncoder.encode(id, java.nio.charset.StandardCharsets.UTF_8));
     }
 
     private String cancelPath(ModelRuntimeEndpoint provider, String type, String id) {
-        String path = provider.cancelPath();
-        if (path == null || path.isBlank()) path = statusPath(provider, type, id);
-        return path == null ? "" : path.replace("{id}", java.net.URLEncoder.encode(id, java.nio.charset.StandardCharsets.UTF_8));
+        String path = configuredPath(provider.cancelPath(), "取消");
+        return path.replace("{id}", java.net.URLEncoder.encode(id, java.nio.charset.StandardCharsets.UTF_8));
+    }
+
+    private String configuredPath(String value, String operation) {
+        if (value == null || value.isBlank()) {
+            throw unavailable("PLATFORM_PROVIDER_NOT_CONFIGURED", "平台模型服务未配置" + operation + "地址，请联系管理员");
+        }
+        return value.trim();
     }
 
     private int timeout(ModelRuntimeEndpoint provider) { return provider.timeoutSeconds() > 0 ? provider.timeoutSeconds() : properties.getDefaultTimeoutSeconds(); }

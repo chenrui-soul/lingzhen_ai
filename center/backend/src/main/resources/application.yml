@@ -49,3 +49,11 @@ app:
     enabled: true
     connect-timeout-seconds: 10
     default-timeout-seconds: 120
+  storage:
+    minio:
+      enabled: ${MINIO_ENABLED:true}
+      endpoint: ${MINIO_ENDPOINT:http://127.0.0.1:9100}
+      access-key: ${MINIO_ROOT_USER:}
+      secret-key: ${MINIO_ROOT_PASSWORD:}
+      bucket: ${MINIO_BUCKET:lingframe-assets}
+      presign-minutes: ${MINIO_PRESIGN_MINUTES:30}

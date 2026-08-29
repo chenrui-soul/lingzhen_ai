@@ -26,6 +26,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentCaptor.forClass;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
@@ -77,6 +78,22 @@ class PlatformModelProxyServiceImplTest {
     }
 
     @Test
+    void submitUsesConfiguredBaseUrlWhenSubmitPathIsBlankInsteadOfInferringAPath() {
+        when(runtimeConfigs.findByModelId(modelId)).thenReturn(Optional.of(new ModelRuntimeConfigRepository.RuntimeConfigRow(
+                modelId, "https://gateway.example.com/v1/videos", "ciphertext", "", "/status/{id}", "/cancel/{id}",
+                120, true, Instant.now(), Instant.now(), 0)));
+        when(client.submit(any())).thenReturn(new PlatformProviderClient.ProviderResponse(true, true, 200,
+                Map.of("id", "configured-url-task", "status", "queued"), ""));
+
+        service.submit(context(Set.of("model.use")), request());
+
+        var captor = forClass(PlatformProviderClient.ProviderRequest.class);
+        verify(client).submit(captor.capture());
+        assertThat(captor.getValue().baseUrl()).isEqualTo("https://gateway.example.com/v1/videos");
+        assertThat(captor.getValue().path()).isEmpty();
+    }
+
+    @Test
     void queryCompletesTheExistingTaskAndCollectsResultUrls() {
         when(client.submit(any())).thenReturn(new PlatformProviderClient.ProviderResponse(true, true, 200,
                 Map.of("id", "upstream-2", "status", "queued"), ""));
@@ -89,6 +106,44 @@ class PlatformModelProxyServiceImplTest {
         assertThat(completed.state()).isEqualTo("completed");
         assertThat(completed.resultUrls()).containsExactly("https://cdn.example.com/result.mp4");
         verify(billing).settle(submitted.taskId(), "https://cdn.example.com/result.mp4");
+    }
+
+    @Test
+    void missingModelQueryAddressMovesTaskToManualReviewWithoutCallingProvider() {
+        when(runtimeConfigs.findByModelId(modelId)).thenReturn(Optional.of(new ModelRuntimeConfigRepository.RuntimeConfigRow(
+                modelId, "https://models.example.com", "ciphertext", "/v1/videos", "", "/v1/videos/{id}/cancel",
+                120, true, Instant.now(), Instant.now(), 0)));
+        when(client.submit(any())).thenReturn(new PlatformProviderClient.ProviderResponse(true, true, 200,
+                Map.of("id", "upstream-no-query", "status", "queued"), ""));
+
+        var submitted = service.submit(context(Set.of("model.use")), request());
+        var waiting = service.status(context(Set.of("model.use")), submitted.taskId());
+
+        assertThat(waiting.state()).isEqualTo("submission_unknown");
+        assertThat(waiting.errorCode()).isEqualTo("PLATFORM_STATUS_PATH_NOT_CONFIGURED");
+        assertThat(waiting.errorMessage()).contains("查询地址");
+        verify(client, never()).status(any());
+        verify(billing, never()).release(any());
+    }
+
+    @Test
+    void modelQueryAddressIsPassedThroughAsConfigured() {
+        String queryUrl = "https://gateway.example.com/tasks/{id}";
+        when(runtimeConfigs.findByModelId(modelId)).thenReturn(Optional.of(new ModelRuntimeConfigRepository.RuntimeConfigRow(
+                modelId, "https://gateway.example.com/submit", "ciphertext", "", queryUrl, "",
+                120, true, Instant.now(), Instant.now(), 0)));
+        when(client.submit(any())).thenReturn(new PlatformProviderClient.ProviderResponse(true, true, 200,
+                Map.of("id", "job-direct-url", "status", "queued"), ""));
+        var submitted = service.submit(context(Set.of("model.use")), request());
+        when(client.status(any())).thenReturn(new PlatformProviderClient.ProviderResponse(true, true, 200,
+                Map.of("id", "job-direct-url", "status", "pending"), ""));
+
+        service.status(context(Set.of("model.use")), submitted.taskId());
+
+        var captor = forClass(PlatformProviderClient.ProviderRequest.class);
+        verify(client).status(captor.capture());
+        assertThat(captor.getValue().baseUrl()).isEqualTo("https://gateway.example.com/submit");
+        assertThat(captor.getValue().path()).isEqualTo("https://gateway.example.com/tasks/job-direct-url");
     }
 
     @Test

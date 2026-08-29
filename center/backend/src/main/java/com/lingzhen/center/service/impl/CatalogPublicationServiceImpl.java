@@ -65,6 +65,61 @@ public class CatalogPublicationServiceImpl implements CatalogPublicationService 
 
     @Override
     @Transactional
+    public CatalogPublishResponse publishLatest(SessionContext sessionContext) {
+        requireManagePermission(sessionContext);
+        repository.acquirePublicationLock();
+        ModelCatalogRepository.VersionDetail current = repository.findCurrentVersion().orElse(null);
+        List<ModelCatalogRepository.VersionModelRow> draft = repository.findPublishableModels();
+        if (draft.isEmpty() && (current == null || current.models().isEmpty())) {
+            return current == null ? null : response(current, true);
+        }
+        CatalogPublishPreviewResponse preview = buildPreview(
+                current, draft, repository.nextVersionNumber());
+        if (!preview.hasChanges()) {
+            return current == null ? null : response(current, true);
+        }
+        List<CatalogPublishPreviewResponse.Blocker> blockers = preview.blockers().stream()
+                .filter(blocker -> !"MODEL_CATALOG_EMPTY".equals(blocker.code()))
+                .toList();
+        if (!blockers.isEmpty()) {
+            throw new ApiException(
+                    HttpStatus.CONFLICT,
+                    "MODEL_CATALOG_PUBLISH_BLOCKED",
+                    blockers.getFirst().message()
+            );
+        }
+
+        UUID versionId = UUID.randomUUID();
+        Instant publishedAt = clock.instant();
+        try {
+            repository.createVersionHeader(new ModelCatalogRepository.VersionCreateCommand(
+                    versionId,
+                    preview.nextVersion(),
+                    preview.contentHash(),
+                    "auto-" + versionId,
+                    sessionContext.userId(),
+                    sessionContext.membershipId()
+            ));
+            repository.insertVersionItems(versionId, draft);
+            repository.sealVersion(versionId, publishedAt);
+            repository.replaceCurrentVersion(versionId);
+        } catch (DataIntegrityViolationException exception) {
+            throw publicationConflict(exception);
+        }
+        ModelCatalogRepository.VersionDetail published = repository.findVersion(versionId)
+                .orElseThrow(() -> new IllegalStateException(
+                        "Published catalog version could not be reloaded"));
+        LOGGER.info(
+                "Model catalog auto-published: version={}, models={}, publisherMembership={}",
+                published.version().version(),
+                published.models().size(),
+                sessionContext.membershipId()
+        );
+        return response(published, false);
+    }
+
+    @Override
+    @Transactional
     public CatalogPublishResponse publish(
             SessionContext sessionContext,
             String idempotencyKey,
@@ -301,6 +356,18 @@ public class CatalogPublicationServiceImpl implements CatalogPublicationService 
                     HttpStatus.FORBIDDEN,
                     "MODEL_CATALOG_PUBLISH_FORBIDDEN",
                     "当前账号没有发布平台模型目录的权限"
+            );
+        }
+    }
+
+    private void requireManagePermission(SessionContext context) {
+        if (context == null
+                || context.clientType() != ClientType.MANAGEMENT_WEB
+                || !context.permissions().contains("model_catalog.manage")) {
+            throw new ApiException(
+                    HttpStatus.FORBIDDEN,
+                    "MODEL_CATALOG_MANAGE_FORBIDDEN",
+                    "当前账号没有维护平台模型目录的权限"
             );
         }
     }

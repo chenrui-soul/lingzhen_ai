@@ -91,10 +91,25 @@ $stderrPath = Join-Path $logRoot "backend-$timestamp.stderr.log"
 
 $previousDatabasePassword = $env:APP_DB_PASSWORD
 $previousHmacSecret = $env:APP_AUTH_HMAC_SECRET
+$previousMinioEndpoint = $env:MINIO_ENDPOINT
+$previousMinioRootUser = $env:MINIO_ROOT_USER
+$previousMinioRootPassword = $env:MINIO_ROOT_PASSWORD
+$previousMinioBucket = $env:MINIO_BUCKET
+$minioEnvPath = Join-Path (Split-Path -Parent $backendRoot) '.env.minio'
+$minioEnv = @{}
+if (Test-Path -LiteralPath $minioEnvPath) {
+    foreach ($line in Get-Content -LiteralPath $minioEnvPath) {
+        if ($line -match '^\s*([^#=]+)=(.*)$') { $minioEnv[$matches[1].Trim()] = $matches[2].Trim() }
+    }
+}
 $process = $null
 try {
     $env:APP_DB_PASSWORD = $secretValues.DatabasePassword
     $env:APP_AUTH_HMAC_SECRET = $secretValues.HmacSecret
+    if ($minioEnv.ContainsKey('MINIO_ENDPOINT')) { $env:MINIO_ENDPOINT = $minioEnv['MINIO_ENDPOINT'] }
+    if ($minioEnv.ContainsKey('MINIO_ROOT_USER')) { $env:MINIO_ROOT_USER = $minioEnv['MINIO_ROOT_USER'] }
+    if ($minioEnv.ContainsKey('MINIO_ROOT_PASSWORD')) { $env:MINIO_ROOT_PASSWORD = $minioEnv['MINIO_ROOT_PASSWORD'] }
+    if ($minioEnv.ContainsKey('MINIO_BUCKET')) { $env:MINIO_BUCKET = $minioEnv['MINIO_BUCKET'] }
     $quotedJarPath = '"' + $jar.FullName + '"'
     $process = Start-Process `
         -FilePath $java.Source `
@@ -117,6 +132,13 @@ finally {
     }
     else {
         $env:APP_AUTH_HMAC_SECRET = $previousHmacSecret
+    }
+    foreach ($name in @('MINIO_ENDPOINT','MINIO_ROOT_USER','MINIO_ROOT_PASSWORD','MINIO_BUCKET')) {
+        if ($name -eq 'MINIO_ENDPOINT') { $priorValue = $previousMinioEndpoint }
+        elseif ($name -eq 'MINIO_ROOT_USER') { $priorValue = $previousMinioRootUser }
+        elseif ($name -eq 'MINIO_ROOT_PASSWORD') { $priorValue = $previousMinioRootPassword }
+        else { $priorValue = $previousMinioBucket }
+        if ($null -eq $priorValue) { Remove-Item "Env:$name" -ErrorAction SilentlyContinue } else { Set-Item "Env:$name" $priorValue }
     }
     $quotedJarPath = $null
     $secretValues = $null

@@ -14,4 +14,6 @@ public interface CatalogPublicationService {
             String idempotencyKey,
             PublishCatalogRequest request
     );
+
+    CatalogPublishResponse publishLatest(SessionContext sessionContext);
 }

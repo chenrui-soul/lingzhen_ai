@@ -82,7 +82,7 @@ describe('ModelCatalogEditorDrawer', () => {
     mutationMocks.create.mockReturnValue(mutationState(createRequest));
     renderDrawer(null);
 
-    await fireEvent.click(screen.getByText('保存草稿'));
+    await fireEvent.click(screen.getByText('保存并生效'));
 
     expect(screen.getByText('请输入模型编码')).toBeInTheDocument();
     expect(screen.getByText('请输入模型名称')).toBeInTheDocument();
@@ -101,7 +101,7 @@ describe('ModelCatalogEditorDrawer', () => {
     mutationMocks.update.mockReturnValue(mutationState(updateRequest));
     const view = renderDrawer(model);
 
-    await fireEvent.click(screen.getByText('保存草稿'));
+    await fireEvent.click(screen.getByText('保存并生效'));
 
     await waitFor(() => {
       expect(screen.getByText('此模型已被其他管理员修改，正在刷新最新内容。')).toBeInTheDocument();
@@ -115,12 +115,12 @@ describe('ModelCatalogEditorDrawer', () => {
     );
   });
 
-  it('activates a model and requests the publication flow from one primary action', async () => {
+  it('saves a model through one primary action', async () => {
     const updateRequest = vi.fn().mockResolvedValue({ ...model, status: 'active', rowVersion: 5 });
     mutationMocks.update.mockReturnValue(mutationState(updateRequest));
     const view = renderDrawer(model);
 
-    await fireEvent.click(screen.getByRole('button', { name: '保存并上线' }));
+    await fireEvent.click(screen.getByRole('button', { name: '保存并生效' }));
 
     await waitFor(() => expect(updateRequest).toHaveBeenCalledTimes(1));
     expect(updateRequest).toHaveBeenCalledWith(
@@ -129,7 +129,14 @@ describe('ModelCatalogEditorDrawer', () => {
         request: expect.objectContaining({ status: 'active', rowVersion: 4 }),
       }),
     );
-    expect(view.emitted().savedAndPublish).toHaveLength(1);
+    expect(view.emitted().saved).toHaveLength(1);
     expect(view.emitted().close).toHaveLength(1);
+  });
+
+  it('exposes the asynchronous task query address directly on the model form', () => {
+    renderDrawer(model);
+
+    expect(screen.getByText('任务查询地址（可选）')).toBeInTheDocument();
+    expect(screen.getByText(/系统不会自动补路径/)).toBeInTheDocument();
   });
 });

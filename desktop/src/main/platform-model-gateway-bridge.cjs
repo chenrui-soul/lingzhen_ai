@@ -97,12 +97,16 @@ class PlatformModelGatewayBridge {
       error.safeToRetry = true;
       throw error;
     }
-    const assets = (Array.isArray(input.assets) ? input.assets : []).map(asset => ({
-      id: text(asset.id, 128),
-      type: text(asset.type, 16) || "image",
-      url: text(asset.url || asset.sourceUrl || asset.downloadUrl, 8192),
-    })).filter(asset => /^https?:\/\//i.test(asset.url));
-    if ((input.assets || []).length && !assets.length) {
+    const sourceAssets = Array.isArray(input.assets) ? input.assets : [];
+    const assets = [];
+    for (const asset of sourceAssets) {
+      const existingUrl = text(asset.url || asset.sourceUrl || asset.downloadUrl, 8192);
+      if (/^https?:\/\//i.test(existingUrl)) { assets.push({id: text(asset.id, 128), type: text(asset.type, 16) || "image", url: existingUrl}); continue; }
+      if (!asset.path) continue;
+      const uploaded = await this.authClient.authenticatedUpload("/api/v1/desktop/assets/upload", asset.path, {contentType: asset.mime || "image/jpeg", filename: asset.originalName || asset.name || "reference-image"});
+      assets.push({id: text(uploaded.assetId || asset.id, 128), type: text(asset.type, 16) || "image", url: text(uploaded.url, 8192)});
+    }
+    if (sourceAssets.length && assets.length !== sourceAssets.length) {
       const error = new Error("平台模型参考素材需要先同步为网络地址，本地文件暂不能直接提交");
       error.code = "PLATFORM_REFERENCE_NOT_UPLOADED";
       error.notSentVerified = true;
@@ -146,6 +150,26 @@ class PlatformModelGatewayBridge {
       method: "GET",
       timeoutMs: 30000,
     });
+    // 后端会在模型未配置查询地址时返回可识别的业务错误。将它映射为
+    // supported:false，交给桌面端状态机进入“等待人工核对”，避免无限轮询。
+    if (result.errorCode === "PLATFORM_STATUS_PATH_NOT_CONFIGURED") {
+      return {
+        supported: false,
+        ok: false,
+        failed: false,
+        completed: false,
+        pending: false,
+        notFound: false,
+        status: "unsupported",
+        urls: result.resultUrls || [],
+        providerId: String(providerId),
+        modelId: String(modelId),
+        providerJobId: String(result.providerJobId || taskId),
+        clientRequestId: text(query.clientRequestId, 128),
+        error: result.errorMessage || "管理员尚未配置该模型的任务查询地址",
+        errorCode: result.errorCode,
+      };
+    }
     return {
       supported: true,
       ok: result.state === "completed",

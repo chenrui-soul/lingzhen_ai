@@ -19,9 +19,12 @@ function validUrl(value) {
   return url.toString().replace(/\/$/, "");
 }
 function endpointUrl(baseUrl, requestPath) {
+  const configuredPath = String(requestPath || '').trim();
+  // 模型级配置允许直接填写完整地址（可包含 {id} 替换后的 URL）。
+  if (/^https?:\/\/[^\s]+$/i.test(configuredPath)) return configuredPath;
   const base = new URL(String(baseUrl || ""));
   const baseParts = base.pathname.split("/").filter(Boolean);
-  const pathParts = String(requestPath || "").split("/").filter(Boolean);
+  const pathParts = configuredPath.split("/").filter(Boolean);
   while (baseParts.length && pathParts.length && baseParts.at(-1) === pathParts[0]) pathParts.shift();
   base.pathname = `/${[...baseParts, ...pathParts].join("/")}`;
   return base.toString();
@@ -77,16 +80,16 @@ function generationRoute(provider, type) {
   const isCaiCai = hostname === "caicaiapi.cloud" || hostname.endsWith(".caicaiapi.cloud");
   if (type === "image") {
     return {
-      submitPath: text(provider.imageTasksPath, 160) || (isCaiCai ? "/v1/images/tasks" : provider.imagesPath),
-      statusPath: text(provider.imageStatusPath, 200) || (isCaiCai ? "/v1/images/tasks/{id}" : ""),
+      submitPath: text(provider.imageTasksPath, 160) || text(provider.imagesPath, 160),
+      statusPath: text(provider.imageStatusPath, 200),
       cancelPath: text(provider.imageCancelPath, 200),
-      asynchronous: Boolean(text(provider.imageTasksPath, 160) || isCaiCai),
+      asynchronous: Boolean(text(provider.imageTasksPath, 160) || text(provider.imageStatusPath, 200)),
       notFoundOn404: isCaiCai
     };
   }
   if (type === "video") {
-    const submitPath = provider.videosPath === "/v1/videos/generations" ? "/v1/videos" : provider.videosPath;
-    return {submitPath, statusPath:text(provider.videoStatusPath,200)||"/v1/videos/{id}", cancelPath:text(provider.videoCancelPath,200), asynchronous:true, notFoundOn404:isCaiCai};
+    const submitPath = text(provider.videosPath, 160);
+    return {submitPath, statusPath:text(provider.videoStatusPath,200), cancelPath:text(provider.videoCancelPath,200), asynchronous:Boolean(text(provider.videoStatusPath,200)), notFoundOn404:isCaiCai};
   }
   return {submitPath:type === "audio" ? provider.audiosPath : provider.protocol === "openai-responses" ? provider.responsesPath : provider.chatPath, statusPath:"", cancelPath:"", asynchronous:false, notFoundOn404:false};
 }
@@ -126,7 +129,7 @@ class ModelGatewayBridge {
     const protocol = text(input.protocol ?? existing.protocol ?? "openai-compatible", 40); if (!PROTOCOLS.has(protocol)) throw new Error("不支持的模型协议");
     const baseUrl = validUrl(input.baseUrl ?? existing.baseUrl); const timestamp = now();
     const headerNames = input.customHeaders !== undefined ? Object.keys(input.customHeaders && typeof input.customHeaders === "object" ? input.customHeaders : {}).map(value => text(value,80)).filter(Boolean) : (existing.customHeaderNames || []);
-    return {...existing, name: text(input.name ?? existing.name, 100) || "未命名厂商", protocol, baseUrl, modelsPath: text(input.modelsPath ?? existing.modelsPath ?? "/v1/models", 160) || "/v1/models", chatPath: text(input.chatPath ?? existing.chatPath ?? "/v1/chat/completions", 160), responsesPath: text(input.responsesPath ?? existing.responsesPath ?? "/v1/responses", 160), imagesPath: text(input.imagesPath ?? existing.imagesPath ?? "/v1/images/generations", 160), imageTasksPath:text(input.imageTasksPath ?? existing.imageTasksPath,160), imageStatusPath:text(input.imageStatusPath ?? existing.imageStatusPath,200), imageCancelPath:text(input.imageCancelPath ?? existing.imageCancelPath,200), videosPath: text(input.videosPath ?? existing.videosPath ?? "/v1/videos/generations", 160), videoStatusPath:text(input.videoStatusPath ?? existing.videoStatusPath,200), videoCancelPath:text(input.videoCancelPath ?? existing.videoCancelPath,200), requestStatusPath:text(input.requestStatusPath ?? existing.requestStatusPath,200), requestCancelPath:text(input.requestCancelPath ?? existing.requestCancelPath,200), audiosPath:text(input.audiosPath ?? existing.audiosPath ?? "/v1/audio/generations",160), organization: text(input.organization ?? existing.organization, 200), project: text(input.project ?? existing.project, 200), customHeaderNames: headerNames, concurrency: Math.max(1, Math.min(64, Number(input.concurrency ?? existing.concurrency ?? 1) || 1)), timeoutSeconds: Math.max(5, Math.min(600, Number(input.timeoutSeconds ?? existing.timeoutSeconds ?? 60) || 60)), enabled: input.enabled === undefined ? existing.enabled !== false : input.enabled === true, models: existing.models || [], createdAt: existing.createdAt || timestamp, updatedAt: timestamp};
+    return {...existing, name: text(input.name ?? existing.name, 100) || "未命名厂商", protocol, baseUrl, modelsPath: text(input.modelsPath ?? existing.modelsPath, 160), chatPath: text(input.chatPath ?? existing.chatPath, 160), responsesPath: text(input.responsesPath ?? existing.responsesPath, 160), imagesPath: text(input.imagesPath ?? existing.imagesPath, 160), imageTasksPath:text(input.imageTasksPath ?? existing.imageTasksPath,160), imageStatusPath:text(input.imageStatusPath ?? existing.imageStatusPath,200), imageCancelPath:text(input.imageCancelPath ?? existing.imageCancelPath,200), videosPath: text(input.videosPath ?? existing.videosPath, 160), videoStatusPath:text(input.videoStatusPath ?? existing.videoStatusPath,200), videoCancelPath:text(input.videoCancelPath ?? existing.videoCancelPath,200), requestStatusPath:text(input.requestStatusPath ?? existing.requestStatusPath,200), requestCancelPath:text(input.requestCancelPath ?? existing.requestCancelPath,200), audiosPath:text(input.audiosPath ?? existing.audiosPath,160), organization: text(input.organization ?? existing.organization, 200), project: text(input.project ?? existing.project, 200), customHeaderNames: headerNames, concurrency: Math.max(1, Math.min(64, Number(input.concurrency ?? existing.concurrency ?? 1) || 1)), timeoutSeconds: Math.max(5, Math.min(600, Number(input.timeoutSeconds ?? existing.timeoutSeconds ?? 60) || 60)), enabled: input.enabled === undefined ? existing.enabled !== false : input.enabled === true, models: existing.models || [], createdAt: existing.createdAt || timestamp, updatedAt: timestamp};
   }
   createProvider(input = {}) { const state = this.loadState(); const provider = this.normalize(input, {id: id()}); const apiKey = text(input.apiKey, 2000); const customHeaders = input.customHeaders && typeof input.customHeaders === "object" ? Object.fromEntries(Object.entries(input.customHeaders).map(([k,v]) => [text(k,80), text(v,500)]).filter(([k,v]) => k && v)) : {}; if (apiKey || Object.keys(customHeaders).length) { const secrets = this.loadSecrets(); secrets.entries[provider.id] = this.encrypt(JSON.stringify({apiKey, customHeaders})); provider.secretRef = provider.id; provider.hasApiKey = Boolean(apiKey); this.saveSecrets(secrets); } state.providers.unshift(provider); this.saveState(state); return this.publicProvider(provider); }
   updateProvider(providerId, input = {}) { const state = this.loadState(); const provider = state.providers.find(item => item.id === String(providerId || "")); if (!provider) throw new Error("模型厂商不存在"); const next = this.normalize(input, provider); const prior = this.secretPayload(provider); const apiKey = input.apiKey === undefined ? prior.apiKey : text(input.apiKey, 2000); const customHeaders = input.customHeaders === undefined ? prior.customHeaders : (input.customHeaders && typeof input.customHeaders === "object" ? Object.fromEntries(Object.entries(input.customHeaders).map(([k,v]) => [text(k,80), text(v,500)]).filter(([k,v]) => k && v)) : {}); const secrets = this.loadSecrets(); if (apiKey || Object.keys(customHeaders).length) { secrets.entries[provider.id] = this.encrypt(JSON.stringify({apiKey, customHeaders})); next.secretRef = provider.id; next.hasApiKey = Boolean(apiKey); } else { delete secrets.entries[provider.id]; delete next.secretRef; next.hasApiKey = false; } this.saveSecrets(secrets); state.providers[state.providers.indexOf(provider)] = next; this.saveState(state); return this.publicProvider(next); }
@@ -150,11 +153,12 @@ class ModelGatewayBridge {
   }
   updateModel(providerId, modelId, input = {}) { const state = this.loadState(); const provider = state.providers.find(item => item.id === String(providerId || "")); const model = provider?.models?.find(item => item.id === String(modelId || "")); if (!provider || !model) throw new Error("模型不存在"); if (input.displayName !== undefined) model.displayName = text(input.displayName, 180) || model.displayName; if (input.enabled !== undefined) model.enabled = input.enabled === true; if (input.hidden !== undefined) model.hidden = input.hidden === true; if (input.parameters !== undefined) model.parameters = input.parameters && typeof input.parameters === "object" ? clone(input.parameters) : {}; if (input.capabilities !== undefined) model.capabilities = inferCapabilities(model.id, input.capabilities); provider.updatedAt = now(); this.saveState(state); return this.publicProvider(provider); }
   deleteModel(providerId, modelId) { const state = this.loadState(); const provider = state.providers.find(item => item.id === String(providerId || "")); if (!provider) throw new Error("模型厂商不存在"); const index = (provider.models || []).findIndex(item => item.id === String(modelId || "")); if (index < 0) throw new Error("模型不存在"); provider.models.splice(index, 1); provider.updatedAt = now(); this.saveState(state); return this.publicProvider(provider); }
-  async testProvider(providerId) { const provider = this.provider(providerId); if (!provider) throw new Error("模型厂商不存在"); const result = await this.requestJson(provider, provider.modelsPath || "/v1/models"); provider.status = result.ok ? "online" : "error"; provider.statusText = result.ok ? "连接成功" : text(result.error || "连接失败", 300); provider.lastTestedAt = now(); provider.updatedAt = provider.lastTestedAt; const state = this.loadState(); const current = state.providers.find(item => item.id === provider.id); Object.assign(current, provider); this.saveState(state); return {ok: result.ok, status: provider.status, statusText: provider.statusText, provider: this.publicProvider(provider)}; }
+  async testProvider(providerId) { const provider = this.provider(providerId); if (!provider) throw new Error("模型厂商不存在"); if (!text(provider.modelsPath,160)) throw new Error("请先配置模型列表地址"); const result = await this.requestJson(provider, provider.modelsPath); provider.status = result.ok ? "online" : "error"; provider.statusText = result.ok ? "连接成功" : text(result.error || "连接失败", 300); provider.lastTestedAt = now(); provider.updatedAt = provider.lastTestedAt; const state = this.loadState(); const current = state.providers.find(item => item.id === provider.id); Object.assign(current, provider); this.saveState(state); return {ok: result.ok, status: provider.status, statusText: provider.statusText, provider: this.publicProvider(provider)}; }
   async discoverModels(providerId) {
     const provider = this.provider(providerId);
     if (!provider) throw new Error("模型厂商不存在");
-    const result = await this.requestJson(provider, provider.modelsPath || "/v1/models");
+    if (!text(provider.modelsPath,160)) throw new Error("请先配置模型列表地址");
+    const result = await this.requestJson(provider, provider.modelsPath);
     if (!result.ok) throw new Error(text(result.error || "获取模型列表失败", 300));
     const raw = Array.isArray(result.body) ? result.body : Array.isArray(result.body?.data) ? result.body.data : Array.isArray(result.body?.models) ? result.body.models : [];
     const discovered = raw.map((item, index) => typeof item === "string" ? {id: item, displayName: item, sortOrder: index, capabilities: {}} : {id: item.id || item.name, displayName: item.displayName || item.name || item.id, sortOrder: index, capabilities: item.capabilities || {}}).filter(item => item.id);

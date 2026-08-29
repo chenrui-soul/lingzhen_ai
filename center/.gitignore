@@ -3,6 +3,7 @@
 .env.*
 !.env.example
 !.env.postgres.example
+!.env.minio.example
 secrets/
 
 # Runtime data and database artifacts

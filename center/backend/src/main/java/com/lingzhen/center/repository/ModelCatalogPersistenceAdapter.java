@@ -229,7 +229,7 @@ public class ModelCatalogPersistenceAdapter implements ModelCatalogRepository {
                 command.code(), command.displayName(), command.capabilityType(),
                 command.description(), command.parameterSchema(), command.defaultParameters(),
                 command.defaultTenantEnabled(), command.sortOrder())
-                .addValue("status", "draft");
+                .addValue("status", command.status());
         return jdbcTemplate.query("""
                         WITH inserted AS (
                             INSERT INTO model_catalog.models (

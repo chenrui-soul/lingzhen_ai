@@ -1,4 +1,4 @@
-const {app, BrowserWindow, ipcMain, shell, nativeTheme, dialog, safeStorage} = require('electron');
+const {app, BrowserWindow, ipcMain, shell, nativeTheme, dialog, safeStorage, net} = require('electron');
 const path = require('path');
 const fs = require('fs');
 const {AgentBridge} = require('./agent-bridge.cjs');
@@ -68,7 +68,7 @@ function createTenantRuntime(identity = null) {
   const tenantRuntimeScope=()=>({tenantId:runtimeTenantId,userId:runtimeUserId});
   const assertRuntimeTenant=()=>{const scope=tenantRuntimeScope();if(String(desktopIdentity.runtimeTenantId()||'')!==scope.tenantId||String(desktopIdentity.runtimeUserId()||'')!==scope.userId)throw Object.assign(new Error('租户身份已切换，旧运行时已停止'),{code:'TENANT_CONTEXT_CHANGED'});};
   agentBridge = new AgentBridge({dataRoot: path.join(root, 'agent'), licenseClient:agentCredentialAdapter, identityProvider: () => desktopIdentity.status(), initialConfig: tenantAgentConfig(), serverUrls: connectionConfig.serviceUrls('business'), profileRootProvider: () => {assertRuntimeTenant();return path.join(root, 'chrome-profiles');}, embeddedBrowserProvider: () => {assertRuntimeTenant();return embeddedBrowser;}, accountAuthorizer: account => {assertRuntimeTenant();return doubaoAccounts.assert(account);}, testMode: process.env.LINGFRAME_AGENT_TEST_MODE === '1'});
-  generationOrchestrator = new GenerationOrchestrator({tenantIdProvider:()=>{assertRuntimeTenant();return runtimeTenantId;},authorizationProvider:capability=>desktopIdentity.assert(capability),tasks:workbenchData,modelGateway:routedModelGateway,agentBridge,accountRegistry:doubaoAccounts,dataRootProvider:()=>{assertRuntimeTenant();return root;},liveViewProvider:async payload=>{win?.webContents.send('generation:live-view',payload);await new Promise(resolve=>setTimeout(resolve,650))},liveStatusProvider:payload=>win?.webContents.send('generation:live-status',payload)});
+  generationOrchestrator = new GenerationOrchestrator({tenantIdProvider:()=>{assertRuntimeTenant();return runtimeTenantId;},authorizationProvider:capability=>desktopIdentity.assert(capability),tasks:workbenchData,modelGateway:routedModelGateway,agentBridge,accountRegistry:doubaoAccounts,dataRootProvider:()=>{assertRuntimeTenant();return root;},fetchImpl:(url,options)=>net.fetch(url,options),liveViewProvider:async payload=>{win?.webContents.send('generation:live-view',payload);await new Promise(resolve=>setTimeout(resolve,650))},liveStatusProvider:payload=>win?.webContents.send('generation:live-status',payload)});
   generationOrchestrator.recoverInterruptedTasks();
   agentBridge.start();
   return {agentBridge, generationOrchestrator};

@@ -27,7 +27,6 @@ const props = defineProps<{
 const emit = defineEmits<{
   close: [];
   saved: [model: CatalogModel];
-  savedAndPublish: [model: CatalogModel];
   conflict: [modelId: string];
   closed: [];
 }>();
@@ -51,7 +50,7 @@ const form = reactive({
   defaultParametersText: '{}',
   defaultTenantEnabled: false,
   sortOrder: 0,
-  status: 'draft',
+  status: 'active',
   baseUrl: '',
   apiKey: '',
   submitPath: '',
@@ -72,7 +71,6 @@ const capabilityOptions = [
   { value: 'audio', label: '音频生成' },
 ];
 const statusOptions = [
-  { value: 'draft', label: '草稿' },
   { value: 'active', label: '启用' },
   { value: 'inactive', label: '停用' },
 ];
@@ -107,7 +105,7 @@ function populate(model: CatalogModel | null): void {
   form.defaultParametersText = prettyJson(model?.defaultParameters ?? {});
   form.defaultTenantEnabled = model?.defaultTenantEnabled ?? false;
   form.sortOrder = model?.sortOrder ?? 0;
-  form.status = model?.status ?? 'draft';
+  form.status = model?.status === 'inactive' ? 'inactive' : 'active';
   form.baseUrl = model?.baseUrl ?? '';
   form.apiKey = '';
   form.submitPath = model?.submitPath ?? '';
@@ -163,7 +161,7 @@ function parseObject(key: string, value: string, label: string): Record<string, 
   }
 }
 
-async function submit(mode: 'draft' | 'publish' = 'draft'): Promise<void> {
+async function submit(): Promise<void> {
   clearErrors();
   requireField('providerId', form.providerId, '模型厂商');
   requireField('code', form.code, '模型编码');
@@ -199,6 +197,7 @@ async function submit(mode: 'draft' | 'publish' = 'draft'): Promise<void> {
     runtimeEnabled: form.runtimeEnabled,
     baseCredits: form.baseCredits,
     maxReserveCredits: form.maxReserveCredits,
+    status: 'active',
   };
 
   try {
@@ -207,7 +206,7 @@ async function submit(mode: 'draft' | 'publish' = 'draft'): Promise<void> {
           modelId: props.model.id,
           request: {
             ...baseRequest,
-            status: mode === 'publish' ? 'active' : form.status,
+            status: form.status,
             rowVersion: props.model.rowVersion,
             runtimeRowVersion: props.model.runtimeRowVersion ?? 0,
             priceRowVersion: props.model.priceRowVersion ?? 0,
@@ -215,28 +214,8 @@ async function submit(mode: 'draft' | 'publish' = 'draft'): Promise<void> {
         })
       : await createMutation.mutateAsync(baseRequest);
 
-    if (!props.model && mode === 'publish' && saved.status !== 'active') {
-      saved = await updateMutation.mutateAsync({
-        modelId: saved.id,
-        request: {
-          ...baseRequest,
-          status: 'active',
-          rowVersion: saved.rowVersion,
-          runtimeRowVersion: saved.runtimeRowVersion ?? 0,
-          priceRowVersion: saved.priceRowVersion ?? 0,
-        } satisfies UpdateCatalogModelRequest,
-      });
-    }
-
-    message.success(
-      mode === 'publish'
-        ? '模型已保存，正在打开发布预览'
-        : props.model
-          ? '模型已更新'
-          : '模型已保存为草稿',
-    );
+    message.success(props.model ? '模型已更新并立即生效' : '模型已创建并立即生效');
     emit('saved', saved);
-    if (mode === 'publish') emit('savedAndPublish', saved);
     emit('close');
   } catch (error) {
     const appError = toAppError(error);
@@ -252,7 +231,7 @@ async function submit(mode: 'draft' | 'publish' = 'draft'): Promise<void> {
 }
 
 function handleSubmit(): void {
-  void submit('draft');
+  void submit();
 }
 
 function handleOpenChange(open: boolean): void {
@@ -295,7 +274,7 @@ function handleOpenChange(open: boolean): void {
       <section class="form-section">
         <div class="form-section__heading">
           <h2>模型信息</h2>
-          <p>填写基础信息即可保存；调用凭据由后端安全配置统一管理。</p>
+          <p>填写基础信息并保存，模型会立即同步到桌面端。</p>
         </div>
         <div class="form-grid">
           <label class="field field--wide">
@@ -349,13 +328,13 @@ function handleOpenChange(open: boolean): void {
             <ACheckbox v-model:checked="form.defaultTenantEnabled" />
             <span>
               <strong>默认开放给租户</strong>
-              <small>发布后，租户无需额外配置即可看到此模型。</small>
+              <small>保存后，租户无需额外配置即可看到此模型。</small>
             </span>
           </label>
         </div>
       </section>
 
-      <details class="runtime-section">
+      <details class="runtime-section" open>
         <summary>
           <span>调用配置（管理员）</span>
           <small>当前模型的地址和密钥仅用于平台代理执行</small>
@@ -381,16 +360,17 @@ function handleOpenChange(open: boolean): void {
             <span><strong>启用平台代理</strong><small>关闭后不会调用当前模型。</small></span>
           </label>
           <label class="field">
-            <span>提交路径（可选）</span>
-            <a-input v-model:value="form.submitPath" placeholder="默认按能力类型推断" />
+            <span>提交路径</span>
+            <a-input v-model:value="form.submitPath" placeholder="按管理员配置填写；不填写则使用调用地址本身" />
           </label>
-          <label class="field">
-            <span>状态路径（可选）</span>
-            <a-input v-model:value="form.statusPath" placeholder="例如 /v1/videos/{id}" />
+          <label class="field runtime-field--wide">
+            <span>任务查询地址（可选）</span>
+            <a-input v-model:value="form.statusPath" placeholder="完整地址，例如 https://api.example.com/v1/videos/{id}" />
+            <small>用于异步任务查询；支持完整 HTTP/HTTPS 地址，系统不会自动补路径。</small>
           </label>
-          <label class="field">
-            <span>取消路径（可选）</span>
-            <a-input v-model:value="form.cancelPath" placeholder="默认复用状态路径" />
+          <label class="field runtime-field--wide">
+            <span>任务取消地址（可选）</span>
+            <a-input v-model:value="form.cancelPath" placeholder="完整地址，例如 https://api.example.com/v1/videos/{id}/cancel" />
           </label>
         </div>
       </details>
@@ -428,7 +408,7 @@ function handleOpenChange(open: boolean): void {
             <label v-if="editing" class="field">
               <span>目录状态</span>
               <a-select v-model:value="form.status" :options="statusOptions" />
-              <small>停用后不会进入新的发布目录。</small>
+              <small>停用后会立即从桌面端可用模型中移除。</small>
             </label>
           </div>
           <div class="form-section__heading form-section__heading--icon">
@@ -473,9 +453,8 @@ function handleOpenChange(open: boolean): void {
     <template #footer>
       <div class="drawer-footer">
         <a-button :disabled="submitting" @click="emit('close')">取消</a-button>
-        <a-button :disabled="submitting" @click="submit('draft')"> 保存草稿 </a-button>
-        <a-button type="primary" :loading="submitting" @click="submit('publish')">
-          保存并上线
+        <a-button type="primary" :loading="submitting" @click="submit()">
+          保存并生效
         </a-button>
       </div>
     </template>
