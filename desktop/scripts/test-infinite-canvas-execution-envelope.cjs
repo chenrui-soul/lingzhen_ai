@@ -26,7 +26,7 @@ check("素材顺序和角色进入参考素材",envelope.inputManifest.some(item
 check("本地执行快照保留信封",renderer.includes("node.data.executionEnvelope")&&renderer.includes("markDirty();"));
 check("当前节点和整套流程共用 executeNode",(renderer.match(/executeNode\(node(?:,canvasId)?\)/g)||[]).length>=2);
 check("画布不直接写任务中心",!/api\.tasks\.(create|report|complete|retry|cancel)/.test(renderer));
-check("平移工具支持左键拖动画布",renderer.includes('event.button===0&&runtime.toolMode==="pan"')&&renderer.includes("runtime.panDrag"));
+check("平移工具支持左键拖动画布",renderer.includes('panMode=event.button===1||(event.button===0&&!marqueeMode')&&renderer.includes("runtime.panDrag"));
 check("按住修饰键仍可框选节点",renderer.includes("runtime.marquee={startX:event.clientX,startY:event.clientY,additive}"));
 
 const failed=results.filter(item=>!item.passed);

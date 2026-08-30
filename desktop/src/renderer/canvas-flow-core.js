@@ -12,6 +12,9 @@
   const GROUP_NODE_WIDTH = 248;
   const GROUP_NODE_HEIGHT = 150;
   const GROUP_PADDING = 40;
+  const DEFAULT_NODE_PRESENTATIONS = {
+    text:{width:360,height:240,aspectRatio:"auto",fit:"contain"},"image-input":{width:320,height:260,aspectRatio:"4:3",fit:"cover"},"video-input":{width:340,height:250,aspectRatio:"16:9",fit:"cover"},"audio-input":{width:340,height:190,aspectRatio:"auto",fit:"contain"},asset:{width:340,height:250,aspectRatio:"4:3",fit:"cover"},prompt:{width:360,height:240,aspectRatio:"auto",fit:"contain"},"image-generation":{width:360,height:300,aspectRatio:"4:3",fit:"cover"},"storyboard-image":{width:360,height:300,aspectRatio:"4:3",fit:"cover"},"video-generation":{width:380,height:290,aspectRatio:"16:9",fit:"cover"},"audio-generation":{width:360,height:210,aspectRatio:"auto",fit:"contain"}
+  };
   const NODE_LIBRARY = [
     {type:"text", group:"输入", icon:"Ｔ", title:"文本输入", description:"输入故事、需求或引用文本素材", color:"#35d7ff", inputTypes:[], outputTypes:["text"], inputNode:true, assetTypes:["text"]},
     {type:"image-input", group:"输入", icon:"▧", title:"图片输入", description:"上传、拖入或引用项目图片", color:"#ff69b4", inputTypes:[], outputTypes:["image","asset"], inputNode:true, assetTypes:["image"]},
@@ -38,6 +41,7 @@
     {type:"final-cut", group:"后期", icon:"剪", title:"成片整理", description:"汇总镜头并生成交付清单", color:"#55e6b1", inputTypes:["video","audio","text","json","asset"], outputTypes:["video","audio","json"], executable:true}
   ];
   const LIBRARY_MAP = Object.fromEntries(NODE_LIBRARY.map(item => [item.type, item]));
+  const MINIMAL_NODE_TYPES = ["text","image-input","video-input","audio-input","asset","image-generation","video-generation","prompt"];
   const CUSTOM_NODE_PRESENTATION = {
     text:{group:"输入",title:"文本输入",description:"输入文字、指令或文本素材"},
     "image-input":{group:"输入",title:"图片输入",description:"输入图片素材"},
@@ -82,12 +86,18 @@
     return (hash >>> 0).toString(16).padStart(8, "0");
   }
   function nodeMeta(type) { return LIBRARY_MAP[type] || LIBRARY_MAP.text; }
+  function normalizeNodePresentation(type, value = {}) {
+    const base = DEFAULT_NODE_PRESENTATIONS[type] || {width:300,height:190,aspectRatio:"auto",fit:"contain"};
+    const source = value && typeof value === "object" ? value : {};
+    return {width:Math.max(240,Math.min(520,Number(source.width) || base.width)),height:Math.max(150,Math.min(560,Number(source.height) || base.height)),aspectRatio:String(source.aspectRatio || base.aspectRatio),fit:source.fit === "contain" ? "contain" : base.fit === "contain" ? "contain" : "cover",userResized:source.userResized === true};
+  }
+  function nodeSize(node) { const presentation=normalizeNodePresentation(node?.data?.kind || node?.type || "text",node?.data?.presentation);return{width:presentation.width,height:presentation.height}; }
   function nodePresentation(type, mode = "short-drama") {
     const base = nodeMeta(type);
     if (mode !== "blank" && mode !== "custom") return base;
     return {...base, ...(CUSTOM_NODE_PRESENTATION[type] || {})};
   }
-  function nodeLibraryForMode(mode = "short-drama") { return NODE_LIBRARY.map(item => nodePresentation(item.type, mode)); }
+  function nodeLibraryForMode(mode = "short-drama") { const source=mode==="minimal"?NODE_LIBRARY.filter(item=>MINIMAL_NODE_TYPES.includes(item.type)):NODE_LIBRARY;return source.map(item => nodePresentation(item.type, mode==="minimal"?"blank":mode)); }
   function makeNode(type, position = {}, overrides = {}) {
     const meta = nodeMeta(type);
     return {
@@ -102,9 +112,10 @@
         output: overrides.output || null,
         status: overrides.status || "idle",
         route: overrides.route || {channel:"model-gateway", providerId:"", modelId:"", accountId:"", accountName:""},
-        refs: overrides.refs || {assetIds:[], assetRoles:{}, jobIds:[], conversationIds:[]},
-        modelParameters: clone(overrides.modelParameters || {}),
-        phase: overrides.phase || "",
+         refs: overrides.refs || {assetIds:[], assetRoles:{}, jobIds:[], conversationIds:[]},
+         modelParameters: clone(overrides.modelParameters || {}),
+         presentation: normalizeNodePresentation(meta.type, overrides.presentation),
+         phase: overrides.phase || "",
         collapsed: overrides.collapsed === true,
         updatedAt: new Date().toISOString()
       }
@@ -297,8 +308,8 @@
     if (!selected.length) return {position:{x:0,y:0},size:{width:0,height:0}};
     const left = Math.min(...selected.map(node => Number(node.position?.x) || 0));
     const top = Math.min(...selected.map(node => Number(node.position?.y) || 0));
-    const right = Math.max(...selected.map(node => (Number(node.position?.x) || 0) + GROUP_NODE_WIDTH));
-    const bottom = Math.max(...selected.map(node => (Number(node.position?.y) || 0) + GROUP_NODE_HEIGHT));
+    const right = Math.max(...selected.map(node => (Number(node.position?.x) || 0) + nodeSize(node).width));
+    const bottom = Math.max(...selected.map(node => (Number(node.position?.y) || 0) + nodeSize(node).height));
     const inset = Math.max(0, Number(padding) || 0);
     return {position:{x:left-inset,y:top-inset},size:{width:right-left+inset*2,height:bottom-top+inset*2}};
   }
@@ -414,7 +425,8 @@
       node.data.refs.assetRoles = node.data.refs.assetRoles && typeof node.data.refs.assetRoles === "object" ? node.data.refs.assetRoles : {};
       node.data.refs.jobIds = Array.isArray(node.data.refs.jobIds) ? node.data.refs.jobIds : [];
       node.data.refs.conversationIds = Array.isArray(node.data.refs.conversationIds) ? node.data.refs.conversationIds : [];
-      node.data.modelParameters = node.data.modelParameters && typeof node.data.modelParameters === "object" ? node.data.modelParameters : {};
+       node.data.modelParameters = node.data.modelParameters && typeof node.data.modelParameters === "object" ? node.data.modelParameters : {};
+       node.data.presentation = normalizeNodePresentation(node.data.kind || node.type || "text", node.data.presentation);
       node.data.results = Array.isArray(node.data.results) ? node.data.results.filter(item => item && typeof item === "object") : [];
       node.data.activeResultId = String(node.data.activeResultId || node.data.output?.assetId || "");
     }
@@ -525,7 +537,7 @@
     try { topologicalOrder(nodes, edges); } catch (error) { errors.push(error.message); }
     return {ok:errors.length === 0, errors};
   }
-  function createTemplateDocument(templateId = "short-drama") {
+  function createTemplateDocument(templateId = "blank") {
     if (templateId === "blank") return {schemaVersion:VERSION, nodes:[], edges:[], groups:[], viewport:{x:80,y:80,zoom:1}, metadata:{templateId:"blank"}};
     const specs = [
       ["idea","text",60,180,"故事创意","写下故事主题、受众、风格和核心冲突。","策划"],
@@ -560,5 +572,5 @@
     return {x:origin.x,y:origin.y+Math.ceil(nodes.length/3)*180};
   }
 
-  return {VERSION, INPUT_SNAPSHOT_VERSION, NODE_LIBRARY, LIBRARY_MAP, CUSTOM_NODE_PRESENTATION, clone, makeId, makeNode, makeEdge, nodeMeta, nodePresentation, nodeLibraryForMode, outputFromNode, collectUpstreamPayload, resolveNodeExecutionInput, emptyInputSnapshot, normalizeInputSnapshot, captureInputSnapshot, normalizeEdgeData, fingerprintValue, calculateGroupBounds, makeGroup, normalizeGroups, compatibleModels, parameterDefaults, mergeModelParameters, migrateDocument, canConnect, topologicalOrder, validateDocument, createTemplateDocument, findAvailableNodePosition};
+  return {VERSION, INPUT_SNAPSHOT_VERSION, NODE_LIBRARY, LIBRARY_MAP, CUSTOM_NODE_PRESENTATION, MINIMAL_NODE_TYPES, clone, makeId, makeNode, makeEdge, nodeMeta, nodePresentation, nodeLibraryForMode, normalizeNodePresentation, nodeSize, outputFromNode, collectUpstreamPayload, resolveNodeExecutionInput, emptyInputSnapshot, normalizeInputSnapshot, captureInputSnapshot, normalizeEdgeData, fingerprintValue, calculateGroupBounds, makeGroup, normalizeGroups, compatibleModels, parameterDefaults, mergeModelParameters, migrateDocument, canConnect, topologicalOrder, validateDocument, createTemplateDocument, findAvailableNodePosition};
 });

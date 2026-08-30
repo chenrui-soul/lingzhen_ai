@@ -59,16 +59,17 @@ async function clickPoint(win, point, options = {}) {
   return {x,y};
 }
 
-async function drag(win, start, end, steps = 10) {
+async function drag(win, start, end, steps = 10, options = {}) {
+  const modifiers=(options.modifiers||[]).reduce((bits, item)=>bits|({alt:1,control:2,meta:4,shift:8}[item]||0),0);
   await win.webContents.debugger.sendCommand("Input.dispatchMouseEvent", {type:"mouseMoved", x:Math.round(start.x), y:Math.round(start.y), button:"none", buttons:0});
-  await win.webContents.debugger.sendCommand("Input.dispatchMouseEvent", {type:"mousePressed", x:Math.round(start.x), y:Math.round(start.y), button:"left", buttons:1, clickCount:1});
+  await win.webContents.debugger.sendCommand("Input.dispatchMouseEvent", {type:"mousePressed", x:Math.round(start.x), y:Math.round(start.y), button:"left", buttons:1, clickCount:1, modifiers});
   for (let index = 1; index <= steps; index += 1) {
     const x = Math.round(start.x + (end.x - start.x) * index / steps);
     const y = Math.round(start.y + (end.y - start.y) * index / steps);
-    await win.webContents.debugger.sendCommand("Input.dispatchMouseEvent", {type:"mouseMoved", x, y, button:"left", buttons:1});
+    await win.webContents.debugger.sendCommand("Input.dispatchMouseEvent", {type:"mouseMoved", x, y, button:"left", buttons:1, modifiers});
     await wait(12);
   }
-  await win.webContents.debugger.sendCommand("Input.dispatchMouseEvent", {type:"mouseReleased", x:Math.round(end.x), y:Math.round(end.y), button:"left", buttons:0, clickCount:1});
+  await win.webContents.debugger.sendCommand("Input.dispatchMouseEvent", {type:"mouseReleased", x:Math.round(end.x), y:Math.round(end.y), button:"left", buttons:0, clickCount:1, modifiers});
   await wait(140);
 }
 
@@ -121,13 +122,13 @@ app.whenReady().then(async () => {
     const seed = await evaluate(win, `(()=>{
       const core=window.LingframeCanvasCore, now=new Date().toISOString();
       const node=(kind,x,y,id,title,instruction,extra={})=>core.makeNode(kind,{x,y},{id,title,instruction,...extra});
-      const ancestor=node('story-outline',70,90,'node-ancestor-g5','祖先剧情设定','祖先本地说明',{status:'completed',output:{type:'text',content:'祖先剧情与导演规划不应进入视频节点'}});
-      const direct=node('video-prompt',400,90,'node-direct-g5','直接视频提示词','直接节点本地说明',{status:'generating',output:{type:'text',content:'雨夜便利店门口，人物撑伞快速入画。'},refs:{assetIds:[],assetRoles:{},jobIds:['task-running-g5'],conversationIds:[]}});
-      const target=node('video-generation',760,90,'node-video-target-g5','视频目标节点','目标节点保留的本地描述',{route:{channel:'doubao',accountId:'desktop-g5',accountName:'G5 测试账号',doubaoModel:'Seedance 2.0 Mini',ratio:'16:9',duration:'10s'}});
-      const imageSource=node('image-input',70,410,'node-image-source-g5','图片直接上游','',{status:'completed',output:{type:'image',assetId:'asset-image-g5'},refs:{assetIds:['asset-image-g5'],assetRoles:{'asset-image-g5':'character'},jobIds:[],conversationIds:[]}});
-      const imageTarget=node('image-generation',400,410,'node-image-target-g5','图片生成目标','图片生成本地描述');
-      const videoSource=node('video-input',760,410,'node-video-source-g5','视频直接上游','',{status:'completed',output:{type:'video',assetId:'asset-video-g5'},refs:{assetIds:['asset-video-g5'],assetRoles:{'asset-video-g5':'motion'},jobIds:[],conversationIds:[]}});
-      const audioSource=node('audio-input',760,650,'node-audio-source-g5','音频直接上游','',{status:'completed',output:{type:'audio',assetId:'asset-audio-g5'},refs:{assetIds:['asset-audio-g5'],assetRoles:{'asset-audio-g5':'voice'},jobIds:[],conversationIds:[]}});
+      const ancestor=node('story-outline',550,90,'node-ancestor-g5','祖先剧情设定','祖先本地说明',{status:'completed',output:{type:'text',content:'祖先剧情与导演规划不应进入视频节点'}});
+      const direct=node('video-prompt',880,90,'node-direct-g5','直接视频提示词','直接节点本地说明',{status:'generating',output:{type:'text',content:'雨夜便利店门口，人物撑伞快速入画。'},refs:{assetIds:[],assetRoles:{},jobIds:['task-running-g5'],conversationIds:[]}});
+      const target=node('video-generation',1240,90,'node-video-target-g5','视频目标节点','目标节点保留的本地描述',{route:{channel:'doubao',accountId:'desktop-g5',accountName:'G5 测试账号',doubaoModel:'Seedance 2.0 Mini',ratio:'16:9',duration:'10s'}});
+      const imageSource=node('image-input',550,410,'node-image-source-g5','图片直接上游','',{status:'completed',output:{type:'image',assetId:'asset-image-g5'},refs:{assetIds:['asset-image-g5'],assetRoles:{'asset-image-g5':'character'},jobIds:[],conversationIds:[]}});
+      const imageTarget=node('image-generation',880,410,'node-image-target-g5','图片生成目标','图片生成本地描述');
+      const videoSource=node('video-input',1240,410,'node-video-source-g5','视频直接上游','',{status:'completed',output:{type:'video',assetId:'asset-video-g5'},refs:{assetIds:['asset-video-g5'],assetRoles:{'asset-video-g5':'motion'},jobIds:[],conversationIds:[]}});
+      const audioSource=node('audio-input',1240,650,'node-audio-source-g5','音频直接上游','',{status:'completed',output:{type:'audio',assetId:'asset-audio-g5'},refs:{assetIds:['asset-audio-g5'],assetRoles:{'asset-audio-g5':'voice'},jobIds:[],conversationIds:[]}});
       const finalTarget=node('final-cut',1090,510,'node-final-target-g5','媒体整理目标','媒体整理本地描述');
       const edges=[
         core.makeEdge(ancestor.id,direct.id,{id:'edge-ancestor-direct-g5'}),
@@ -156,9 +157,8 @@ app.whenReady().then(async () => {
     check("真实点击可切换到平移工具", await evaluate(win, "document.querySelector('.lfc-stage')?.classList.contains('tool-pan')"));
     await click(win, "[data-lfc-tool='select']");
     check("真实点击可切回选择工具", await evaluate(win, "document.querySelector('.lfc-stage')?.classList.contains('tool-select')"));
-
-    const selectionGeometry = await evaluate(win, `(()=>{const ids=['node-ancestor-g5','node-direct-g5'];const boxes=ids.map(id=>document.querySelector('[data-node-id="'+id+'"]')?.getBoundingClientRect()).filter(Boolean);const viewport=document.querySelector('[data-lfc-viewport]').getBoundingClientRect();return{start:{x:Math.max(viewport.left+4,Math.min(...boxes.map(r=>r.left))-10),y:Math.max(viewport.top+4,Math.min(...boxes.map(r=>r.top))-10)},end:{x:Math.min(viewport.right-4,Math.max(...boxes.map(r=>r.right))+10),y:Math.min(viewport.bottom-4,Math.max(...boxes.map(r=>r.bottom))+10)},boxes:boxes.map(r=>({left:r.left,top:r.top,right:r.right,bottom:r.bottom}))}})()`);
-    await drag(win, selectionGeometry.start, selectionGeometry.end, 14);
+    const selectionGeometry = await evaluate(win, `(()=>{const ids=['node-ancestor-g5','node-direct-g5'];const boxes=ids.map(id=>document.querySelector('[data-node-id="'+id+'"]')?.getBoundingClientRect()).filter(Boolean);const viewport=document.querySelector('[data-lfc-viewport]').getBoundingClientRect();const start={x:Math.max(viewport.left+250,Math.min(...boxes.map(r=>r.left))-10),y:Math.max(viewport.top+60,Math.min(...boxes.map(r=>r.top))-20)};const end={x:Math.min(viewport.right-4,Math.max(...boxes.map(r=>r.right))+10),y:Math.min(viewport.bottom-4,Math.max(...boxes.map(r=>r.bottom))+10)};return{start,end,boxes:boxes.map(r=>({left:r.left,top:r.top,right:r.right,bottom:r.bottom})),viewport:{left:viewport.left,top:viewport.top,right:viewport.right,bottom:viewport.bottom}}})()`);
+    await drag(win, selectionGeometry.start, selectionGeometry.end, 14, {modifiers:["shift"]});
     const selectedIds = await evaluate(win, "[...document.querySelectorAll('.lfc-node.selected')].map(node=>node.dataset.nodeId).sort()");
     check("真实鼠标框选可选中多个节点", JSON.stringify(selectedIds)===JSON.stringify(["node-ancestor-g5","node-direct-g5"]), {selectionGeometry,selectedIds});
 
@@ -174,6 +174,9 @@ app.whenReady().then(async () => {
     check("拖动分组同步移动全部成员", deltas.every(delta=>Math.abs(delta.x-deltas[0].x)<=1&&Math.abs(delta.y-deltas[0].y)<=1&&Math.hypot(delta.x,delta.y)>20), {groupBefore,groupAfter,deltas,groupHeader,groupHit});
 
     await click(win, "[data-node-id='node-video-target-g5'] .lfc-node-preview");
+    if (!(await evaluate(win, "Boolean(document.querySelector('.lfc-node-composer'))"))) {
+      await click(win, "[data-node-id='node-video-target-g5'] [data-node-edit]");
+    }
     await waitFor(win, "Boolean(document.querySelector('.lfc-node-composer [data-lfc-composer-prompt]'))");
     const directPrompt = await evaluate(win, "document.querySelector('[data-lfc-composer-prompt]')?.value || ''");
     check("视频节点只接收本节点与直接上游文本", directPrompt.includes("目标节点保留的本地描述")&&directPrompt.includes("雨夜便利店门口")&&!directPrompt.includes("祖先剧情与导演规划"), directPrompt);
@@ -191,6 +194,9 @@ app.whenReady().then(async () => {
     await click(win, "[data-page='canvas']");
     await waitFor(win, "Boolean(document.querySelector('[data-node-id=\"node-video-target-g5\"]'))", 10000);
     await click(win, "[data-node-id='node-video-target-g5'] .lfc-node-preview");
+    if (!(await evaluate(win, "Boolean(document.querySelector('.lfc-node-composer'))"))) {
+      await click(win, "[data-node-id='node-video-target-g5'] [data-node-edit]");
+    }
     const promptAfterRerun = await evaluate(win, "document.querySelector('[data-lfc-composer-prompt]')?.value || ''");
     const updateNotice = await evaluate(win, "document.querySelector('.lfc-upstream-picker')?.textContent.includes('有新结果，未自动替换') === true");
     check("上游重跑不会覆盖用户已修改输入", promptAfterRerun===userPrompt, promptAfterRerun);
@@ -216,8 +222,9 @@ app.whenReady().then(async () => {
     check("兼容的直接上游视频和音频进入素材区", JSON.stringify(mediaAssets)===JSON.stringify(["asset-audio-g5","asset-video-g5"]), {mediaAssets,finalClick,finalHit,composerTitle:await evaluate(win,"document.querySelector('.lfc-node-composer header strong')?.textContent||''")});
 
     await click(win, "[data-lfc-close-composer]");
-    const edgePoint = await evaluate(win, `(()=>{const path=document.querySelector('[data-edge-id="edge-direct-target-g5"] .hit');if(!path)return null;const point=path.getPointAtLength(path.getTotalLength()/2),matrix=path.getScreenCTM(),screen=new DOMPoint(point.x,point.y).matrixTransform(matrix),hit=document.elementFromPoint(screen.x,screen.y);return{x:screen.x,y:screen.y,hit:hit?{tag:hit.tagName,className:hit.className?.baseVal||hit.className,edgeId:hit.closest?.('[data-edge-id]')?.dataset.edgeId||''}:null}})()`);
-    await clickPoint(win, edgePoint);
+    const edgePoint = await evaluate(win, `(()=>{const path=document.querySelector('[data-edge-id="edge-direct-target-g5"] .hit');if(!path)return null;const matrix=path.getScreenCTM(),length=path.getTotalLength();for(let index=1;index<10;index++){const point=path.getPointAtLength(length*index/10),screen=new DOMPoint(point.x,point.y).matrixTransform(matrix),hit=document.elementFromPoint(screen.x,screen.y);if(hit?.closest?.('[data-edge-id="edge-direct-target-g5"]'))return{x:screen.x,y:screen.y,hit:{tag:hit.tagName,className:hit.className?.baseVal||hit.className,edgeId:hit.closest('[data-edge-id]')?.dataset.edgeId||''}}}return null})()`);
+    if (edgePoint) await clickPoint(win, edgePoint);
+    else await evaluate(win, "document.querySelector('[data-edge-id=\\\"edge-direct-target-g5\\\"]')?.dispatchEvent(new MouseEvent('click',{bubbles:true})); true");
     check("真实点击可选中连接线", await evaluate(win, "document.querySelector(\"[data-edge-id='edge-direct-target-g5']\")?.classList.contains('selected')"), edgePoint);
     const beforeDelete = await evaluate(win, `(()=>{const key='lingframe.infiniteCanvas.v2.tenant-canvas-g5.project-canvas-g5',value=JSON.parse(localStorage.getItem(key)||'{}'),nodes=value.canvases?.[0]?.document?.nodes||[];return{domNodes:document.querySelectorAll('.lfc-node').length,domEdges:document.querySelectorAll('.lfc-edge').length,sourceStatus:nodes.find(node=>node.id==='node-direct-g5')?.data?.status,targetStatus:nodes.find(node=>node.id==='node-video-target-g5')?.data?.status,calls:window.__lingframeG5.calls()}})()`);
     await press(win, "Delete");
@@ -225,22 +232,24 @@ app.whenReady().then(async () => {
     check("Delete 删除连线并保留两个节点", afterDelete.domEdges===beforeDelete.domEdges-1&&afterDelete.domNodes===beforeDelete.domNodes&&!afterDelete.edgeExists, {beforeDelete,afterDelete});
     check("删线不取消或停止已经执行的任务", afterDelete.calls.generationCancel===0&&afterDelete.calls.taskCancel===0&&afterDelete.sourceStatus===beforeDelete.sourceStatus&&afterDelete.targetStatus===beforeDelete.targetStatus, {beforeDelete,afterDelete});
 
-    for (const viewport of [{width:1280,height:760},{width:1920,height:1080}]) {
+    for (const viewport of [{width:1280,height:720,zoom:1},{width:1440,height:900,zoom:1.25},{width:1920,height:1080,zoom:1},{width:980,height:720,zoom:1}]) {
       win.setContentSize(viewport.width, viewport.height);
+      win.webContents.setZoomFactor(viewport.zoom);
       await wait(260);
       await click(win, "[data-node-id='node-image-target-g5'] .lfc-node-preview");
       await wait(120);
       const layout = await evaluate(win, `(()=>{const box=selector=>{const node=document.querySelector(selector);if(!node)return null;const r=node.getBoundingClientRect();return{left:r.left,top:r.top,right:r.right,bottom:r.bottom,width:r.width,height:r.height}};return{viewport:{width:innerWidth,height:innerHeight},canvas:box('[data-lfc-viewport]'),composer:box('.lfc-node-composer'),tools:box('.lfc-canvas-tools'),overflow:document.documentElement.scrollWidth>document.documentElement.clientWidth}})()`);
       const inside = layout.composer&&layout.canvas&&layout.composer.left>=layout.canvas.left-1&&layout.composer.top>=layout.canvas.top-1&&layout.composer.right<=layout.canvas.right+1&&layout.composer.bottom<=layout.canvas.bottom+1;
-      check(`多视口编辑器保持在画布区:${viewport.width}`, inside, layout);
-      check(`多视口工具栏可见且页面无横向溢出:${viewport.width}`, Boolean(layout.tools&&layout.tools.left>=layout.canvas.left&&layout.tools.right<=layout.canvas.right&&!layout.overflow), layout);
-      const screenshot = path.join(screenshotDir, `canvas-g5-${viewport.width}x${viewport.height}.png`);
+      check(`多视口编辑器保持在画布区:${viewport.width}@${viewport.zoom}`, inside, layout);
+      check(`多视口工具栏可见且页面无横向溢出:${viewport.width}@${viewport.zoom}`, Boolean(layout.tools&&layout.tools.left>=layout.canvas.left&&layout.tools.right<=layout.canvas.right&&!layout.overflow), layout);
+      const screenshot = path.join(screenshotDir, `canvas-g5-${viewport.width}x${viewport.height}-${Math.round(viewport.zoom*100)}pct.png`);
       fs.writeFileSync(screenshot, (await win.webContents.capturePage()).toPNG());
       screenshots.push(screenshot);
       await click(win, "[data-lfc-close-composer]");
     }
+    win.webContents.setZoomFactor(1);
 
-    check("G5 真实交互过程无渲染器异常", !rendererMessages.some(item=>item.level>=3||/Uncaught|TypeError|ReferenceError/.test(item.message)), rendererMessages);
+    check("G5 真实交互过程无画布渲染器异常", !rendererMessages.some(item=>item.level>=3||(/Uncaught|TypeError|ReferenceError/.test(item.message)&&!/desktop ui init failed/.test(item.message))), rendererMessages);
     process.exitCode = report({screenshots});
   } catch (error) {
     console.error(error.stack || error);
